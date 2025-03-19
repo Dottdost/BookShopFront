@@ -1,0 +1,87 @@
+.contacts {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 36px;
+  color: #6a0dad;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.contactList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.contactCard {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  width: 280px;
+}
+
+.contactCard h2 {
+  color: #6a0dad;
+  font-size: 24px;
+}
+
+.contactCard a {
+  color: #6a0dad;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.contactCard a:hover {
+  text-decoration: underline;
+}
+
+.contactCard:hover {
+  transform: translateY(-5px);
+}
+
+.schedule {
+  margin-top: 30px;
+}
+
+.schedule h3 {
+  color: #6a0dad;
+  font-size: 22px;
+}
+
+.message {
+  font-style: italic;
+  color: #555;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  .contactCard {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  .contactCard {
+    padding: 16px;
+  }
+}

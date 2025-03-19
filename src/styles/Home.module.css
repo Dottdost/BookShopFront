@@ -1,0 +1,45 @@
+.home {
+  height: 45vh;
+  width: 100%;
+  background-image: url("https://i.ytimg.com/vi/Vhi7slQTkIo/maxresdefault.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.text {
+  font-size: clamp(24px, 4vw, 43px);
+  font-weight: bold;
+  color: #efecec;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Vollkorn", serif;
+
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 768px) {
+  .home {
+    height: 30vh;
+  }
+
+  .text {
+    font-size: clamp(18px, 5vw, 32px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .home {
+    height: 50vh;
+  }
+
+  .text {
+    font-size: clamp(28px, 4vw, 48px);
+  }
+}
