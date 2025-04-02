@@ -87,3 +87,10 @@ input {
 .switchLink:hover {
   color: #6a0dad;
 }
+
+@media (max-width: 600px) {
+  .popup {
+    width: 90%;
+    padding: 1rem;
+  }
+}

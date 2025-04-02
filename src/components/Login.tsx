@@ -6,10 +6,8 @@ interface Props {
   onLoginSuccess: () => void;
 }
 
-const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
-  const [isRegistering, setIsRegistering] = useState(true); // по умолчанию регистрация
+const Login: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -24,31 +22,25 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
     e.preventDefault();
     setError("");
 
-    const url = isRegistering
-      ? "https://localhost:44308/api/v1/Account/Register"
-      : "https://localhost:44308/api/v1/Auth/Login";
-
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://localhost:44308/api/v1/Auth/Login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error(isRegistering ? "Registration failed" : "Login failed");
+        throw new Error("Login failed");
       }
 
       const data = await response.json();
-
-      if (!isRegistering) {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        onLoginSuccess();
-      }
-
-      alert(isRegistering ? "Registration successful!" : "Login successful!");
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      onLoginSuccess();
+      alert("Login successful!");
       onClose();
     } catch (err) {
       setError((err as Error).message);
@@ -61,21 +53,11 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
         <button className={styles.close} onClick={onClose}>
           &times;
         </button>
-        <h2>{isRegistering ? "Register" : "Login"}</h2>
+        <h2>Login</h2>
 
         {error && <p className={styles.error}>{error}</p>}
 
         <form onSubmit={handleSubmit}>
-          {isRegistering && (
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Username"
-              required
-            />
-          )}
           <input
             type="email"
             name="email"
@@ -93,19 +75,17 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
             required
           />
           <button type="submit" className={styles.button}>
-            {isRegistering ? "Register" : "Login"}
+            Login
           </button>
         </form>
 
         <p className={styles.switchText}>
-          {isRegistering
-            ? "Already have an account?"
-            : "Don't have an account?"}{" "}
+          Don't have an account?{" "}
           <span
             className={styles.switchLink}
-            onClick={() => setIsRegistering(!isRegistering)}
+            onClick={() => onClose()} // This should trigger the registration modal
           >
-            {isRegistering ? "Login" : "Register"}
+            Register
           </span>
         </p>
       </div>
@@ -113,4 +93,4 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
   );
 };
 
-export default AuthModal;
+export default Login;

@@ -12,8 +12,8 @@ const RegisterPopup: React.FC = () => {
   }, []);
 
   const handleRegisterClick = () => {
-    setShowPopup(false);
-    setShowAuthModal(true);
+    setShowPopup(false); // Закрытие попапа
+    setShowAuthModal(true); // Открытие модального окна регистрации
   };
 
   return (
@@ -35,7 +35,7 @@ const RegisterPopup: React.FC = () => {
             <h2>Join us!</h2>
             <p>Register to get 20% discount!</p>
             <button className={styles.button} onClick={handleRegisterClick}>
-              Registration
+              Register Now
             </button>
           </div>
         </div>
