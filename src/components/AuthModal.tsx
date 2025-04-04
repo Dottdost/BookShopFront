@@ -3,13 +3,13 @@ import styles from "../styles/AuthModal.module.css";
 
 interface Props {
   onClose: () => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (userName: string) => void;
 }
 
 const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
-  const [isRegistering, setIsRegistering] = useState(true); // по умолчанию регистрация
+  const [isRegistering, setIsRegistering] = useState(true);
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
     email: "",
     password: "",
   });
@@ -45,7 +45,8 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
       if (!isRegistering) {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
-        onLoginSuccess();
+        localStorage.setItem("username", data.username);
+        onLoginSuccess(data.username);
       }
 
       alert(isRegistering ? "Registration successful!" : "Login successful!");
@@ -69,8 +70,8 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
           {isRegistering && (
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="userName"
+              value={formData.userName}
               onChange={handleChange}
               placeholder="Username"
               required

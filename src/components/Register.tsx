@@ -8,7 +8,7 @@ interface Props {
 
 const Register: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
     email: "",
     password: "",
   });
@@ -58,8 +58,8 @@ const Register: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            name="username"
-            value={formData.username}
+            name="userName"
+            value={formData.userName}
             onChange={handleChange}
             placeholder="Username"
             required
