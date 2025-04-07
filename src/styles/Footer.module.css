@@ -7,10 +7,10 @@
   align-items: center;
   border-top: 1px solid #ddd;
   width: 100%;
-  position: relative; /* Позиционирование футера */
+  position: relative;
   bottom: 0;
   left: 0;
-  box-sizing: border-box; /* Учитываем отступы и границы в общей ширине */
+  box-sizing: border-box;
 }
 
 /* Контейнер для футера */
@@ -18,12 +18,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 100%; /* Убираем ограничение ширины */
-  width: 100%; /* Обеспечиваем 100% ширины */
+  max-width: 100%;
+  width: 100%;
   box-sizing: border-box;
 }
 
-/* Стили для информации */
 .info {
   font-size: 16px;
   color: #333;

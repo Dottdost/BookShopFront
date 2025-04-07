@@ -3,12 +3,12 @@ import styles from "../styles/AuthModal.module.css";
 
 interface Props {
   onClose: () => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (isAdmin: boolean) => void; // теперь передаём, админ ли пользователь
 }
 
 const Login: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
   const [formData, setFormData] = useState({
-    email: "",
+    userName: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -29,6 +29,7 @@ const Login: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
+          credentials: "include",
         }
       );
 
@@ -37,9 +38,13 @@ const Login: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
       }
 
       const data = await response.json();
+
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
-      onLoginSuccess();
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("isAdmin", JSON.stringify(data.isAdmin)); // сохраняем флаг
+
+      onLoginSuccess(data.isAdmin); // передаём флаг в родитель
       alert("Login successful!");
       onClose();
     } catch (err) {
@@ -59,11 +64,11 @@ const Login: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
 
         <form onSubmit={handleSubmit}>
           <input
-            type="email"
-            name="email"
-            value={formData.email}
+            type="text"
+            name="userName"
+            value={formData.userName}
             onChange={handleChange}
-            placeholder="Email"
+            placeholder="Username"
             required
           />
           <input
@@ -81,10 +86,7 @@ const Login: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
 
         <p className={styles.switchText}>
           Don't have an account?{" "}
-          <span
-            className={styles.switchLink}
-            onClick={() => onClose()} // This should trigger the registration modal
-          >
+          <span className={styles.switchLink} onClick={onClose}>
             Register
           </span>
         </p>

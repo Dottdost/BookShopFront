@@ -1,12 +1,12 @@
 import { useState } from "react";
 import styles from "../styles/AuthModal.module.css";
+import { useAuth } from "../hooks/useAuth";
 
 interface Props {
   onClose: () => void;
-  onLoginSuccess: (userName: string) => void;
 }
 
-const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
+const AuthModal: React.FC<Props> = ({ onClose }) => {
   const [isRegistering, setIsRegistering] = useState(true);
   const [formData, setFormData] = useState({
     userName: "",
@@ -14,6 +14,8 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
     password: "",
   });
   const [error, setError] = useState("");
+
+  const { handleLogin, handleRegister } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,35 +26,30 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
     e.preventDefault();
     setError("");
 
-    const url = isRegistering
-      ? "https://localhost:44308/api/v1/Account/Register"
-      : "https://localhost:44308/api/v1/Auth/Login";
+    if (isRegistering) {
+      const { success, error } = await handleRegister(
+        formData.userName,
+        formData.email,
+        formData.password
+      );
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error(isRegistering ? "Registration failed" : "Login failed");
+      if (success) {
+        alert("Registration successful! Please login.");
+        setIsRegistering(false);
+      } else {
+        setError(error || "Registration failed");
       }
+    } else {
+      const { success, error } = await handleLogin(
+        formData.userName,
+        formData.password
+      );
 
-      const data = await response.json();
-
-      if (!isRegistering) {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("username", data.username);
-        onLoginSuccess(data.username);
+      if (success) {
+        onClose();
+      } else {
+        setError(error || "Login failed");
       }
-
-      alert(isRegistering ? "Registration successful!" : "Login successful!");
-      onClose();
-    } catch (err) {
-      setError((err as Error).message);
     }
   };
 
@@ -67,24 +64,24 @@ const AuthModal: React.FC<Props> = ({ onClose, onLoginSuccess }) => {
         {error && <p className={styles.error}>{error}</p>}
 
         <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="userName"
+            value={formData.userName}
+            onChange={handleChange}
+            placeholder="Username"
+            required
+          />
           {isRegistering && (
             <input
-              type="text"
-              name="userName"
-              value={formData.userName}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
-              placeholder="Username"
+              placeholder="Email"
               required
             />
           )}
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            required
-          />
           <input
             type="password"
             name="password"

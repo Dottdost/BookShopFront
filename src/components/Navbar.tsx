@@ -1,32 +1,18 @@
-import { useState, useEffect } from "react";
-import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router-dom";
-import styles from "../styles/Navbar.module.css";
 import logo from "../assets/LogoCS.png";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useAuth } from "../hooks/useAuth";
+import styles from "../styles/Navbar.module.css";
 
-interface NavbarProps {
-  user: string | null;
-  onLoginClick: () => void;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
-    !!localStorage.getItem("accessToken")
+const Navbar = () => {
+  const { user, isAdmin, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
   );
-  const { theme, toggleTheme } = useTheme();
-
-  useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("accessToken"));
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setIsLoggedIn(false);
-  };
+  const { handleLogout } = useAuth();
 
   return (
-    <nav className={`${styles.navbar} ${theme === "dark" ? "dark" : ""}`}>
+    <nav className={styles.navbar}>
       <div className={styles.logo}>
         <Link to="/">
           <img src={logo} alt="Logo" />
@@ -45,25 +31,35 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick }) => {
         <li>
           <Link to="/contacts">Contacts</Link>
         </li>
+        {isAdmin && (
+          <li>
+            <Link to="/admin">Admin Panel</Link>
+          </li>
+        )}
+        {isAuthenticated && (
+          <>
+            <li>
+              <Link to="/favorites">Favorites</Link>
+            </li>
+            <li>
+              <Link to="/orders">My Orders</Link>
+            </li>
+          </>
+        )}
       </ul>
       <div className={styles.auth}>
-        {isLoggedIn ? (
-          <button className={styles.profileButton} onClick={handleLogout}>
-            Logout
-          </button>
+        {isAuthenticated ? (
+          <div className={styles.userSection}>
+            <span className={styles.username}>Hello, {user}!</span>
+            <button className={styles.logoutButton} onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
         ) : (
-          <button className={styles.loginButton} onClick={onLoginClick}>
+          <Link to="/login" className={styles.loginButton}>
             Login
-          </button>
+          </Link>
         )}
-        <label className={styles.toggleSwitch}>
-          <input
-            type="checkbox"
-            checked={theme === "dark"}
-            onChange={toggleTheme}
-          />
-          <span className={styles.slider}></span>
-        </label>
       </div>
     </nav>
   );
