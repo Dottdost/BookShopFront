@@ -3,7 +3,7 @@ import styles from "../styles/AuthModal.module.css";
 
 interface Props {
   onClose: () => void;
-  onLoginSuccess: (isAdmin: boolean) => void; // теперь передаём, админ ли пользователь
+  onLoginSuccess: (isAdmin: boolean) => void;
 }
 
 const Login: React.FC<Props> = ({ onClose, onLoginSuccess }) => {

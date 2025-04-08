@@ -24,37 +24,58 @@ h1 {
   animation: fadeInBooks 1s ease-out;
 }
 
-.ordersList {
+.booksGrid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
 }
 
-.orderCard {
+.bookCard {
   background-color: #f9f9f9;
-  padding: 1rem 1.5rem;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0d3f5;
   transition: transform 0.2s ease-in-out;
   animation: fadeInBooks 1.5s ease-out;
 }
 
-.orderCard h2 {
+.bookCard h2 {
   color: #6a0dad;
   font-size: 1.25rem;
   margin-bottom: 10px;
 }
 
-.orderItems {
-  margin-top: 1rem;
+.bookCard p {
+  color: #333;
+  font-size: 1rem;
 }
 
-.orderItem {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.25rem 0;
-  border-bottom: 1px dashed #d4c1ed;
-  color: #3d2c5c;
+.bookCard a {
+  color: #6a0dad;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bookCard a:hover {
+  text-decoration: underline;
+  color: #e91e63;
+}
+
+.bookCard:hover {
+  transform: translateY(-5px);
+}
+
+.loading {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.noBooks {
+  font-size: 1.25rem;
+  text-align: center;
+  margin-top: 2rem;
+  color: #5e3a87;
 }
 
 @keyframes fadeInBooks {
@@ -73,11 +94,11 @@ h1 {
     font-size: 1.8rem;
   }
 
-  .ordersList {
+  .booksGrid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 
-  .orderCard {
+  .bookCard {
     width: 100%;
     max-width: 320px;
   }
@@ -88,11 +109,11 @@ h1 {
     font-size: 1.6rem;
   }
 
-  .ordersList {
+  .booksGrid {
     grid-template-columns: 1fr;
   }
 
-  .orderCard {
+  .bookCard {
     padding: 16px;
   }
 }

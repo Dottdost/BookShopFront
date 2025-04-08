@@ -1,12 +1,36 @@
+@keyframes fadeInContact {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .contacts {
   padding: 40px 20px;
   text-align: center;
+  background: linear-gradient(135deg, #e5d9f2, #b7e1c1);
+  color: #fff;
+  position: relative;
+}
+
+.contacts::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(5px);
+  z-index: -1;
 }
 
 h1 {
   font-size: 36px;
   color: #6a0dad;
   margin-bottom: 20px;
+  animation: fadeInContact 1s ease-out;
 }
 
 p {
@@ -29,6 +53,7 @@ p {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   width: 280px;
+  animation: fadeInContact 1.5s ease-out;
 }
 
 .contactCard h2 {
@@ -65,6 +90,41 @@ p {
   margin-top: 20px;
 }
 
+.mailContainer {
+  background-color: #fff; /* Мягкий белый */
+  padding: 20px;
+  border-radius: 15px; /* Округление только для контейнера с почтой */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  box-sizing: border-box; /* Включаем подсчёт отступов в ширину */
+  word-wrap: break-word; /* Чтобы длинный текст переносился */
+  overflow-wrap: break-word; /* Чтобы длинные слова не выходили за пределы */
+}
+
+.mailContainer h2 {
+  color: #6a0dad;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.mailContainer p {
+  color: #333;
+  font-size: 18px;
+}
+
+.mailContainer .mailLink {
+  color: #6a0dad;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.mailContainer .mailLink:hover {
+  text-decoration: underline;
+  color: #6a0dad;
+}
+
 @media (max-width: 768px) {
   h1 {
     font-size: 28px;
@@ -73,6 +133,10 @@ p {
   .contactCard {
     width: 100%;
     max-width: 320px;
+  }
+
+  .mailContainer {
+    max-width: 90%;
   }
 }
 
@@ -83,5 +147,9 @@ p {
 
   .contactCard {
     padding: 16px;
+  }
+
+  .mailContainer {
+    max-width: 100%;
   }
 }

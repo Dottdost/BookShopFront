@@ -5,7 +5,11 @@ import { RootState } from "../store";
 import { useAuth } from "../hooks/useAuth";
 import styles from "../styles/Navbar.module.css";
 
-const Navbar = () => {
+interface NavbarProps {
+  openAuthModal: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
   const { user, isAdmin, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
@@ -56,9 +60,9 @@ const Navbar = () => {
             </button>
           </div>
         ) : (
-          <Link to="/login" className={styles.loginButton}>
+          <button className={styles.loginButton} onClick={openAuthModal}>
             Login
-          </Link>
+          </button>
         )}
       </div>
     </nav>

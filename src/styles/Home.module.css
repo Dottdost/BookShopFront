@@ -1,7 +1,8 @@
 .home {
   height: 45vh;
   width: 100%;
-  background-image: url("https://i.ytimg.com/vi/Vhi7slQTkIo/maxresdefault.jpg");
+  background-image: url("https://i.ytimg.com/vi/Vhi7slQTkIo/maxresdefault.jpg"),
+    linear-gradient(135deg, #e5d9f2, #b7e1c1); /* Мягкий фиолетовый и зелёный фон */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -20,7 +21,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-family: "Vollkorn", serif;
-
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
 

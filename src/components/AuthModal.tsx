@@ -3,7 +3,7 @@ import styles from "../styles/AuthModal.module.css";
 import { useAuth } from "../hooks/useAuth";
 
 interface Props {
-  onClose: () => void;
+  onClose: () => void; // Функция для закрытия модалки
 }
 
 const AuthModal: React.FC<Props> = ({ onClose }) => {

@@ -1,16 +1,98 @@
 .container {
   padding: 2rem;
   color: #2d1e4f;
+  background: linear-gradient(135deg, #e5d9f2, #b7e1c1);
+  position: relative;
+  animation: fadeInBooks 1s ease-out;
+  min-height: calc(100vh - 2rem);
+  padding-bottom: 0.25rem; /* Минимальный отступ снизу */
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(5px);
+  z-index: -1;
 }
 
 h1 {
   font-size: 2rem;
   margin-bottom: 1.5rem;
   color: #5e3a87;
+  animation: fadeInBooks 1s ease-out; /* Анимация для заголовка */
 }
 
 .booksGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
+}
+
+.bookCard {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px; /* Только у карточек */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  animation: fadeInBooks 1.5s ease-out;
+}
+
+.bookCard h2 {
+  color: #6a0dad;
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.bookCard p {
+  color: #333;
+  font-size: 1rem;
+}
+
+.bookCard a {
+  color: #6a0dad;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bookCard a:hover {
+  text-decoration: underline;
+  color: #e91e63;
+}
+
+.bookCard:hover {
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .booksGrid {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(180px, 1fr)
+    ); /* Уменьшение ширины карточек на маленьких экранах */
+  }
+
+  .bookCard {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .booksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bookCard {
+    padding: 16px;
+  }
 }
