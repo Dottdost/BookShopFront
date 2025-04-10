@@ -51,7 +51,7 @@ const BooksPage = () => {
 
     const order: Order = {
       id: Date.now().toString(),
-      userId: user.id, // теперь можно безопасно использовать user.id
+      userId: user.id,
       items: [orderItem],
       totalPrice: book.price,
       status: OrderStatus.Pending,

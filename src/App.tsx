@@ -12,14 +12,12 @@ import OrdersPage from "./pages/OrdersPage";
 import store from "./store";
 import AuthModal from "./components/AuthModal";
 import RegisterPopup from "./components/RegisterPopup";
-
+import AdminPanel from "./components/AdminPanel";
 function App() {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 
-  // Функция для открытия модалки
   const openAuthModal = () => setAuthModalOpen(true);
 
-  // Функция для закрытия модалки
   const closeAuthModal = () => setAuthModalOpen(false);
 
   return (
@@ -35,6 +33,7 @@ function App() {
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
         {isAuthModalOpen && <AuthModal onClose={closeAuthModal} />}
         <Footer />

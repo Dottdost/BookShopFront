@@ -1,7 +1,7 @@
 export interface BookAttribute {
   id: string;
   name: string;
-  value?: string; // Для удобства объединим с BookAttributeValue
+  value?: string;
 }
 
 export interface Genre {
@@ -23,11 +23,11 @@ export interface Book {
   stock: number;
   description: string;
   imageUrl: string;
-  genreId: number;
+  genreId?: number;
   publisherId?: number;
   genreName?: string;
   publisherName?: string;
-  attributes?: BookAttribute[]; // Упрощенная структура
+  attributes?: BookAttribute[];
 }
 
 export interface Warehouse {
