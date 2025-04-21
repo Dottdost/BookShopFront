@@ -15,7 +15,6 @@ export const useFavorites = () => {
   };
 
   const removeFavorite = (bookId: number) => {
-    // Изменили string на number (ID книги)
     dispatch(removeFromFavorites(bookId));
   };
 

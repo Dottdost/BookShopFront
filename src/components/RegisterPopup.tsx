@@ -12,8 +12,8 @@ const RegisterPopup: React.FC = () => {
   }, []);
 
   const handleRegisterClick = () => {
-    setShowPopup(false); // Закрытие попапа
-    setShowAuthModal(true); // Открытие модального окна регистрации
+    setShowPopup(false);
+    setShowAuthModal(true);
   };
 
   return (

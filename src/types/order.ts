@@ -1,5 +1,5 @@
 export interface OrderItem {
-  id: string; // Это поле теперь есть
+  id: string;
   bookId: number;
   quantity: number;
   price: number;

@@ -6,13 +6,14 @@ import AboutUs from "./pages/AboutUs";
 import Contacts from "./pages/Contacts";
 import { useState } from "react";
 import Footer from "./components/Footer";
-import BooksPage from "./pages/BooksPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import OrdersPage from "./pages/OrdersPage";
 import store from "./store";
 import AuthModal from "./components/AuthModal";
 import RegisterPopup from "./components/RegisterPopup";
 import AdminPanel from "./components/AdminPanel";
+import BookDetails from "./components/BookDetails";
+import BooksPage from "./pages/BooksPage";
 function App() {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 
@@ -29,6 +30,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/books" element={<BooksPage />} />
+          <Route path="/books/:id" element={<BookDetails />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/favorites" element={<FavoritesPage />} />

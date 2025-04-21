@@ -1,165 +1,47 @@
-.admin-panel {
-  padding: 40px;
-  max-width: 1200px;
-  margin: auto;
-  font-family: inherit;
-  color: #333;
-}
-
-.admin-panel h2 {
-  font-size: 28px;
-  color: #6a0dad;
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.book-form {
+.wrapper {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 32px;
+  height: 100vh;
+  font-family: "Segoe UI", sans-serif;
 }
 
-.book-form input {
+.sidebar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-right: 2px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar h3 {
+  margin-bottom: 20px;
+  color: #7b4b94;
+}
+
+.sidebar button {
   padding: 10px 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  flex: 1 1 280px;
-}
-
-.book-form button {
-  background-color: #6a0dad;
-  color: #fff;
+  background-color: transparent;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.book-form button:hover {
-  background-color: #4a0072;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-th,
-td {
-  padding: 14px 20px;
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-th {
-  background-color: #e5d9f2;
-  color: #333;
-  font-size: 16px;
-}
-
-td {
-  font-size: 15px;
-}
-
-.action-buttons button {
-  margin-right: 8px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  color: #7b4b94; /* Добавлено: фиолетовый текст */
 }
 
-.action-buttons .edit {
-  background-color: #6a0dad;
+.sidebar button:hover {
+  background-color: #e2d6f3;
+}
+
+.active {
+  background-color: #7b4b94;
   color: white;
 }
 
-.action-buttons .edit:hover {
-  background-color: #4a0072;
-}
-
-.action-buttons .delete {
-  background-color: #d32f2f;
-  color: white;
-}
-
-.action-buttons .delete:hover {
-  background-color: #a00000;
-}
-
-/* Dark mode */
-.dark .admin-panel {
-  color: #e0e0e0;
-}
-
-.dark th {
-  background-color: #2a2a2a;
-  color: #bb86fc;
-}
-
-.dark td {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-}
-
-.dark .book-form input {
-  background-color: #2a2a2a;
-  color: #fff;
-  border-color: #444;
-}
-
-.dark .book-form button {
-  background-color: #bb86fc;
-  color: #1c1c1c;
-}
-
-.dark .book-form button:hover {
-  background-color: #9a67ea;
-}
-
-.dark .action-buttons .edit {
-  background-color: #bb86fc;
-  color: #1c1c1c;
-}
-
-.dark .action-buttons .edit:hover {
-  background-color: #9a67ea;
-}
-
-.dark .action-buttons .delete {
-  background-color: #e57373;
-  color: #1c1c1c;
-}
-
-.dark .action-buttons .delete:hover {
-  background-color: #ef5350;
-}
-
-@media (max-width: 768px) {
-  .book-form {
-    flex-direction: column;
-  }
-
-  .book-form input,
-  .book-form button {
-    width: 100%;
-  }
-
-  th,
-  td {
-    font-size: 14px;
-    padding: 10px 14px;
-  }
-
-  .admin-panel h2 {
-    font-size: 24px;
-  }
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
 }

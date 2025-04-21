@@ -4,15 +4,18 @@ export interface BookAttribute {
   value?: string;
 }
 
+export interface Publisher {
+  id: number;
+  name: string;
+  address: string;
+  phoneNumber: string;
+  bookIds?: number[];
+}
+
 export interface Genre {
   id: number;
   genreName: string;
   parentGenreId?: number;
-}
-
-export interface Publisher {
-  id: number;
-  name: string;
 }
 
 export interface Book {
@@ -23,10 +26,8 @@ export interface Book {
   stock: number;
   description: string;
   imageUrl: string;
-  genreId?: number;
-  publisherId?: number;
-  genreName?: string;
-  publisherName?: string;
+  genreId?: string;
+  publisherId?: string;
   attributes?: BookAttribute[];
 }
 

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import BookCard from "../components/BookCard";
 import { Book, OrderItem, Order, OrderStatus } from "../types";
+import { Link } from "react-router-dom";
 
 const BooksPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -23,7 +24,8 @@ const BooksPage = () => {
       try {
         const response = await fetch("https://localhost:44308/api/books");
         const data = await response.json();
-        setBooks(data);
+        console.log(data);
+        setBooks(data.$values ?? data); // fallback если нет $values
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {
@@ -54,8 +56,8 @@ const BooksPage = () => {
       userId: user.id,
       items: [orderItem],
       totalPrice: book.price,
-      status: OrderStatus.Pending,
       createdAt: new Date().toISOString(),
+      status: OrderStatus.Pending,
     };
 
     placeOrder(order);
@@ -72,14 +74,19 @@ const BooksPage = () => {
       ) : (
         <div className={styles.booksGrid}>
           {books.map((book) => (
-            <BookCard
+            <Link
               key={book.id}
-              book={book}
-              isFavorite={isFavorite(book.id)}
-              onAddFavorite={() => addFavorite(book)}
-              onRemoveFavorite={() => removeFavorite(book.id)}
-              onOrder={() => handleOrder(book)}
-            />
+              to={`/books/${book.id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <BookCard
+                book={book}
+                isFavorite={isFavorite(book.id)}
+                onAddFavorite={() => addFavorite(book)}
+                onRemoveFavorite={() => removeFavorite(book.id)}
+                onOrder={() => handleOrder(book)}
+              />
+            </Link>
           ))}
         </div>
       )}

@@ -3,7 +3,7 @@ import styles from "../styles/AuthModal.module.css";
 import { useAuth } from "../hooks/useAuth";
 
 interface Props {
-  onClose: () => void; // Функция для закрытия модалки
+  onClose: () => void;
 }
 
 const AuthModal: React.FC<Props> = ({ onClose }) => {
@@ -12,6 +12,7 @@ const AuthModal: React.FC<Props> = ({ onClose }) => {
     userName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState("");
 
@@ -27,6 +28,11 @@ const AuthModal: React.FC<Props> = ({ onClose }) => {
     setError("");
 
     if (isRegistering) {
+      if (formData.password !== formData.confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+
       const { success, error } = await handleRegister(
         formData.userName,
         formData.email,
@@ -73,14 +79,16 @@ const AuthModal: React.FC<Props> = ({ onClose }) => {
             required
           />
           {isRegistering && (
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              required
-            />
+            <>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                required
+              />
+            </>
           )}
           <input
             type="password"
@@ -90,6 +98,16 @@ const AuthModal: React.FC<Props> = ({ onClose }) => {
             placeholder="Password"
             required
           />
+          {isRegistering && (
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm Password"
+              required
+            />
+          )}
           <button type="submit" className={styles.button}>
             {isRegistering ? "Register" : "Login"}
           </button>

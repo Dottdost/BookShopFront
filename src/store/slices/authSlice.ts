@@ -1,9 +1,8 @@
-// store/authSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
   id: string;
-  username: string;
+  userName: string;
 }
 
 interface AuthState {
@@ -42,7 +41,6 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.loading = false;
 
-      // Save to localStorage
       localStorage.setItem("user", JSON.stringify(action.payload.user));
       localStorage.setItem("isAdmin", String(action.payload.isAdmin));
     },
@@ -68,6 +66,8 @@ const authSlice = createSlice({
       localStorage.removeItem("user");
       localStorage.removeItem("isAdmin");
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userName");
     },
   },
 });

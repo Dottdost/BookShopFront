@@ -22,6 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
           <img src={logo} alt="Logo" />
         </Link>
       </div>
+
       <ul className={styles.navLinks}>
         <li>
           <Link to="/">Home</Link>
@@ -35,11 +36,13 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
         <li>
           <Link to="/contacts">Contacts</Link>
         </li>
+
         {isAdmin && (
           <li>
             <Link to="/admin">Admin Panel</Link>
           </li>
         )}
+
         {isAuthenticated && (
           <>
             <li>
@@ -51,10 +54,10 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
           </>
         )}
       </ul>
+
       <div className={styles.auth}>
-        {isAuthenticated ? (
+        {isAuthenticated && user ? (
           <div className={styles.userSection}>
-            <span className={styles.username}>Hello, {user}!</span>
             <button className={styles.logoutButton} onClick={handleLogout}>
               Logout
             </button>

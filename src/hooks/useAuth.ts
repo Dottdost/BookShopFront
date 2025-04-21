@@ -1,12 +1,16 @@
 import { useDispatch } from "react-redux";
-import {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-  logout,
-} from "../store/slices/authSlice";
+
 import { clearFavorites } from "../store/slices/favoritesSlice";
 import { clearOrders } from "../store/slices/ordersSlice";
+import {
+  loginFailure,
+  loginStart,
+  loginSuccess,
+  logout,
+  registerFailure,
+  registerStart,
+  registerSuccess,
+} from "../store/slices/authSlice";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -37,8 +41,12 @@ export const useAuth = () => {
       localStorage.setItem("isAdmin", JSON.stringify(data.isAdmin));
 
       dispatch(
-        loginSuccess({ username: data.username, isAdmin: data.isAdmin })
+        loginSuccess({
+          user: { id: data.userId ?? "", userName: data.username },
+          isAdmin: data.isAdmin,
+        })
       );
+
       return { success: true };
     } catch (error) {
       dispatch(
@@ -56,22 +64,36 @@ export const useAuth = () => {
     email: string,
     password: string
   ) => {
+    dispatch(registerStart());
+
     try {
       const response = await fetch(
         "https://localhost:44308/api/v1/Account/Register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userName: username, email, password }),
+          body: JSON.stringify({
+            userName: username,
+            email,
+            password,
+            confirmPassword: password,
+          }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Registration failed");
+        const errorData = await response.json();
+        throw new Error(errorData?.message || "Registration failed");
       }
 
+      dispatch(registerSuccess());
       return { success: true };
     } catch (error) {
+      dispatch(
+        registerFailure(
+          error instanceof Error ? error.message : "Registration failed"
+        )
+      );
       return {
         success: false,
         error: error instanceof Error ? error.message : "Registration failed",
@@ -80,11 +102,6 @@ export const useAuth = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("isAdmin");
-
     dispatch(logout());
     dispatch(clearFavorites());
     dispatch(clearOrders());
