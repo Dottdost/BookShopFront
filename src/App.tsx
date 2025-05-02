@@ -14,6 +14,8 @@ import RegisterPopup from "./components/RegisterPopup";
 import AdminPanel from "./components/AdminPanel";
 import BookDetails from "./components/BookDetails";
 import BooksPage from "./pages/BooksPage";
+import { ResetPassword } from "./components/Reset-password";
+import { ForgotPassword } from "./components/Forgot-password";
 function App() {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 
@@ -36,6 +38,8 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
         {isAuthModalOpen && <AuthModal onClose={closeAuthModal} />}
         <Footer />

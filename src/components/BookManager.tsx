@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Book } from "../types";
 import BookForm from "../components/BookForm";
@@ -33,6 +33,11 @@ const BookManager = () => {
     fetchBooks();
   }, []);
 
+  const handleSavedBook = () => {
+    fetchBooks();
+    setSelectedBook(null); // Сброс формы
+  };
+
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -41,7 +46,7 @@ const BookManager = () => {
     <div className={styles.manager}>
       <h2>Book Management</h2>
 
-      <BookForm book={selectedBook} onSaved={fetchBooks} />
+      <BookForm book={selectedBook} onSaved={handleSavedBook} />
 
       <input
         type="text"

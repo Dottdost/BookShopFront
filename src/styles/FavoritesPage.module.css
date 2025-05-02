@@ -5,7 +5,7 @@
   position: relative;
   animation: fadeInBooks 1s ease-out;
   min-height: calc(100vh - 2rem);
-  padding-bottom: 0.25rem; /* Минимальный отступ снизу */
+  padding-bottom: 0.25rem;
 }
 
 .container::before {
@@ -21,7 +21,7 @@ h1 {
   font-size: 2rem;
   margin-bottom: 1.5rem;
   color: #5e3a87;
-  animation: fadeInBooks 1s ease-out; /* Анимация для заголовка */
+  animation: fadeInBooks 1s ease-out;
 }
 
 .booksGrid {
@@ -33,7 +33,7 @@ h1 {
 .bookCard {
   background-color: #f9f9f9;
   padding: 20px;
-  border-radius: 12px; /* Только у карточек */
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   animation: fadeInBooks 1.5s ease-out;
@@ -71,10 +71,7 @@ h1 {
   }
 
   .booksGrid {
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(180px, 1fr)
-    ); /* Уменьшение ширины карточек на маленьких экранах */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 
   .bookCard {

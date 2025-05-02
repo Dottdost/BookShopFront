@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box; /* Учитываем отступы и границы */
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -9,18 +13,20 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  backdrop-filter: blur(4px); /* мягкое размытие для волшебности */
+  backdrop-filter: blur(4px);
 }
 
 .modal {
   background: linear-gradient(135deg, #ffffff, #f0fff0);
-  padding: 30px;
+  padding: 24px 20px;
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  width: 360px;
+  width: 100%; /* Используем 100% ширины контейнера */
+  max-width: 360px; /* Ограничиваем максимальную ширину */
   position: relative;
   font-family: "Quicksand", sans-serif;
   border: 2px solid #b8e0c6;
+  overflow: hidden; /* Прячем любые элементы, которые выходят за пределы */
 }
 
 .close {
@@ -29,15 +35,15 @@
   font-size: 26px;
   font-weight: bold;
   position: absolute;
-  top: 10px;
-  right: 14px;
+  top: 12px;
+  right: 16px;
   cursor: pointer;
   color: #4a1c8a;
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   color: #4a1c8a;
   font-size: 24px;
 }
@@ -47,13 +53,67 @@ form {
   flex-direction: column;
 }
 
+.inputWrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
 input {
-  padding: 12px;
-  margin-bottom: 14px;
+  padding: 10px 12px;
   border: 1px solid #c5dec9;
   border-radius: 10px;
   font-size: 16px;
   background-color: #f8fff8;
+  width: 100%;
+  box-sizing: border-box; /* Учитываем отступы в ширине */
+}
+
+.valid {
+  border: 1px solid green;
+  transition: border-color 0.3s ease;
+}
+
+.invalid {
+  border: 1px solid red;
+  transition: border-color 0.3s ease;
+}
+
+.icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.success {
+  color: green;
+  opacity: 1;
+}
+
+.errorIcon {
+  color: red;
+  opacity: 1;
+}
+
+.errorHint {
+  color: #e63946;
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: left;
+  padding-left: 2px;
+  min-height: 14px;
+}
+
+.hint {
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: left;
+  padding-left: 2px;
+  color: #888;
+  min-height: 14px;
 }
 
 .button {
@@ -64,7 +124,9 @@ input {
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
+  min-height: 44px;
   transition: background 0.3s ease;
+  margin-top: 8px;
 }
 
 .button:hover {
@@ -80,7 +142,7 @@ input {
 
 .switchText {
   text-align: center;
-  margin-top: 14px;
+  margin-top: 12px;
   font-size: 14px;
   color: #444;
 }
@@ -100,6 +162,7 @@ input {
 @media (max-width: 600px) {
   .modal {
     width: 90%;
-    padding: 1.5rem;
+    padding: 20px;
+    box-sizing: border-box; /* Чтобы padding не выходил за пределы */
   }
 }

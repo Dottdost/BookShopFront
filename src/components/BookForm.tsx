@@ -33,7 +33,9 @@ const BookForm = ({ book, onSaved }: Props) => {
 
   const fetchGenres = async () => {
     try {
-      const response = await axios.get("https://localhost:44308/api/genres");
+      const response = await axios.get(
+        "https://localhost:44308/api/genres/all"
+      );
       const values = response.data?.$values;
       if (Array.isArray(values)) setGenres(values);
     } catch (error) {

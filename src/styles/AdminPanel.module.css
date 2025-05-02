@@ -28,7 +28,7 @@
   font-size: 16px;
   transition: background-color 0.2s ease;
   border-radius: 6px;
-  color: #7b4b94; /* Добавлено: фиолетовый текст */
+  color: #7b4b94;
 }
 
 .sidebar button:hover {

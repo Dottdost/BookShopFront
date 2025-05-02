@@ -91,16 +91,16 @@ p {
 }
 
 .mailContainer {
-  background-color: #fff; /* Мягкий белый */
+  background-color: #fff;
   padding: 20px;
-  border-radius: 15px; /* Округление только для контейнера с почтой */
+  border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 450px;
   margin: 0 auto;
-  box-sizing: border-box; /* Включаем подсчёт отступов в ширину */
-  word-wrap: break-word; /* Чтобы длинный текст переносился */
-  overflow-wrap: break-word; /* Чтобы длинные слова не выходили за пределы */
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .mailContainer h2 {

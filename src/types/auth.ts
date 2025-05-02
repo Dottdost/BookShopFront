@@ -1,5 +1,3 @@
-//Типы для аутентификации
-
 export interface Role {
   roleId: string;
   roleName: string;
@@ -11,8 +9,8 @@ export interface User {
   email: string;
   isEmailConfirmed: boolean;
   createdAt: string;
-  isAdmin?: boolean; // Добавим для удобства на клиенте
-  roles?: Role[]; // Упрощенная версия без UserRole
+  isAdmin?: boolean;
+  roles?: Role[];
 }
 
 export interface AuthResponse {

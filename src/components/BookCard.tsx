@@ -16,9 +16,16 @@ const BookCard: React.FC<BookCardProps> = ({
   onRemoveFavorite,
   onOrder,
 }) => {
+  const isOutOfStock = book.stock === 0;
+
   return (
-    <div className={styles.card}>
+    <div
+      className={`${styles.card} ${isOutOfStock ? styles.outOfStockCard : ""}`}
+    >
       <div className={styles.imageContainer}>
+        {isOutOfStock && (
+          <div className={styles.outOfStockBadge}>Out of Stock</div>
+        )}
         <img
           src={book.imageUrl || "/book-placeholder.jpg"}
           alt={book.title}
@@ -29,19 +36,19 @@ const BookCard: React.FC<BookCardProps> = ({
         <h3>{book.title}</h3>
         <p>by {book.author}</p>
         <p className={styles.price}>${book.price.toFixed(2)}</p>
-        {book.stock > 0 ? (
-          <p className={styles.inStock}>In Stock: {book.stock}</p>
-        ) : (
+        {isOutOfStock ? (
           <p className={styles.outOfStock}>Out of Stock</p>
+        ) : (
+          <p className={styles.inStock}>In Stock: {book.stock}</p>
         )}
       </div>
       <div className={styles.actions}>
         <button
           className={styles.orderButton}
           onClick={onOrder}
-          disabled={book.stock <= 0}
+          disabled={isOutOfStock}
         >
-          {book.stock > 0 ? "Order Now" : "Not Available"}
+          {isOutOfStock ? "Not Available" : "Order Now"}
         </button>
         {isFavorite ? (
           <button

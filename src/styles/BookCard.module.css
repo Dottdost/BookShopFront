@@ -22,7 +22,7 @@
 
 .card {
   background: linear-gradient(135deg, #e5d9f2, #b7e1c1);
-  color: #fff;
+  color: #3d2c5c;
   border-radius: 1.5rem;
   padding: 1rem;
   box-shadow: 0 6px 12px rgba(93, 65, 146, 0.1);
@@ -31,10 +31,16 @@
   justify-content: space-between;
   transition: box-shadow 0.3s ease;
   animation: cardFadeIn 0.5s ease-out;
+  position: relative;
 }
 
 .card:hover {
   box-shadow: 0 8px 20px rgba(93, 65, 146, 0.2);
+}
+
+.outOfStockCard {
+  filter: grayscale(100%);
+  opacity: 0.6;
 }
 
 .imageContainer {
@@ -42,6 +48,7 @@
   margin-bottom: 1rem;
   opacity: 0;
   animation: fadeInImage 1s ease-out forwards;
+  position: relative;
 }
 
 .image {
@@ -51,8 +58,22 @@
   border-radius: 1rem;
 }
 
+/* Бейдж "Out of Stock" */
+.outOfStockBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: #f44336;
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 0.5rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  z-index: 2;
+}
+
 .info {
-  color: #3d2c5c;
   margin-bottom: 1rem;
 }
 
@@ -63,10 +84,13 @@
 
 .inStock {
   color: #4caf50;
+  font-weight: 500;
 }
 
 .outOfStock {
   color: #f44336;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .actions {

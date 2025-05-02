@@ -13,7 +13,7 @@ const UserManager = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("https://localhost:44308/api/users");
+      const res = await axios.get("https://localhost:44308/api/User");
       setUsers(res.data);
     } catch (err) {
       console.error("Ошибка при загрузке пользователей:", err);

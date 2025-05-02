@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../styles/Manager.module.css";
 import { PreOrder } from "../types"; // Убедись, что путь корректный

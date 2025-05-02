@@ -41,12 +41,7 @@ const RegisterPopup: React.FC = () => {
         </div>
       )}
 
-      {showAuthModal && (
-        <AuthModal
-          onClose={() => setShowAuthModal(false)}
-          onLoginSuccess={() => console.log("Logged in successfully!")}
-        />
-      )}
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </>
   );
 };
