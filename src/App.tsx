@@ -16,6 +16,7 @@ import BookDetails from "./components/BookDetails";
 import BooksPage from "./pages/BooksPage";
 import { ResetPassword } from "./components/Reset-password";
 import { ForgotPassword } from "./components/Forgot-password";
+
 function App() {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 

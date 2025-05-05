@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../styles/Manager.module.css";
-import { PreOrder } from "../types"; // Убедись, что путь корректный
+import { PreOrder } from "../types/order";
 
 const PreorderManager = () => {
   const [preorders, setPreorders] = useState<PreOrder[]>([]);

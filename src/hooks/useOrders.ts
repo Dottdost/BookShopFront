@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addOrder } from "../store/slices/ordersSlice";
 import { RootState } from "../store";
 import { Order } from "../types/order";
+import { addOrder } from "../store/slices/ordersSlice";
 
 export const useOrders = () => {
   const dispatch = useDispatch();

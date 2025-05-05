@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Book, OrderStatus } from "../types";
+import { Book } from "../types";
 import styles from "../styles/BookDetails.module.css";
 import { useFavorites } from "../hooks/useFavorites";
 import { useOrders } from "../hooks/useOrders";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import { OrderStatus } from "../types/order";
 
 const BookDetails = () => {
   const { id } = useParams<{ id: string }>();

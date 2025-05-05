@@ -5,8 +5,9 @@ import { useOrders } from "../hooks/useOrders";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import BookCard from "../components/BookCard";
-import { Book, OrderItem, Order, OrderStatus } from "../types";
 import { Link } from "react-router-dom";
+import { Book } from "../types";
+import { Order, OrderItem, OrderStatus } from "../types/order";
 
 const BooksPage = () => {
   const [books, setBooks] = useState<Book[]>([]);

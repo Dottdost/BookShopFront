@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 
 import { clearFavorites } from "../store/slices/favoritesSlice";
-import { clearOrders } from "../store/slices/ordersSlice";
 import {
   loginFailure,
   loginStart,
@@ -11,6 +10,7 @@ import {
   registerStart,
   registerSuccess,
 } from "../store/slices/authSlice";
+import { clearOrders } from "../store/slices/ordersSlice";
 
 export const useAuth = () => {
   const dispatch = useDispatch();

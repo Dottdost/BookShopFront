@@ -4,7 +4,7 @@ import { useOrders } from "../hooks/useOrders";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import BookCard from "../components/BookCard";
-import { OrderItem, Order, OrderStatus } from "../types";
+import { Order, OrderItem, OrderStatus } from "../types/order";
 
 const FavoritesPage = () => {
   const { favorites, addFavorite, removeFavorite } = useFavorites();

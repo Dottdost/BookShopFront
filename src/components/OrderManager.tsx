@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../styles/Manager.module.css";
-import { Order, OrderStatus } from "../types";
+import { Order, OrderStatus } from "../types/order";
 
 const OrderManager = () => {
   const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("https://localhost:44308/api/orders");
-      setOrders(response.data);
+      const response = await axios.get(
+        "https://localhost:44308/api/v1/Order/GetOrders"
+      );
+      // Проверка и извлечение массива из поля $values
+      if (response.data && Array.isArray(response.data.$values)) {
+        setOrders(response.data.$values);
+      } else {
+        console.error("Expected an array of orders, but got:", response.data);
+      }
     } catch (error) {
       console.error("Error while fetching orders:", error);
     }
@@ -47,31 +54,37 @@ const OrderManager = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.userId}</td>
-              <td>{order.status}</td>
-              <td>
-                <button
-                  className={styles.edit}
-                  onClick={() =>
-                    handleStatusChange(order.id, OrderStatus.Completed)
-                  }
-                >
-                  Complete
-                </button>
-                <button
-                  className={styles.delete}
-                  onClick={() =>
-                    handleStatusChange(order.id, OrderStatus.Canceled)
-                  }
-                >
-                  Cancel
-                </button>
-              </td>
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <tr key={order.id}>
+                <td>{order.id}</td>
+                <td>{order.userId}</td>
+                <td>{order.status}</td>
+                <td>
+                  <button
+                    className={styles.edit}
+                    onClick={() =>
+                      handleStatusChange(order.id, OrderStatus.Completed)
+                    }
+                  >
+                    Complete
+                  </button>
+                  <button
+                    className={styles.delete}
+                    onClick={() =>
+                      handleStatusChange(order.id, OrderStatus.Canceled)
+                    }
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={4}>No orders found.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
