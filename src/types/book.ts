@@ -14,7 +14,7 @@ export interface Publisher {
 
 export interface Genre {
   id: number;
-  genreName: string;
+  name: string;
   parentGenreId?: number;
 }
 

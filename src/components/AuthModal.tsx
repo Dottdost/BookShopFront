@@ -120,7 +120,6 @@ const AuthModal: React.FC<Props> = ({ onClose }) => {
         {error && <p className={styles.error}>{error}</p>}
 
         <form onSubmit={handleSubmit}>
-          {/* Username */}
           <div className={styles.inputWrapper}>
             <input
               type="text"

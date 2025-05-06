@@ -1,40 +1,49 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "../styles/AdminPanel.module.css";
-
+import styles from "../styles/Manager.module.css";
 type User = {
-  id: string;
+  userName: string;
   email: string;
   roles: string[];
 };
 
 const UserManager = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("https://localhost:44308/api/User");
+      const res = await axios.get(
+        "https://localhost:44308/api/v1/Admin/get-all-users",
+        {
+          params: {
+            page,
+            pageSize,
+          },
+        }
+      );
       setUsers(res.data);
     } catch (err) {
       console.error("Ошибка при загрузке пользователей:", err);
     }
   };
 
-  const deleteUser = async (userId: string) => {
+  const deleteUser = async (userName: string) => {
     try {
       await axios.delete(
-        `https://localhost:44308/api/v1/Admin/DeleteUser/${userId}`
+        `https://localhost:44308/api/v1/Admin/delete-user-by-name/${userName}`
       );
       fetchUsers();
     } catch (err) {
-      console.error("Ошибка при удалении:", err);
+      console.error("Ошибка при удалении пользователя:", err);
     }
   };
 
-  const assignAdmin = async (userId: string) => {
+  const assignAdmin = async (userName: string) => {
     try {
       await axios.post(
-        `https://localhost:44308/api/v1/Admin/AssignAdmin/${userId}`
+        `https://localhost:44308/api/v1/Admin/assign-admin-role-by-name/${userName}`
       );
       fetchUsers();
     } catch (err) {
@@ -42,10 +51,10 @@ const UserManager = () => {
     }
   };
 
-  const removeAdmin = async (userId: string) => {
+  const removeAdmin = async (userName: string) => {
     try {
-      await axios.delete(
-        `https://localhost:44308/api/v1/Admin/RemoveAdmin/${userId}`
+      await axios.post(
+        `https://localhost:44308/api/v1/Admin/remove-admin-role-by-name/${userName}`
       );
       fetchUsers();
     } catch (err) {
@@ -55,7 +64,7 @@ const UserManager = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [page]);
 
   return (
     <div>
@@ -70,18 +79,33 @@ const UserManager = () => {
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id}>
+            <tr key={u.userName}>
               <td>{u.email}</td>
               <td>{u.roles.join(", ")}</td>
               <td>
-                <button onClick={() => assignAdmin(u.id)}>Make Admin</button>
-                <button onClick={() => removeAdmin(u.id)}>Remove Admin</button>
-                <button onClick={() => deleteUser(u.id)}>Delete</button>
+                <button onClick={() => assignAdmin(u.userName)}>
+                  Make Admin
+                </button>
+                <button onClick={() => removeAdmin(u.userName)}>
+                  Remove Admin
+                </button>
+                <button onClick={() => deleteUser(u.userName)}>Delete</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <div className={styles.pagination}>
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+        <span>Page {page}</span>
+        <button onClick={() => setPage((p) => p + 1)}>Next</button>
+      </div>
     </div>
   );
 };

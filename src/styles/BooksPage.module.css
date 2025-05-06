@@ -24,10 +24,57 @@ h1 {
   animation: fadeInBooks 1s ease-out;
 }
 
+.searchInput {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.genres {
+  margin-bottom: 2rem;
+}
+
+.genresFilter {
+  width: 250px;
+  padding: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    #e5d9f2,
+    #b7e1c1
+  ); /* Фон панели фильтрации */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+  height: calc(100vh - 4rem); /* Растягиваем на всю высоту */
+  overflow-y: auto; /* Чтобы в случае большого количества жанров можно было прокручивать */
+}
+
+.genreLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.genreLabel input {
+  margin-left: 10px;
+}
+
 .booksGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
+  margin-left: 300px; /* Отступ от боковой панели */
 }
 
 .bookCard {
@@ -101,6 +148,17 @@ h1 {
   .bookCard {
     width: 100%;
     max-width: 320px;
+  }
+
+  .genresFilter {
+    position: static;
+    width: 100%;
+    margin-bottom: 2rem;
+    box-shadow: none;
+  }
+
+  .booksGrid {
+    margin-left: 0;
   }
 }
 
