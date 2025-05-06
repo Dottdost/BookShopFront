@@ -1,115 +1,62 @@
-.container {
+.layout {
+  display: flex;
+  gap: 2rem;
   padding: 2rem;
-  color: #2d1e4f;
   background: linear-gradient(135deg, #e5d9f2, #b7e1c1);
-  position: relative;
+  min-height: 100vh;
   animation: fadeInBooks 1s ease-out;
-  min-height: calc(100vh - 2rem);
-  padding-bottom: 0.25rem;
 }
 
-.container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(5px);
-  z-index: -1;
-}
-
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: #5e3a87;
-  animation: fadeInBooks 1s ease-out;
+.sidebar {
+  width: 280px;
+  background: #ffffffcc;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
 }
 
 .searchInput {
-  margin-bottom: 1.5rem;
   padding: 0.75rem;
   width: 100%;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
   background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.genres {
-  margin-bottom: 2rem;
+.genresContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.genresFilter {
-  width: 250px;
-  padding: 1.5rem;
-  background: linear-gradient(
-    135deg,
-    #e5d9f2,
-    #b7e1c1
-  ); /* Фон панели фильтрации */
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  top: 2rem;
-  left: 2rem;
-  z-index: 10;
-  height: calc(100vh - 4rem); /* Растягиваем на всю высоту */
-  overflow-y: auto; /* Чтобы в случае большого количества жанров можно было прокручивать */
+.filterTitle {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #5e3a87;
 }
 
 .genreLabel {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.genreLabel input {
-  margin-left: 10px;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
 }
 
 .booksGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
-  margin-left: 300px; /* Отступ от боковой панели */
-}
-
-.bookCard {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-  animation: fadeInBooks 1.5s ease-out;
-}
-
-.bookCard h2 {
-  color: #6a0dad;
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-}
-
-.bookCard p {
-  color: #333;
-  font-size: 1rem;
-}
-
-.bookCard a {
-  color: #6a0dad;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.bookCard a:hover {
-  text-decoration: underline;
-  color: #e91e63;
-}
-
-.bookCard:hover {
-  transform: translateY(-5px);
+  flex: 1;
 }
 
 .loading {
@@ -121,7 +68,6 @@ h1 {
 .noBooks {
   font-size: 1.25rem;
   text-align: center;
-  margin-top: 2rem;
   color: #5e3a87;
 }
 
@@ -137,41 +83,16 @@ h1 {
 }
 
 @media (max-width: 768px) {
-  h1 {
-    font-size: 1.8rem;
+  .layout {
+    flex-direction: column;
   }
 
-  .booksGrid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
-
-  .bookCard {
+  .sidebar {
     width: 100%;
-    max-width: 320px;
-  }
-
-  .genresFilter {
     position: static;
-    width: 100%;
-    margin-bottom: 2rem;
-    box-shadow: none;
   }
 
   .booksGrid {
     margin-left: 0;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.6rem;
-  }
-
-  .booksGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .bookCard {
-    padding: 16px;
   }
 }

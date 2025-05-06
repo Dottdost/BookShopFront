@@ -15,6 +15,7 @@ const BooksPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
 
   const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
@@ -22,8 +23,6 @@ const BooksPage = () => {
 
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const { placeOrder } = useOrders();
-
-  const [genres, setGenres] = useState<Genre[]>([]);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -85,10 +84,10 @@ const BooksPage = () => {
   };
 
   const handleGenreChange = (genreId: number) => {
-    setSelectedGenres((prevSelectedGenres) =>
-      prevSelectedGenres.includes(genreId)
-        ? prevSelectedGenres.filter((id) => id !== genreId)
-        : [...prevSelectedGenres, genreId]
+    setSelectedGenres((prev) =>
+      prev.includes(genreId)
+        ? prev.filter((id) => id !== genreId)
+        : [...prev, genreId]
     );
   };
 
@@ -107,21 +106,19 @@ const BooksPage = () => {
   if (loading) return <div className={styles.loading}>Loading...</div>;
 
   return (
-    <div className={styles.container}>
-      <h1>Our Books</h1>
-
-      <div className={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Search by title or author"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className={styles.searchInput}
-        />
-      </div>
-
-      <div className={styles.genresFilter}>
-        <div className={styles.sidePanel}>
+    <div className={styles.layout}>
+      <aside className={styles.sidebar}>
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search by title or author"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+        <div className={styles.genresContainer}>
+          <h2 className={styles.filterTitle}>Genres</h2>
           {genres.map((genre) => (
             <label key={genre.id} className={styles.genreLabel}>
               <input
@@ -129,17 +126,17 @@ const BooksPage = () => {
                 checked={selectedGenres.includes(genre.id)}
                 onChange={() => handleGenreChange(genre.id)}
               />
-              {genre.name || "Unknown Genre"}
+              <span>{genre.name || "Unknown Genre"}</span>
             </label>
           ))}
         </div>
-      </div>
+      </aside>
 
-      {filteredBooks.length === 0 ? (
-        <p className={styles.noBooks}>No books available</p>
-      ) : (
-        <div className={styles.booksGrid}>
-          {filteredBooks.map((book) => (
+      <main className={styles.booksGrid}>
+        {filteredBooks.length === 0 ? (
+          <p className={styles.noBooks}>No books available</p>
+        ) : (
+          filteredBooks.map((book) => (
             <Link
               key={book.id}
               to={`/books/${book.id}`}
@@ -153,9 +150,9 @@ const BooksPage = () => {
                 onOrder={() => handleOrder(book)}
               />
             </Link>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </main>
     </div>
   );
 };
