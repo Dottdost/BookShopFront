@@ -14,15 +14,25 @@ import RegisterPopup from "./components/RegisterPopup";
 import AdminPanel from "./components/AdminPanel";
 import BookDetails from "./components/BookDetails";
 import BooksPage from "./pages/BooksPage";
-import { ResetPassword } from "./components/Reset-password";
-import { ForgotPassword } from "./components/Forgot-password";
+import ResetPasswordModal from "./components/ResetPasswordModal";
 
 function App() {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [isResetModalOpen, setResetModalOpen] = useState(false);
 
-  const openAuthModal = () => setAuthModalOpen(true);
+  const openAuthModal = () => {
+    setResetModalOpen(false);
+    setAuthModalOpen(true);
+  };
 
   const closeAuthModal = () => setAuthModalOpen(false);
+
+  const openResetModal = () => {
+    setAuthModalOpen(false);
+    setResetModalOpen(true);
+  };
+
+  const closeResetModal = () => setResetModalOpen(false);
 
   return (
     <Provider store={store}>
@@ -39,10 +49,16 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
-        {isAuthModalOpen && <AuthModal onClose={closeAuthModal} />}
+
+        {isAuthModalOpen && (
+          <AuthModal
+            onClose={closeAuthModal}
+            onResetPasswordClick={openResetModal}
+          />
+        )}
+        {isResetModalOpen && <ResetPasswordModal onClose={closeResetModal} />}
+
         <Footer />
       </Router>
     </Provider>

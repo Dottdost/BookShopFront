@@ -5,9 +5,10 @@ import classNames from "classnames";
 
 interface Props {
   onClose: () => void;
+  onResetPasswordClick: () => void; // 👈 Новый проп
 }
 
-const AuthModal: React.FC<Props> = ({ onClose }) => {
+const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
   const [isRegistering, setIsRegistering] = useState(true);
   const [formData, setFormData] = useState({
     userName: "",
@@ -39,7 +40,6 @@ const AuthModal: React.FC<Props> = ({ onClose }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Debounce валидация
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isRegistering) {
@@ -211,6 +211,21 @@ const AuthModal: React.FC<Props> = ({ onClose }) => {
             {isRegistering ? "Register" : "Login"}
           </button>
         </form>
+
+        {!isRegistering && (
+          <p className={styles.forgotPassword}>
+            Forgot password?{" "}
+            <span
+              className={styles.switchLink}
+              onClick={() => {
+                onClose();
+                onResetPasswordClick(); // 👈 Показать ResetPasswordModal
+              }}
+            >
+              Reset here
+            </span>
+          </p>
+        )}
 
         <p className={styles.switchText}>
           {isRegistering

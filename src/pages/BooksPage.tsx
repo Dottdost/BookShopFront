@@ -25,9 +25,11 @@ const BooksPage = () => {
   const { placeOrder } = useOrders();
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchBooks = async (page = 1, pageSize = 20) => {
       try {
-        const response = await fetch("https://localhost:44308/api/books");
+        const response = await fetch(
+          `https://localhost:44308/api/books?page=${page}&pageSize=${pageSize}`
+        );
         const data = await response.json();
         setBooks(data.$values ?? data);
       } catch (error) {
