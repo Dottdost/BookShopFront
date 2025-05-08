@@ -3,20 +3,15 @@ import { useEffect, useState } from "react";
 import { Book } from "../types";
 import styles from "../styles/BookDetails.module.css";
 import { useFavorites } from "../hooks/useFavorites";
-import { useOrders } from "../hooks/useOrders";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import { OrderStatus } from "../types/order";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/slices/cartSlice";
 
 const BookDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [book, setBook] = useState<Book | null>(null);
 
-  const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
-  );
-  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
-  const { placeOrder } = useOrders();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -32,27 +27,17 @@ const BookDetails = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!isAuthenticated || !user || !book) {
-      alert("Please login to place an order");
-      return;
-    }
-    placeOrder({
-      id: Date.now().toString(),
-      userId: user.id,
-      items: [
-        {
-          id: Date.now().toString(),
-          bookId: book.id,
-          quantity: 1,
-          price: book.price,
-          title: book.title,
-          imageUrl: book.imageUrl,
-        },
-      ],
-      totalPrice: book.price,
-      status: OrderStatus.Pending,
-      createdAt: new Date().toISOString(),
-    });
+    if (!book) return;
+    dispatch(
+      addToCart({
+        id: Date.now().toString(),
+        bookId: book.id,
+        quantity: 1,
+        price: book.price,
+        title: book.title,
+        imageUrl: book.imageUrl,
+      })
+    );
     alert(`Added ${book.title} to cart!`);
   };
 

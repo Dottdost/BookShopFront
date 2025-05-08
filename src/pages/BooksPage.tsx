@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/BooksPage.module.css";
-import { useFavorites } from "../hooks/useFavorites";
-import { useOrders } from "../hooks/useOrders";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
 import BookCard from "../components/BookCard";
 import { Link } from "react-router-dom";
 import { Book, Genre } from "../types";
-import { Order, OrderItem, OrderStatus } from "../types/order";
 import axios from "axios";
 
 const BooksPage = () => {
@@ -16,13 +11,6 @@ const BooksPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
-
-  const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
-  const { placeOrder } = useOrders();
 
   useEffect(() => {
     const fetchBooks = async (page = 1, pageSize = 20) => {
@@ -56,34 +44,6 @@ const BooksPage = () => {
     fetchBooks();
     fetchGenres();
   }, []);
-
-  const handleOrder = (book: Book) => {
-    if (!isAuthenticated || !user) {
-      alert("Please login to place an order");
-      return;
-    }
-
-    const orderItem: OrderItem = {
-      id: Date.now().toString(),
-      bookId: book.id,
-      quantity: 1,
-      price: book.price,
-      title: book.title,
-      imageUrl: book.imageUrl,
-    };
-
-    const order: Order = {
-      id: Date.now().toString(),
-      userId: user.id,
-      items: [orderItem],
-      totalPrice: book.price,
-      createdAt: new Date().toISOString(),
-      status: OrderStatus.Pending,
-    };
-
-    placeOrder(order);
-    alert(`Order placed for ${book.title}!`);
-  };
 
   const handleGenreChange = (genreId: number) => {
     setSelectedGenres((prev) =>
@@ -144,13 +104,7 @@ const BooksPage = () => {
               to={`/books/${book.id}`}
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              <BookCard
-                book={book}
-                isFavorite={isFavorite(book.id)}
-                onAddFavorite={() => addFavorite(book)}
-                onRemoveFavorite={() => removeFavorite(book.id)}
-                onOrder={() => handleOrder(book)}
-              />
+              <BookCard book={book} />
             </Link>
           ))
         )}

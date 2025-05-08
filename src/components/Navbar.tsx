@@ -10,10 +10,12 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
-  const { user, isAdmin, isAuthenticated } = useSelector(
+  const { user, roles, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
   const { handleLogout } = useAuth();
+
+  const isAdmin = roles.some((r) => r.roleName === "Admin");
 
   return (
     <nav className={styles.navbar}>
@@ -49,7 +51,10 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
               <Link to="/favorites">Favorites</Link>
             </li>
             <li>
-              <Link to="/orders">My Orders</Link>
+              <Link to="/orders">Orders</Link>
+            </li>
+            <li>
+              <Link to="/cart">Cart</Link>
             </li>
           </>
         )}

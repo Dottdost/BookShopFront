@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-
+import { jwtDecode } from "jwt-decode";
 import { clearFavorites } from "../store/slices/favoritesSlice";
 import {
   loginFailure,
@@ -11,6 +11,16 @@ import {
   registerSuccess,
 } from "../store/slices/authSlice";
 import { clearOrders } from "../store/slices/ordersSlice";
+
+interface JwtPayload {
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": string;
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role":
+    | string
+    | string[];
+  exp: number;
+  iss: string;
+  aud: string;
+}
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -25,7 +35,6 @@ export const useAuth = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userName: username, password }),
-          credentials: "include",
         }
       );
 
@@ -33,19 +42,38 @@ export const useAuth = () => {
         throw new Error("Login failed");
       }
 
-      const data = await response.json();
+      const result = await response.json();
+      console.log("Login response:", result); // Лог ответа от бэка
 
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("isAdmin", JSON.stringify(data.isAdmin));
+      const accessToken = result.data?.accessToken;
+      const refreshToken = result.data?.refreshToken;
 
-      dispatch(
-        loginSuccess({
-          user: { id: data.userId ?? "", userName: data.username },
-          isAdmin: data.isAdmin,
-        })
-      );
+      if (!accessToken || !refreshToken) {
+        throw new Error("Access token is missing or invalid");
+      }
+
+      const decoded: JwtPayload = jwtDecode(accessToken);
+      console.log("Decoded JWT:", decoded); // Лог расшифрованного accessToken
+
+      const rawRoles =
+        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      console.log("Roles decoded:", rawRoles); // Лог ролей
+
+      const rolesArray = Array.isArray(rawRoles) ? rawRoles : [rawRoles];
+      const rolesForStore = rolesArray.map((r: string) => ({ roleName: r }));
+
+      const user = {
+        id: decoded[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+        ],
+        userName:
+          decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+      };
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      dispatch(loginSuccess({ user, roles: rolesForStore }));
 
       return { success: true };
     } catch (error) {
@@ -105,6 +133,8 @@ export const useAuth = () => {
     dispatch(logout());
     dispatch(clearFavorites());
     dispatch(clearOrders());
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   };
 
   return { handleLogin, handleRegister, handleLogout };

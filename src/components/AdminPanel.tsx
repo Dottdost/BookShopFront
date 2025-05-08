@@ -4,7 +4,6 @@ import BookManager from "./BookManager";
 import UserManager from "./UserManager";
 import OrderManager from "./OrderManager";
 import ReviewManager from "./ReviewManager";
-import PreorderManager from "./PreorderManager";
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState("books");
@@ -19,8 +18,6 @@ const AdminPanel = () => {
         return <OrderManager />;
       case "reviews":
         return <ReviewManager />;
-      case "preorders":
-        return <PreorderManager />;
       default:
         return null;
     }
@@ -53,12 +50,6 @@ const AdminPanel = () => {
           onClick={() => setActiveTab("reviews")}
         >
           💬 Reviews
-        </button>
-        <button
-          className={activeTab === "preorders" ? styles.active : ""}
-          onClick={() => setActiveTab("preorders")}
-        >
-          ⏳ Preorders
         </button>
       </div>
       <div className={styles.content}>{renderContent()}</div>

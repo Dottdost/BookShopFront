@@ -15,6 +15,7 @@ import AdminPanel from "./components/AdminPanel";
 import BookDetails from "./components/BookDetails";
 import BooksPage from "./pages/BooksPage";
 import ResetPasswordModal from "./components/ResetPasswordModal";
+import CartPage from "./pages/CartPage";
 
 function App() {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
@@ -49,6 +50,7 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
 
         {isAuthModalOpen && (

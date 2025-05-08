@@ -1,45 +1,32 @@
 import styles from "../styles/FavoritesPage.module.css";
 import { useFavorites } from "../hooks/useFavorites";
-import { useOrders } from "../hooks/useOrders";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import BookCard from "../components/BookCard";
-import { Order, OrderItem, OrderStatus } from "../types/order";
+import { addToCart } from "../store/slices/cartSlice";
+import { Book } from "../types/book";
 
 const FavoritesPage = () => {
   const { favorites, addFavorite, removeFavorite } = useFavorites();
-  const { placeOrder } = useOrders();
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
 
-  const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  const handleOrder = (book: (typeof favorites)[number]) => {
-    if (!isAuthenticated || !user) {
-      alert("Please login to place an order");
+  const handleAddToCart = (book: Book) => {
+    if (!isAuthenticated) {
+      alert("Please login to add to cart");
       return;
     }
 
-    const orderItem: OrderItem = {
-      id: Date.now().toString(),
-      bookId: book.id,
-      quantity: 1,
-      price: book.price,
-      title: book.title,
-      imageUrl: book.imageUrl,
-    };
-
-    const order: Order = {
-      id: Date.now().toString(),
-      userId: user.id,
-      items: [orderItem],
-      totalPrice: book.price,
-      status: OrderStatus.Pending,
-      createdAt: new Date().toISOString(),
-    };
-
-    placeOrder(order);
-    alert(`Order placed for ${book.title}!`);
+    dispatch(
+      addToCart({
+        id: Date.now().toString(),
+        bookId: book.id,
+        quantity: 1,
+        price: book.price,
+        title: book.title,
+        imageUrl: book.imageUrl,
+      })
+    );
   };
 
   return (
@@ -56,7 +43,7 @@ const FavoritesPage = () => {
               isFavorite={true}
               onAddFavorite={() => addFavorite(book)}
               onRemoveFavorite={() => removeFavorite(book.id)}
-              onOrder={() => handleOrder(book)}
+              onAddToCart={() => handleAddToCart(book)}
             />
           ))}
         </div>

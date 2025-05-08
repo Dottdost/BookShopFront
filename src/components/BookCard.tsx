@@ -3,19 +3,9 @@ import { Book } from "../types/book";
 
 interface BookCardProps {
   book: Book;
-  isFavorite: boolean;
-  onAddFavorite: () => void;
-  onRemoveFavorite: () => void;
-  onOrder: () => void;
 }
 
-const BookCard: React.FC<BookCardProps> = ({
-  book,
-  isFavorite,
-  onAddFavorite,
-  onRemoveFavorite,
-  onOrder,
-}) => {
+const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const isOutOfStock = book.stock === 0;
 
   return (
@@ -40,32 +30,6 @@ const BookCard: React.FC<BookCardProps> = ({
           <p className={styles.outOfStock}>Out of Stock</p>
         ) : (
           <p className={styles.inStock}>In Stock: {book.stock}</p>
-        )}
-      </div>
-      <div className={styles.actions}>
-        <button
-          className={styles.orderButton}
-          onClick={onOrder}
-          disabled={isOutOfStock}
-        >
-          {isOutOfStock ? "Not Available" : "Order Now"}
-        </button>
-        {isFavorite ? (
-          <button
-            className={styles.favoriteButtonActive}
-            onClick={onRemoveFavorite}
-            title="Remove from favorites"
-          >
-            ♥
-          </button>
-        ) : (
-          <button
-            className={styles.favoriteButton}
-            onClick={onAddFavorite}
-            title="Add to favorites"
-          >
-            ♡
-          </button>
         )}
       </div>
     </div>

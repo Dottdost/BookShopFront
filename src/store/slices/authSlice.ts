@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface Role {
+  roleName: string;
+}
+
 interface User {
   id: string;
   userName: string;
@@ -7,19 +11,19 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  isAdmin: boolean;
+  roles: Role[];
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
 }
 
 const storedUser = localStorage.getItem("user");
-const user: User | null = storedUser ? JSON.parse(storedUser) : null;
+const storedRoles = localStorage.getItem("roles");
 
 const initialState: AuthState = {
-  user,
-  isAdmin: localStorage.getItem("isAdmin") === "true",
-  isAuthenticated: !!localStorage.getItem("accessToken"),
+  user: storedUser ? JSON.parse(storedUser) : null,
+  roles: storedRoles ? JSON.parse(storedRoles) : [],
+  isAuthenticated: !!storedUser,
   loading: false,
   error: null,
 };
@@ -30,19 +34,14 @@ const authSlice = createSlice({
   reducers: {
     loginStart(state) {
       state.loading = true;
-      state.error = null;
     },
-    loginSuccess(
-      state,
-      action: PayloadAction<{ user: User; isAdmin: boolean }>
-    ) {
-      state.user = action.payload.user;
-      state.isAdmin = action.payload.isAdmin;
-      state.isAuthenticated = true;
+    loginSuccess(state, action: PayloadAction<{ user: User; roles: Role[] }>) {
       state.loading = false;
-
+      state.user = action.payload.user;
+      state.roles = action.payload.roles;
+      state.isAuthenticated = true;
       localStorage.setItem("user", JSON.stringify(action.payload.user));
-      localStorage.setItem("isAdmin", String(action.payload.isAdmin));
+      localStorage.setItem("roles", JSON.stringify(action.payload.roles));
     },
     loginFailure(state, action: PayloadAction<string>) {
       state.loading = false;
@@ -50,7 +49,6 @@ const authSlice = createSlice({
     },
     registerStart(state) {
       state.loading = true;
-      state.error = null;
     },
     registerSuccess(state) {
       state.loading = false;
@@ -61,13 +59,12 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.user = null;
-      state.isAdmin = false;
+      state.roles = [];
       state.isAuthenticated = false;
       localStorage.removeItem("user");
-      localStorage.removeItem("isAdmin");
+      localStorage.removeItem("roles");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("userName");
     },
   },
 });
@@ -76,10 +73,10 @@ export const {
   loginStart,
   loginSuccess,
   loginFailure,
+  logout,
   registerStart,
   registerSuccess,
   registerFailure,
-  logout,
 } = authSlice.actions;
 
 export default authSlice.reducer;

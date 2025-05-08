@@ -6,7 +6,7 @@ interface OrdersState {
 }
 
 const initialState: OrdersState = {
-  items: JSON.parse(localStorage.getItem("orders") || "[]"),
+  items: [],
 };
 
 const ordersSlice = createSlice({
@@ -15,14 +15,15 @@ const ordersSlice = createSlice({
   reducers: {
     addOrder(state, action: PayloadAction<Order>) {
       state.items.push(action.payload);
-      localStorage.setItem("orders", JSON.stringify(state.items));
+    },
+    setOrders(state, action: PayloadAction<Order[]>) {
+      state.items = action.payload;
     },
     clearOrders(state) {
       state.items = [];
-      localStorage.removeItem("orders");
     },
   },
 });
 
-export const { addOrder, clearOrders } = ordersSlice.actions;
+export const { addOrder, setOrders, clearOrders } = ordersSlice.actions;
 export default ordersSlice.reducer;

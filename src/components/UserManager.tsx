@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../styles/Manager.module.css";
+
 type User = {
   userName: string;
   email: string;
@@ -12,6 +13,14 @@ const UserManager = () => {
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
+  const token = localStorage.getItem("accessToken");
+
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
   const fetchUsers = async () => {
     try {
       const res = await axios.get(
@@ -21,9 +30,18 @@ const UserManager = () => {
             page,
             pageSize,
           },
+          ...axiosConfig,
         }
       );
-      setUsers(res.data);
+
+      if (res.data && Array.isArray(res.data.$values)) {
+        setUsers(res.data.$values);
+      } else {
+        console.error(
+          "Ожидался массив пользователей в $values, но получено:",
+          res.data
+        );
+      }
     } catch (err) {
       console.error("Ошибка при загрузке пользователей:", err);
     }
@@ -32,7 +50,8 @@ const UserManager = () => {
   const deleteUser = async (userName: string) => {
     try {
       await axios.delete(
-        `https://localhost:44308/api/v1/Admin/delete-user-by-name/${userName}`
+        `https://localhost:44308/api/v1/Admin/delete-user-by-name/${userName}`,
+        axiosConfig
       );
       fetchUsers();
     } catch (err) {
@@ -43,7 +62,9 @@ const UserManager = () => {
   const assignAdmin = async (userName: string) => {
     try {
       await axios.post(
-        `https://localhost:44308/api/v1/Admin/assign-admin-role-by-name/${userName}`
+        `https://localhost:44308/api/v1/Admin/assign-admin-role-by-name/${userName}`,
+        null,
+        axiosConfig
       );
       fetchUsers();
     } catch (err) {
@@ -54,7 +75,9 @@ const UserManager = () => {
   const removeAdmin = async (userName: string) => {
     try {
       await axios.post(
-        `https://localhost:44308/api/v1/Admin/remove-admin-role-by-name/${userName}`
+        `https://localhost:44308/api/v1/Admin/remove-admin-role-by-name/${userName}`,
+        null,
+        axiosConfig
       );
       fetchUsers();
     } catch (err) {
@@ -78,21 +101,29 @@ const UserManager = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((u) => (
-            <tr key={u.userName}>
-              <td>{u.email}</td>
-              <td>{u.roles.join(", ")}</td>
-              <td>
-                <button onClick={() => assignAdmin(u.userName)}>
-                  Make Admin
-                </button>
-                <button onClick={() => removeAdmin(u.userName)}>
-                  Remove Admin
-                </button>
-                <button onClick={() => deleteUser(u.userName)}>Delete</button>
-              </td>
+          {users.length > 0 ? (
+            users.map((u) => (
+              <tr key={u.userName + u.id}>
+                <td>{u.email}</td>
+                <td>
+                  {Array.isArray(u.roles) ? u.roles.join(", ") : "No roles"}
+                </td>
+                <td>
+                  <button onClick={() => assignAdmin(u.userName)}>
+                    Make Admin
+                  </button>
+                  <button onClick={() => removeAdmin(u.userName)}>
+                    Remove Admin
+                  </button>
+                  <button onClick={() => deleteUser(u.userName)}>Delete</button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3}>No users available</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
