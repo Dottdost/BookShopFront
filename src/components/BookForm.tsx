@@ -8,16 +8,16 @@ interface Props {
 }
 
 const BookForm = ({ book, onSaved }: Props) => {
-  const [form, setForm] = useState<Book>({
+  const [form, setForm] = useState<Book & { imageFile?: File }>({
     id: 0,
     title: "",
     author: "",
     price: 0,
     stock: 0,
     description: "",
-    imageUrl: "",
     genreId: undefined,
     publisherId: undefined,
+    imageFile: undefined,
   });
 
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
@@ -26,7 +26,12 @@ const BookForm = ({ book, onSaved }: Props) => {
   );
 
   useEffect(() => {
-    if (book) setForm(book);
+    if (book) {
+      setForm({
+        ...book,
+        imageFile: undefined,
+      });
+    }
     fetchGenres();
     fetchPublishers();
   }, [book]);
@@ -68,26 +73,33 @@ const BookForm = ({ book, onSaved }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const bookData = {
-      title: form.title,
-      author: form.author,
-      price: Number(form.price),
-      stock: Number(form.stock),
-      description: form.description,
-      imageUrl: form.imageUrl,
-      genreId: form.genreId ?? null,
-      publisherId: form.publisherId ?? null,
-    };
-
     try {
       if (form.id) {
-        await axios.put(
-          `https://localhost:44308/api/books/${form.id}`,
-          bookData
-        );
+        await axios.put(`https://localhost:44308/api/books/${form.id}`, {
+          ...form,
+          genreId: form.genreId ?? null,
+          publisherId: form.publisherId ?? null,
+        });
       } else {
-        await axios.post("https://localhost:44308/api/books", bookData);
+        const formData = new FormData();
+        formData.append("Title", form.title);
+        formData.append("Author", form.author);
+        formData.append("Price", String(form.price));
+        formData.append("Stock", String(form.stock));
+        formData.append("Description", form.description);
+        formData.append("GenreId", String(form.genreId ?? ""));
+        formData.append("PublisherId", String(form.publisherId ?? ""));
+        if (form.imageFile) {
+          formData.append("ImageFile", form.imageFile);
+        }
+
+        await axios.post("https://localhost:44308/api/books", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
+
       onSaved();
       setForm({
         id: 0,
@@ -96,12 +108,12 @@ const BookForm = ({ book, onSaved }: Props) => {
         price: 0,
         stock: 0,
         description: "",
-        imageUrl: "",
         genreId: undefined,
         publisherId: undefined,
+        imageFile: undefined,
       });
     } catch (error) {
-      console.error("Ошибка при отправке данных:", error);
+      console.error("Error submitting data:", error);
     }
   };
 
@@ -170,13 +182,6 @@ const BookForm = ({ book, onSaved }: Props) => {
         style={inputStyle}
       />
       <input
-        name="imageUrl"
-        value={form.imageUrl}
-        onChange={handleChange}
-        placeholder="Image URL"
-        style={inputStyle}
-      />
-      <input
         name="description"
         value={form.description}
         onChange={handleChange}
@@ -211,6 +216,19 @@ const BookForm = ({ book, onSaved }: Props) => {
           </option>
         ))}
       </select>
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          setForm((prev) => ({
+            ...prev,
+            imageFile: file,
+          }));
+        }}
+        style={inputStyle}
+      />
 
       <button type="submit" style={buttonStyle}>
         {form.id ? "Update Book" : "Add Book"}

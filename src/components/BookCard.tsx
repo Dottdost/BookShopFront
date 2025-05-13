@@ -1,5 +1,5 @@
-import styles from "../styles/BookCard.module.css";
 import { Book } from "../types/book";
+import styles from "../styles/BookCard.module.css";
 
 interface BookCardProps {
   book: Book;
@@ -7,6 +7,13 @@ interface BookCardProps {
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const isOutOfStock = book.stock === 0;
+
+  const imageSrc =
+    book.imageUrl &&
+    typeof book.imageUrl === "string" &&
+    book.imageUrl.length > 0
+      ? book.imageUrl
+      : "/book-placeholder.jpg";
 
   return (
     <div
@@ -16,11 +23,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         {isOutOfStock && (
           <div className={styles.outOfStockBadge}>Out of Stock</div>
         )}
-        <img
-          src={book.imageUrl || "/book-placeholder.jpg"}
-          alt={book.title}
-          className={styles.image}
-        />
+        <img src={imageSrc} alt={book.title} className={styles.image} />
         <div className={styles.overlay}>
           <h3 className={styles.title}>{book.title}</h3>
           <p className={styles.price}>${book.price.toFixed(2)}</p>

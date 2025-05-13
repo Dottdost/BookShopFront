@@ -4,6 +4,7 @@ export interface OrderItem {
   quantity: number;
   price: number;
   title?: string;
+  imageFile?: string | File;
   imageUrl?: string;
 }
 

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Book } from "../types";
+import { Book } from "../types/book";
 import styles from "../styles/BookDetails.module.css";
 import { useFavorites } from "../hooks/useFavorites";
 import { useDispatch } from "react-redux";
@@ -36,7 +36,7 @@ const BookDetails = () => {
         quantity: 1,
         price: book.price,
         title: book.title,
-        imageUrl: book.imageUrl,
+        imageFile: book.imageUrl,
       })
     );
     toast.success(`Added "${book.title}" to cart!`, {
@@ -47,10 +47,15 @@ const BookDetails = () => {
 
   if (!book) return <div>Loading...</div>;
 
+  const imageSrc =
+    typeof book.imageUrl === "string" && book.imageUrl.length > 0
+      ? book.imageUrl
+      : "/book-placeholder.jpg";
+
   return (
     <div className={styles.detailsContainer}>
       <div className={styles.leftSide}>
-        <img src={book.imageUrl} alt={book.title} className={styles.image} />
+        <img src={imageSrc} alt={book.title} className={styles.image} />
         <p className={styles.stock}>In stock: {book.stock}</p>
       </div>
       <div className={styles.rightSide}>

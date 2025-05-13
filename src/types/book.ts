@@ -25,10 +25,11 @@ export interface Book {
   price: number;
   stock: number;
   description: string;
-  imageUrl: string;
   genreId?: string;
   publisherId?: string;
   attributes?: BookAttribute[];
+  imageFile?: File;
+  imageUrl?: string;
 }
 
 export interface Warehouse {
