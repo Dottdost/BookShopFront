@@ -10,8 +10,6 @@ type User = {
 
 const UserManager = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [page, setPage] = useState(1);
-  const pageSize = 20;
 
   const token = localStorage.getItem("accessToken");
 
@@ -25,13 +23,7 @@ const UserManager = () => {
     try {
       const res = await axios.get(
         "https://localhost:44308/api/v1/Admin/get-all-users",
-        {
-          params: {
-            page,
-            pageSize,
-          },
-          ...axiosConfig,
-        }
+        axiosConfig
       );
 
       if (res.data && Array.isArray(res.data.$values)) {
@@ -87,12 +79,12 @@ const UserManager = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [page]);
+  }, []);
 
   return (
-    <div>
-      <h3>Users</h3>
-      <table className={styles.booksTable}>
+    <div className={styles.manager}>
+      <h2>User Management</h2>
+      <table className={styles.table}>
         <thead>
           <tr>
             <th>Email</th>
@@ -103,19 +95,30 @@ const UserManager = () => {
         <tbody>
           {users.length > 0 ? (
             users.map((u) => (
-              <tr key={u.userName + u.id}>
+              <tr key={u.userName}>
                 <td>{u.email}</td>
                 <td>
                   {Array.isArray(u.roles) ? u.roles.join(", ") : "No roles"}
                 </td>
                 <td>
-                  <button onClick={() => assignAdmin(u.userName)}>
+                  <button
+                    className={styles.editBtn}
+                    onClick={() => assignAdmin(u.userName)}
+                  >
                     Make Admin
                   </button>
-                  <button onClick={() => removeAdmin(u.userName)}>
+                  <button
+                    className={styles.editBtn}
+                    onClick={() => removeAdmin(u.userName)}
+                  >
                     Remove Admin
                   </button>
-                  <button onClick={() => deleteUser(u.userName)}>Delete</button>
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={() => deleteUser(u.userName)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))
@@ -126,17 +129,6 @@ const UserManager = () => {
           )}
         </tbody>
       </table>
-
-      <div className={styles.pagination}>
-        <button
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          Previous
-        </button>
-        <span>Page {page}</span>
-        <button onClick={() => setPage((p) => p + 1)}>Next</button>
-      </div>
     </div>
   );
 };

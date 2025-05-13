@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import styles from "../styles/AuthModal.module.css";
 import { useAuth } from "../hooks/useAuth";
 import classNames from "classnames";
+import { toast } from "react-toastify";
 
 interface Props {
   onClose: () => void;
-  onResetPasswordClick: () => void; // 👈 Новый проп
+  onResetPasswordClick: () => void;
 }
 
 const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
@@ -69,14 +70,17 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
     if (isRegistering) {
       if (!validateUsername(formData.userName)) {
         setError("Invalid username.");
+        toast.error("Invalid username.");
         return;
       }
       if (!validatePassword(formData.password)) {
         setError("Invalid password.");
+        toast.error("Invalid password.");
         return;
       }
       if (formData.password !== formData.confirmPassword) {
         setError("Passwords do not match.");
+        toast.error("Passwords do not match.");
         return;
       }
 
@@ -87,10 +91,11 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
       );
 
       if (success) {
-        alert("Registration successful! Please login.");
+        toast.success("Registration successful! Please login.");
         setIsRegistering(false);
       } else {
         setError(error || "Registration failed");
+        toast.error(error || "Registration failed");
       }
     } else {
       const { success, error } = await handleLogin(
@@ -102,6 +107,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
         onClose();
       } else {
         setError(error || "Login failed");
+        toast.error(error || "Login failed");
       }
     }
   };
@@ -219,7 +225,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
               className={styles.switchLink}
               onClick={() => {
                 onClose();
-                onResetPasswordClick(); // 👈 Показать ResetPasswordModal
+                onResetPasswordClick();
               }}
             >
               Reset here

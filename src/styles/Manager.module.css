@@ -11,22 +11,6 @@ h2 {
   color: #333;
 }
 
-.searchInput {
-  margin: 1rem 0;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.searchInput:focus {
-  border-color: #7b5cd6;
-}
-
 .table {
   width: 100%;
   border-collapse: collapse;

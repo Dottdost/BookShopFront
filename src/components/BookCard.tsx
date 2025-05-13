@@ -21,16 +21,10 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
           alt={book.title}
           className={styles.image}
         />
-      </div>
-      <div className={styles.info}>
-        <h3>{book.title}</h3>
-        <p>by {book.author}</p>
-        <p className={styles.price}>${book.price.toFixed(2)}</p>
-        {isOutOfStock ? (
-          <p className={styles.outOfStock}>Out of Stock</p>
-        ) : (
-          <p className={styles.inStock}>In Stock: {book.stock}</p>
-        )}
+        <div className={styles.overlay}>
+          <h3 className={styles.title}>{book.title}</h3>
+          <p className={styles.price}>${book.price.toFixed(2)}</p>
+        </div>
       </div>
     </div>
   );

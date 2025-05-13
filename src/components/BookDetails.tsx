@@ -5,6 +5,7 @@ import styles from "../styles/BookDetails.module.css";
 import { useFavorites } from "../hooks/useFavorites";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/slices/cartSlice";
+import { toast } from "react-toastify";
 
 const BookDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,7 +39,10 @@ const BookDetails = () => {
         imageUrl: book.imageUrl,
       })
     );
-    alert(`Added ${book.title} to cart!`);
+    toast.success(`Added "${book.title}" to cart!`, {
+      position: "bottom-left",
+      autoClose: 3000,
+    });
   };
 
   if (!book) return <div>Loading...</div>;

@@ -10,7 +10,6 @@ import {
   registerStart,
   registerSuccess,
 } from "../store/slices/authSlice";
-import { clearOrders } from "../store/slices/ordersSlice";
 
 interface JwtPayload {
   "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": string;
@@ -43,7 +42,7 @@ export const useAuth = () => {
       }
 
       const result = await response.json();
-      console.log("Login response:", result); // Лог ответа от бэка
+      console.log("Login response:", result);
 
       const accessToken = result.data?.accessToken;
       const refreshToken = result.data?.refreshToken;
@@ -53,11 +52,11 @@ export const useAuth = () => {
       }
 
       const decoded: JwtPayload = jwtDecode(accessToken);
-      console.log("Decoded JWT:", decoded); // Лог расшифрованного accessToken
+      console.log("Decoded JWT:", decoded);
 
       const rawRoles =
         decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-      console.log("Roles decoded:", rawRoles); // Лог ролей
+      console.log("Roles decoded:", rawRoles);
 
       const rolesArray = Array.isArray(rawRoles) ? rawRoles : [rawRoles];
       const rolesForStore = rolesArray.map((r: string) => ({ roleName: r }));
@@ -132,7 +131,6 @@ export const useAuth = () => {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearFavorites());
-    dispatch(clearOrders());
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
   };
