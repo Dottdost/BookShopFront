@@ -14,7 +14,6 @@ export const useOrders = (userId: string) => {
   const loading = useSelector((state: RootState) => state.orders.loading);
   const error = useSelector((state: RootState) => state.orders.error);
 
-  // Функция для размещения нового заказа
   const placeOrder = (order: Order) => {
     dispatch(addOrder(order));
   };

@@ -19,6 +19,14 @@ const CartPage = () => {
     cvv: "",
   });
 
+  const [addressDetails, setAddressDetails] = useState({
+    street: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+  });
+
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -26,10 +34,12 @@ const CartPage = () => {
 
   const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCardDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }));
+    setCardDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddressInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAddressDetails((prev) => ({ ...prev, [name]: value }));
   };
 
   const handlePlaceOrder = async () => {
@@ -38,54 +48,81 @@ const CartPage = () => {
       return;
     }
 
-    if (
-      !cardDetails.cardNumber ||
-      !cardDetails.cardHolderName ||
-      !cardDetails.expirationDate ||
-      !cardDetails.cvv
-    ) {
+    const { cardNumber, cardHolderName, expirationDate, cvv } = cardDetails;
+    const { street, city, state, postalCode, country } = addressDetails;
+
+    if (!cardNumber || !cardHolderName || !expirationDate || !cvv) {
       alert("Please fill in all card details.");
       return;
     }
 
-    const cardRequest = {
-      cardNumber: cardDetails.cardNumber,
-      cardHolderName: cardDetails.cardHolderName,
-      expirationDate: cardDetails.expirationDate,
-      cvv: cardDetails.cvv,
-      userId: user.id,
-    };
+    if (!street || !city || !state || !postalCode || !country) {
+      alert("Please fill in all address details.");
+      return;
+    }
 
     try {
-      // Сначала создаём банковскую карту
+      // ✅ 1. Сохраняем карту
+      const cardPayload = {
+        cardNumber,
+        cardHolderName,
+        expirationDate: new Date(expirationDate).toISOString().split("T")[0],
+        cvv,
+        userId: user.id,
+      };
+
       const cardResponse = await axios.post(
         "https://localhost:44308/api/Card",
-        cardRequest
+        cardPayload
       );
-      console.log("Card added successfully:", cardResponse.data);
+      const userBankCardId = cardResponse.data.id;
 
-      // После этого отправляем заказ с добавленной картой
-      const request = {
+      // ✅ 2. Сохраняем адрес
+      const addressPayload = {
         userId: user.id,
-        userAddressId: "some-address-id", // Можно заменить на реальный ID
-        userBankCardId: cardResponse.data.id, // Получаем ID карты из ответа
+        street,
+        city,
+        state,
+        postalCode,
+        country,
+      };
+
+      const addressResponse = await axios.post(
+        "https://localhost:44308/api/Adress",
+        addressPayload
+      );
+      const userAddressId = addressResponse.data.id;
+
+      // ✅ 3. Формируем заказ
+      const orderRequest = {
+        userId: user.id,
+        userAddressId,
+        userBankCardId,
         orderItems: cartItems.map((item) => ({
           bookId: item.bookId,
           quantity: item.quantity,
         })),
       };
 
+      console.log("📦 Order request payload:", orderRequest);
+
+      // ❗ Удалили поле totalPrice, его быть не должно!
+
       const orderResponse = await axios.post(
         "https://localhost:44308/api/Order",
-        request
+        orderRequest
       );
-      console.log("Order placed successfully:", orderResponse.data);
 
+      // 🧹 Очистка корзины и сообщение
       placeOrder(orderResponse.data);
       clear();
       alert("Order placed successfully!");
+      setShowCardModal(false);
     } catch (error) {
-      console.error("Error placing order:", error);
+      console.error("❌ Order error:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("🔎 Server response:", error.response?.data);
+      }
       alert("Failed to place order.");
     }
   };
@@ -123,11 +160,10 @@ const CartPage = () => {
                         src={imageSrc}
                         alt={item.title ?? "Book"}
                         className={styles.image}
-                        onError={(e) => {
-                          console.error("Image load error:", imageSrc);
-                          (e.target as HTMLImageElement).src =
-                            "/book-placeholder.jpg";
-                        }}
+                        onError={(e) =>
+                          ((e.target as HTMLImageElement).src =
+                            "/book-placeholder.jpg")
+                        }
                       />
                     </td>
                     <td>{item.title ?? "Untitled"}</td>
@@ -178,7 +214,9 @@ const CartPage = () => {
       {showCardModal && (
         <div className={styles.cardModal}>
           <div className={styles.cardModalContent}>
-            <h2>Enter Card Details</h2>
+            <h2>Enter Card & Address</h2>
+
+            <h3>Card Info</h3>
             <label>Card Number</label>
             <input
               type="text"
@@ -195,7 +233,7 @@ const CartPage = () => {
             />
             <label>Expiration Date</label>
             <input
-              type="text"
+              type="date"
               name="expirationDate"
               value={cardDetails.expirationDate}
               onChange={handleCardInputChange}
@@ -207,6 +245,44 @@ const CartPage = () => {
               value={cardDetails.cvv}
               onChange={handleCardInputChange}
             />
+
+            <h3>Shipping Address</h3>
+            <label>Street</label>
+            <input
+              type="text"
+              name="street"
+              value={addressDetails.street}
+              onChange={handleAddressInputChange}
+            />
+            <label>City</label>
+            <input
+              type="text"
+              name="city"
+              value={addressDetails.city}
+              onChange={handleAddressInputChange}
+            />
+            <label>State</label>
+            <input
+              type="text"
+              name="state"
+              value={addressDetails.state}
+              onChange={handleAddressInputChange}
+            />
+            <label>Postal Code</label>
+            <input
+              type="text"
+              name="postalCode"
+              value={addressDetails.postalCode}
+              onChange={handleAddressInputChange}
+            />
+            <label>Country</label>
+            <input
+              type="text"
+              name="country"
+              value={addressDetails.country}
+              onChange={handleAddressInputChange}
+            />
+
             <button onClick={handlePlaceOrder}>Submit</button>
             <button onClick={() => setShowCardModal(false)}>Cancel</button>
           </div>

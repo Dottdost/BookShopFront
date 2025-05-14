@@ -18,8 +18,9 @@ export const fetchOrders = createAsyncThunk<Order[], string>(
   "orders/fetchOrders",
   async (userId: string) => {
     try {
-      const response = await axios.get(`/api/order/user/${userId}`);
-      // Проверяем, что данные - это массив, прежде чем возвращать их
+      const response = await axios.get(
+        `https://localhost:44308/api/Order/${userId}`
+      );
       if (Array.isArray(response.data)) {
         return response.data;
       } else {
