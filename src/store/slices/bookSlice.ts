@@ -1,13 +1,12 @@
-// src/slices/bookSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Book } from "../../types";
 
 interface BookState {
-  allBooks: Book[]; // Заменяем на Book[]
+  allBooks: Book[];
 }
 
 const initialState: BookState = {
-  allBooks: [], // Убираем 'books', оставляем только 'allBooks'
+  allBooks: [],
 };
 
 const bookSlice = createSlice({

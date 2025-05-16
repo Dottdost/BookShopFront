@@ -11,7 +11,6 @@ import {
   registerSuccess,
 } from "../store/slices/authSlice";
 
-// Обновлённый интерфейс для JWT
 interface JwtPayload {
   "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": string;
   "http://schemas.microsoft.com/ws/2008/06/identity/claims/role":
@@ -47,7 +46,7 @@ export const useAuth = () => {
 
       const accessToken = result.data?.accessToken;
       const refreshToken = result.data?.refreshToken;
-      const userId = result.data?.userId; // Получаем userId из ответа
+      const userId = result.data?.userId;
 
       if (!accessToken || !refreshToken || !userId) {
         throw new Error("Access token, refresh token, or userId is missing");
@@ -62,7 +61,7 @@ export const useAuth = () => {
       const rolesForStore = rolesArray.map((r: string) => ({ roleName: r }));
 
       const user = {
-        id: userId, // Используем userId из ответа
+        id: userId,
         userName:
           decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
       };

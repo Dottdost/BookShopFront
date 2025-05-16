@@ -3,6 +3,7 @@ import axios from "axios";
 import { Book } from "../types";
 import BookForm from "../components/BookForm";
 import styles from "../styles/Manager.module.css";
+import { toast } from "react-toastify";
 
 const BookManager = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -17,6 +18,7 @@ const BookManager = () => {
       }
     } catch (error) {
       console.error("Error fetching books:", error);
+      toast.error("Failed to fetch books.");
     }
   };
 
@@ -24,8 +26,10 @@ const BookManager = () => {
     try {
       await axios.delete(`https://localhost:44308/api/books/${id}`);
       fetchBooks();
+      toast.success("Book deleted successfully!");
     } catch (error) {
       console.error("Error deleting book:", error);
+      toast.error("Failed to delete book.");
     }
   };
 
@@ -35,7 +39,8 @@ const BookManager = () => {
 
   const handleSavedBook = () => {
     fetchBooks();
-    setSelectedBook(null); // Сброс формы
+    setSelectedBook(null); // Reset form
+    toast.success("Book saved successfully!");
   };
 
   const filteredBooks = books.filter((book) =>

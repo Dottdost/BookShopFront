@@ -3,7 +3,7 @@ import styles from "../styles/AdminPanel.module.css";
 import BookManager from "./BookManager";
 import UserManager from "./UserManager";
 import OrderManager from "./OrderManager";
-import ReviewManager from "./ReviewManager";
+import PromoCodeManager from "./PromoCodeManager";
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState("books");
@@ -16,8 +16,8 @@ const AdminPanel = () => {
         return <UserManager />;
       case "orders":
         return <OrderManager />;
-      case "reviews":
-        return <ReviewManager />;
+      case "PromoCodeManager":
+        return <PromoCodeManager />;
       default:
         return null;
     }
@@ -46,10 +46,10 @@ const AdminPanel = () => {
           🛒 Orders
         </button>
         <button
-          className={activeTab === "reviews" ? styles.active : ""}
-          onClick={() => setActiveTab("reviews")}
+          className={activeTab === "PromoCodeManager" ? styles.active : ""}
+          onClick={() => setActiveTab("PromoCodeManager")}
         >
-          💬 Reviews
+          🎟️PromManager
         </button>
       </div>
       <div className={styles.content}>{renderContent()}</div>

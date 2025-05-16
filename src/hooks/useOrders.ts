@@ -10,19 +10,20 @@ type DispatchType = ThunkDispatch<RootState, undefined, Action>;
 
 export const useOrders = (userId: string) => {
   const dispatch: DispatchType = useDispatch();
+
   const orders = useSelector((state: RootState) => state.orders.items);
   const loading = useSelector((state: RootState) => state.orders.loading);
   const error = useSelector((state: RootState) => state.orders.error);
-
-  const placeOrder = (order: Order) => {
-    dispatch(addOrder(order));
-  };
 
   useEffect(() => {
     if (userId) {
       dispatch(fetchOrders(userId));
     }
   }, [userId, dispatch]);
+
+  const placeOrder = (order: Order) => {
+    dispatch(addOrder(order));
+  };
 
   return { orders, placeOrder, loading, error };
 };

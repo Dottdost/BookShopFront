@@ -1,3 +1,4 @@
+/* ========== ОБЩАЯ РАЗМЕТКА ========== */
 .layout {
   display: flex;
   gap: 2rem;
@@ -7,51 +8,124 @@
   animation: fadeInBooks 1s ease-out;
 }
 
+/* ========== САЙДБАР ========== */
 .sidebar {
-  width: 280px;
-  background: #ffffffcc;
+  width: 300px;
+  /* чуть более прозрачный фон */
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
+
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  height: fit-content;
+  align-items: center;
+
   position: sticky;
   top: 2rem;
 }
 
-.searchInput {
-  padding: 0.75rem;
-  width: 100%;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+/* ========== ОБЁРТКА ЖАНРОВ ========== */
+.genresBox {
+  display: block;
+  width: min-content;
+  /* тоже делаем её полупрозрачной */
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  margin: 0 auto;
 }
 
+/* ========== КОНТЕЙНЕР ПОИСКА ========== */
+.searchContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ========== ПОИСК ========== */
+.searchInput {
+  width: 180px;
+  max-width: 100%;
+  margin: 0 auto;
+
+  padding: 0.4rem 0.8rem;
+  font-size: 0.93rem;
+
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchInput::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+
+.searchInput:hover {
+  border-color: #c0c0c0;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #5e3a87;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06),
+    0 0 6px rgba(94, 58, 135, 0.25);
+}
+
+/* ========== СПИСОК ЖАНРОВ ========== */
 .genresContainer {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 .filterTitle {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 600;
   color: #5e3a87;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
+/* ========== ЭЛЕМЕНТ ЖАНРА ========== */
 .genreLabel {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.genreLabel:hover {
+  background: rgba(94, 58, 135, 0.05);
+}
+
+.genreLabel input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0;
+  accent-color: #5e3a87;
+}
+
+.genreLabel span {
+  font-size: 1rem;
   color: #333;
 }
 
+/* ========== СЕТКА КАРТОЧЕК КНИГ ========== */
 .booksGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -59,18 +133,23 @@
   flex: 1;
 }
 
+/* ========== СТАТУСЫ ЗАГРУЗКИ / ПУСТОГО СПИСКА ========== */
+.loading,
+.noBooks {
+  text-align: center;
+}
+
 .loading {
   font-size: 1.5rem;
-  text-align: center;
   margin-top: 2rem;
 }
 
 .noBooks {
   font-size: 1.25rem;
-  text-align: center;
   color: #5e3a87;
 }
 
+/* ========== АНИМАЦИЯ FADE-IN ========== */
 @keyframes fadeInBooks {
   0% {
     opacity: 0;
@@ -82,16 +161,15 @@
   }
 }
 
+/* ========== АДАПТИВ ========== */
 @media (max-width: 768px) {
   .layout {
     flex-direction: column;
   }
-
   .sidebar {
     width: 100%;
     position: static;
   }
-
   .booksGrid {
     margin-left: 0;
   }

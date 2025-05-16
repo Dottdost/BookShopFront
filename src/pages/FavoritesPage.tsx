@@ -5,6 +5,8 @@ import { RootState } from "../store";
 import BookCard from "../components/BookCard";
 import { addToCart } from "../store/slices/cartSlice";
 import { Book } from "../types/book";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const FavoritesPage = () => {
   const { favorites, addFavorite, removeFavorite } = useFavorites();
@@ -13,7 +15,7 @@ const FavoritesPage = () => {
 
   const handleAddToCart = (book: Book) => {
     if (!isAuthenticated) {
-      alert("Please login to add to cart");
+      toast.error("Please login to add to cart");
       return;
     }
 
@@ -37,14 +39,19 @@ const FavoritesPage = () => {
       ) : (
         <div className={styles.booksGrid}>
           {favorites.map((book) => (
-            <BookCard
+            <Link
               key={book.id}
-              book={book}
-              isFavorite={true}
-              onAddFavorite={() => addFavorite(book)}
-              onRemoveFavorite={() => removeFavorite(book.id)}
-              onAddToCart={() => handleAddToCart(book)}
-            />
+              to={`/books/${book.id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <BookCard
+                book={book}
+                isFavorite={true}
+                onAddFavorite={() => addFavorite(book)}
+                onRemoveFavorite={() => removeFavorite(book.id)}
+                onAddToCart={() => handleAddToCart(book)}
+              />
+            </Link>
           ))}
         </div>
       )}

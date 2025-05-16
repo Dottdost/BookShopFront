@@ -104,6 +104,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
       );
 
       if (success) {
+        toast.success("Login successful!");
         onClose();
       } else {
         setError(error || "Login failed");
@@ -155,7 +156,6 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
             <small className={styles.errorHint}>{errors.userName}</small>
           )}
 
-          {/* Email */}
           {isRegistering && (
             <div className={styles.inputWrapper}>
               <input
@@ -169,7 +169,6 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
             </div>
           )}
 
-          {/* Password */}
           <div className={styles.inputWrapper}>
             <input
               type="password"
@@ -199,7 +198,6 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
             <small className={styles.errorHint}>{errors.password}</small>
           )}
 
-          {/* Confirm Password */}
           {isRegistering && (
             <div className={styles.inputWrapper}>
               <input

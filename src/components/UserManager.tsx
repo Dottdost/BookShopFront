@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../styles/Manager.module.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type User = {
   userName: string;
@@ -29,13 +31,11 @@ const UserManager = () => {
       if (res.data && Array.isArray(res.data.$values)) {
         setUsers(res.data.$values);
       } else {
-        console.error(
-          "Ожидался массив пользователей в $values, но получено:",
-          res.data
-        );
+        console.error("Ожидался массив пользователей, но получено:", res.data);
       }
     } catch (err) {
       console.error("Ошибка при загрузке пользователей:", err);
+      toast.error("Error loading users.");
     }
   };
 
@@ -46,8 +46,10 @@ const UserManager = () => {
         axiosConfig
       );
       fetchUsers();
+      toast.success("Пользователь удален.");
     } catch (err) {
       console.error("Ошибка при удалении пользователя:", err);
+      toast.error("Error deleting user.");
     }
   };
 
@@ -59,8 +61,10 @@ const UserManager = () => {
         axiosConfig
       );
       fetchUsers();
+      toast.success("Роль админа назначена.");
     } catch (err) {
       console.error("Ошибка при назначении роли админа:", err);
+      toast.error("Error assigning admin role.");
     }
   };
 
@@ -72,8 +76,10 @@ const UserManager = () => {
         axiosConfig
       );
       fetchUsers();
+      toast.success("Роль админа удалена.");
     } catch (err) {
       console.error("Ошибка при удалении роли админа:", err);
+      toast.error("Error while deleting admin role.");
     }
   };
 
@@ -129,6 +135,7 @@ const UserManager = () => {
           )}
         </tbody>
       </table>
+      <ToastContainer />
     </div>
   );
 };

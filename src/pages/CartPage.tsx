@@ -5,6 +5,7 @@ import { RootState } from "../store";
 import styles from "../styles/CartPage.module.css";
 import axios from "axios";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const CartPage = () => {
   const { cartItems, removeItem, changeQuantity, clear } = useCart();
@@ -12,6 +13,7 @@ const CartPage = () => {
   const { placeOrder } = useOrders(user?.id ?? "");
 
   const [showCardModal, setShowCardModal] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
     cardHolderName: "",
@@ -44,7 +46,7 @@ const CartPage = () => {
 
   const handlePlaceOrder = async () => {
     if (!user) {
-      alert("Please log in to place an order.");
+      toast.warn("Please log in to place an order.");
       return;
     }
 
@@ -52,17 +54,16 @@ const CartPage = () => {
     const { street, city, state, postalCode, country } = addressDetails;
 
     if (!cardNumber || !cardHolderName || !expirationDate || !cvv) {
-      alert("Please fill in all card details.");
+      toast.warn("Please fill in all card details.");
       return;
     }
 
     if (!street || !city || !state || !postalCode || !country) {
-      alert("Please fill in all address details.");
+      toast.warn("Please fill in all address details.");
       return;
     }
 
     try {
-      // ✅ 1. Сохраняем карту
       const cardPayload = {
         cardNumber,
         cardHolderName,
@@ -71,13 +72,14 @@ const CartPage = () => {
         userId: user.id,
       };
 
+      console.log("📦 Sending card payload:", cardPayload);
       const cardResponse = await axios.post(
         "https://localhost:44308/api/Card",
         cardPayload
       );
       const userBankCardId = cardResponse.data.id;
+      console.log("✅ Card saved, id:", userBankCardId);
 
-      // ✅ 2. Сохраняем адрес
       const addressPayload = {
         userId: user.id,
         street,
@@ -87,14 +89,15 @@ const CartPage = () => {
         country,
       };
 
+      console.log("📦 Sending address payload:", addressPayload);
       const addressResponse = await axios.post(
         "https://localhost:44308/api/Adress",
         addressPayload
       );
       const userAddressId = addressResponse.data.id;
+      console.log("✅ Address saved, id:", userAddressId);
 
-      // ✅ 3. Формируем заказ
-      const orderRequest = {
+      const orderRequest: any = {
         userId: user.id,
         userAddressId,
         userBankCardId,
@@ -104,26 +107,37 @@ const CartPage = () => {
         })),
       };
 
-      console.log("📦 Order request payload:", orderRequest);
+      if (promoCode.trim()) {
+        orderRequest.promoCode = promoCode.trim();
+      }
 
-      // ❗ Удалили поле totalPrice, его быть не должно!
-
+      console.log("📦 Sending order request:", orderRequest);
       const orderResponse = await axios.post(
         "https://localhost:44308/api/Order",
         orderRequest
       );
+      console.log("✅ Order response:", orderResponse.data);
 
-      // 🧹 Очистка корзины и сообщение
       placeOrder(orderResponse.data);
       clear();
-      alert("Order placed successfully!");
+      toast.success("Order placed successfully!");
       setShowCardModal(false);
     } catch (error) {
       console.error("❌ Order error:", error);
       if (axios.isAxiosError(error)) {
-        console.error("🔎 Server response:", error.response?.data);
+        const errorMsg = error.response?.data;
+        console.log("🛑 Error response data:", errorMsg);
+        if (
+          typeof errorMsg === "string" &&
+          errorMsg.toLowerCase().includes("promo code")
+        ) {
+          toast.error("Invalid or expired promo code.");
+        } else {
+          toast.error("Failed to place order. Please try again.");
+        }
+      } else {
+        toast.error("Unexpected error occurred.");
       }
-      alert("Failed to place order.");
     }
   };
 
@@ -198,6 +212,13 @@ const CartPage = () => {
             <p>
               <strong>Total:</strong> ${totalPrice.toFixed(2)}
             </p>
+            <input
+              type="text"
+              placeholder="Enter promo code"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              className={styles.promoInput}
+            />
             <button className={styles.clearButton} onClick={clear}>
               Clear Cart
             </button>

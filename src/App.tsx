@@ -16,6 +16,7 @@ import BookDetails from "./components/BookDetails";
 import BooksPage from "./pages/BooksPage";
 import ResetPasswordModal from "./components/ResetPasswordModal";
 import CartPage from "./pages/CartPage";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
@@ -60,6 +61,7 @@ function App() {
           />
         )}
         {isResetModalOpen && <ResetPasswordModal onClose={closeResetModal} />}
+        <ToastContainer />
 
         <Footer />
       </Router>

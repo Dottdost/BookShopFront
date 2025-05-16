@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/LogoCS.png";
+import logo from "../assets/cheshire.jpg";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useAuth } from "../hooks/useAuth";

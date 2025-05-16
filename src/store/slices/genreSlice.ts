@@ -1,4 +1,3 @@
-// src/slices/genreSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Genre } from "../../types";
 

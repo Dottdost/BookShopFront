@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../styles/AuthModal.module.css";
+import { toast } from "react-toastify";
 
 interface Props {
   onClose: () => void;
@@ -7,13 +8,9 @@ interface Props {
 
 const ResetPasswordModal: React.FC<Props> = ({ onClose }) => {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage("");
-    setError("");
 
     try {
       const response = await fetch(
@@ -32,9 +29,10 @@ const ResetPasswordModal: React.FC<Props> = ({ onClose }) => {
         throw new Error(data.message || "Failed to send reset email");
       }
 
-      setMessage("Reset password link has been sent to your email.");
+      toast.success("Reset password link has been sent to your email.");
+      setEmail("");
     } catch (err: any) {
-      setError(err.message);
+      toast.error(err.message || "An error occurred while sending reset link.");
     }
   };
 
@@ -45,8 +43,6 @@ const ResetPasswordModal: React.FC<Props> = ({ onClose }) => {
           &times;
         </button>
         <h2>Reset Password</h2>
-        {message && <p className={styles.success}>{message}</p>}
-        {error && <p className={styles.error}>{error}</p>}
 
         <form onSubmit={handleSubmit}>
           <div className={styles.inputWrapper}>

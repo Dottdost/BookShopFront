@@ -11,7 +11,7 @@ export interface OrderItem {
 export interface Order {
   id: string;
   userId: string;
-  items: OrderItem[];
+  orderItems: OrderItem[];
   totalPrice: number;
   status: OrderStatus;
   createdAt: string;
