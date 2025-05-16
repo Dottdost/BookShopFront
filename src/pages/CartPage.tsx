@@ -155,9 +155,8 @@ const CartPage = () => {
             <tbody>
               {cartItems.map((item, index) => {
                 const imageSrc =
-                  typeof item.imageFile === "string" &&
-                  item.imageFile.length > 0
-                    ? item.imageFile
+                  typeof item.imageUrl === "string" && item.imageUrl.length > 0
+                    ? item.imageUrl
                     : "/book-placeholder.jpg";
 
                 return (

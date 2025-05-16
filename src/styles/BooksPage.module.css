@@ -1,229 +1,168 @@
-.layout {
-  display: flex;
-  gap: 2rem;
-  padding: 2rem;
-  background: linear-gradient(135deg, #e5d9f2, #b7e1c1);
+/* ============================
+   BooksPage.module.css
+   ============================ */
+
+.page {
+  background: linear-gradient(135deg, #e5d9f2 0%, #b7e1c1 100%);
   min-height: 100vh;
-  animation: fadeInBooks 1s ease-out;
-  transition: all 0.3s ease;
-}
-
-.sidebar {
-  width: 300px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(6px);
-
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: center;
-
-  position: sticky;
-  top: 2rem;
-
-  transition: all 0.3s ease;
-}
-
-.genresBox {
-  display: block;
-  width: min-content;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-
-  margin: 0 auto;
-
-  transition: all 0.3s ease;
-}
-
-.searchContainer {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-
-  transition: all 0.3s ease;
-}
-
-.searchInput {
-  width: 180px;
-  max-width: 100%;
-  margin: 0 auto;
-
-  padding: 0.4rem 0.8rem;
-  font-size: 0.93rem;
-
-  background-color: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
-
-  transition: border-color 0.2s, box-shadow 0.2s, width 0.3s ease;
-}
-
-.searchInput::placeholder {
-  color: #bbb;
-  font-style: italic;
-}
-
-.searchInput:hover {
-  border-color: #c0c0c0;
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: #5e3a87;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06),
-    0 0 6px rgba(94, 58, 135, 0.25);
-}
-
-.genresContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-
-  transition: all 0.3s ease;
-}
-
-.filterTitle {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #5e3a87;
-  text-align: center;
-  margin-bottom: 1rem;
-
-  transition: font-size 0.3s ease;
-}
-
-.genreLabel {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.4rem 0;
-  cursor: pointer;
-  transition: background 0.2s, font-size 0.3s ease;
-}
-
-.genreLabel:hover {
-  background: rgba(94, 58, 135, 0.05);
-}
-
-.genreLabel input[type="checkbox"] {
-  width: 1.2rem;
-  height: 1.2rem;
-  margin: 0;
-  accent-color: #5e3a87;
-
-  transition: width 0.3s ease, height 0.3s ease;
-}
-
-.genreLabel span {
-  font-size: 1rem;
-  color: #333;
-
-  transition: font-size 0.3s ease;
-}
-
-.booksGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
-  flex: 1;
-
-  transition: all 0.3s ease;
-}
-
-.loading,
-.noBooks {
-  text-align: center;
-}
-
-.loading {
-  font-size: 1.5rem;
-  margin-top: 2rem;
-}
-
-.noBooks {
-  font-size: 1.25rem;
-  color: #5e3a87;
+  padding: 2rem;
+  animation: fadeInBooks 0.8s ease-out;
 }
 
 @keyframes fadeInBooks {
-  0% {
+  from {
     opacity: 0;
     transform: translateY(20px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@media (max-width: 1024px) {
-  .sidebar {
-    width: 260px;
-    padding: 1.5rem 1rem;
-  }
-
-  .booksGrid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
+/* ——————————————————————————
+     Поисковая строка
+     —————————————————————————— */
+.searchBar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.searchInput {
+  width: 100%;
+  max-width: 600px;
+  padding: 0.75rem 1rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+.searchInput::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+.searchBtn {
+  margin-left: -2.5rem;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #666;
 }
 
+/* ——————————————————————————
+     Меню жанров
+     —————————————————————————— */
+.genreNav {
+  margin: 0 auto 2rem;
+  max-width: 800px;
+}
+.genreNav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Общие стили пункта */
+.genreItem {
+  position: relative;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.genreItem:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Заголовок жанра с текстом + стрелкой */
+.genreTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Стрелочка */
+.arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #333;
+  transition: transform 0.2s;
+}
+.arrow.open {
+  transform: rotate(180deg);
+}
+
+/* Активный пункт (выбранный жанр) */
+.active .genreTitle,
+.genreItem.active {
+  background: #fff;
+  color: #5e3a87;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Выпадающее подменю */
+.subMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  min-width: 160px;
+  z-index: 100;
+}
+
+/* Пункты подменю */
+.subItem {
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+.subItem:hover {
+  background: rgba(94, 58, 135, 0.1);
+  color: #5e3a87;
+}
+
+/* ——————————————————————————
+     Грид карточек
+     —————————————————————————— */
+.booksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Пустой список / загрузка */
+.loading,
+.noBooks {
+  text-align: center;
+  font-size: 1.25rem;
+  color: #5e3a87;
+}
+
+/* ——————————————————————————
+     Адаптив
+     —————————————————————————— */
 @media (max-width: 768px) {
-  .layout {
-    flex-direction: column;
-    padding: 1.5rem 1rem;
-  }
-  .sidebar {
-    width: 100%;
-    position: static;
-    padding: 1.5rem 1rem;
-  }
-  .booksGrid {
-    margin-left: 0;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  .genreNav ul {
     gap: 1rem;
   }
   .searchInput {
-    width: 100%;
-    max-width: 300px;
-  }
-  .filterTitle {
-    font-size: 1.2rem;
-  }
-  .genreLabel span {
-    font-size: 0.9rem;
-  }
-  .genreLabel input[type="checkbox"] {
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .layout {
-    padding: 1rem 0.75rem;
+    max-width: 90%;
   }
   .booksGrid {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 0.75rem;
-  }
-  .filterTitle {
-    font-size: 1rem;
-  }
-  .genreLabel span {
-    font-size: 0.85rem;
-  }
-  .genreLabel input[type="checkbox"] {
-    width: 0.9rem;
-    height: 0.9rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }

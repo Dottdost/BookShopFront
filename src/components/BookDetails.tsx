@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { Book } from "../types/book";
 import styles from "../styles/BookDetails.module.css";
 import { useFavorites } from "../hooks/useFavorites";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../store/slices/cartSlice";
+import { useCart } from "../hooks/useCart";
 import { toast } from "react-toastify";
 
 const BookDetails = () => {
@@ -12,7 +11,7 @@ const BookDetails = () => {
   const [book, setBook] = useState<Book | null>(null);
 
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
-  const dispatch = useDispatch();
+  const { addItem } = useCart();
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -22,6 +21,7 @@ const BookDetails = () => {
         setBook(data);
       } catch (error) {
         console.error("Error fetching book details:", error);
+        toast.error("Failed to load book details");
       }
     };
     fetchBook();
@@ -29,20 +29,29 @@ const BookDetails = () => {
 
   const handleAddToCart = () => {
     if (!book) return;
-    dispatch(
-      addToCart({
-        id: Date.now().toString(),
-        bookId: book.id,
-        quantity: 1,
-        price: book.price,
-        title: book.title,
-        imageFile: book.imageUrl,
-      })
-    );
-    toast.success(`Added "${book.title}" to cart!`, {
+    addItem(book);
+    toast.success(`"${book.title}" added to cart!`, {
       position: "bottom-left",
       autoClose: 3000,
     });
+  };
+
+  const handleToggleFavorite = () => {
+    if (!book) return;
+
+    if (isFavorite(book.id)) {
+      removeFavorite(book.id);
+      toast.info(`"${book.title}" removed from favorites`, {
+        position: "bottom-left",
+        autoClose: 3000,
+      });
+    } else {
+      addFavorite(book);
+      toast.success(`"${book.title}" added to favorites`, {
+        position: "bottom-left",
+        autoClose: 3000,
+      });
+    }
   };
 
   if (!book) return <div>Loading...</div>;
@@ -67,15 +76,11 @@ const BookDetails = () => {
           <strong>Description:</strong> {book.description}
         </p>
         <div className={styles.buttons}>
-          {isFavorite(book.id) ? (
-            <button onClick={() => removeFavorite(book.id)}>
-              ♥ Remove from favorites
-            </button>
-          ) : (
-            <button onClick={() => addFavorite(book)}>
-              ♡ Add to favorites
-            </button>
-          )}
+          <button onClick={handleToggleFavorite}>
+            {isFavorite(book.id)
+              ? "♥ Remove from favorites"
+              : "♡ Add to favorites"}
+          </button>
           <button onClick={handleAddToCart}>🛒 Add to cart</button>
         </div>
       </div>
