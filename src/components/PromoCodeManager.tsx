@@ -56,14 +56,14 @@ const PromoCodeManager = () => {
         axiosConfig
       );
 
-      toast.success("Промокод создан.");
+      toast.success("Promocode created.");
       setNewCode("");
       setDiscount(0);
       setExpiryDate("");
       fetchPromoCodes();
     } catch (err) {
-      console.error("Ошибка при создании промокода:", err);
-      toast.error("Ошибка при создании промокода.");
+      console.error("Error creating promocode:", err);
+      toast.error("Error creating promocode.");
     }
   };
 
@@ -74,11 +74,11 @@ const PromoCodeManager = () => {
         null,
         axiosConfig
       );
-      toast.success("Промокод деактивирован.");
+      toast.success("Promo codedeactivated.");
       fetchPromoCodes();
     } catch (err) {
       console.error("Ошибка при деактивации:", err);
-      toast.error("Ошибка при деактивации промокода.");
+      toast.error("Error deactivating promocode.");
     }
   };
 
@@ -88,11 +88,11 @@ const PromoCodeManager = () => {
         `https://localhost:44308/api/v1/PromoCode/Delete?code=${code}`,
         axiosConfig
       );
-      toast.success("Промокод удален.");
+      toast.success("Promocode removed.");
       fetchPromoCodes();
     } catch (err) {
       console.error("Ошибка при удалении промокода:", err);
-      toast.error("Ошибка при удалении промокода.");
+      toast.error("Error deleting promocode.");
     }
   };
 

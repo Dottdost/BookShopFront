@@ -72,13 +72,11 @@ const CartPage = () => {
         userId: user.id,
       };
 
-      console.log("📦 Sending card payload:", cardPayload);
       const cardResponse = await axios.post(
         "https://localhost:44308/api/Card",
         cardPayload
       );
       const userBankCardId = cardResponse.data.id;
-      console.log("✅ Card saved, id:", userBankCardId);
 
       const addressPayload = {
         userId: user.id,
@@ -89,13 +87,11 @@ const CartPage = () => {
         country,
       };
 
-      console.log("📦 Sending address payload:", addressPayload);
       const addressResponse = await axios.post(
         "https://localhost:44308/api/Adress",
         addressPayload
       );
       const userAddressId = addressResponse.data.id;
-      console.log("✅ Address saved, id:", userAddressId);
 
       const orderRequest: any = {
         userId: user.id,
@@ -111,22 +107,19 @@ const CartPage = () => {
         orderRequest.promoCode = promoCode.trim();
       }
 
-      console.log("📦 Sending order request:", orderRequest);
       const orderResponse = await axios.post(
         "https://localhost:44308/api/Order",
         orderRequest
       );
-      console.log("✅ Order response:", orderResponse.data);
 
       placeOrder(orderResponse.data);
       clear();
       toast.success("Order placed successfully!");
       setShowCardModal(false);
     } catch (error) {
-      console.error("❌ Order error:", error);
+      console.error("Order error:", error);
       if (axios.isAxiosError(error)) {
         const errorMsg = error.response?.data;
-        console.log("🛑 Error response data:", errorMsg);
         if (
           typeof errorMsg === "string" &&
           errorMsg.toLowerCase().includes("promo code")

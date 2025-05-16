@@ -1,16 +1,21 @@
-:root[data-theme="light"] {
-  --background-color: #f9f9f9;
-  --text-color: #333;
-}
-
-:root[data-theme="dark"] {
-  --background-color: #1e1e1e;
-  --text-color: #f9f9f9;
-}
+@import url("https://fonts.googleapis.com/css2?family=Marcellus&display=swap");
 
 body {
   background-color: var(--background-color);
-  font-family: "Lora", serif;
+  font-family: "Marcellus", serif;
   font-style: normal;
+  font-weight: 400;
+
   transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Marcellus", serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: var(--text-color);
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }

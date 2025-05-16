@@ -1,5 +1,6 @@
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/cheshire.jpg";
+import logo from "../assets/12345.jpg";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useAuth } from "../hooks/useAuth";
@@ -14,51 +15,77 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
     (state: RootState) => state.auth
   );
   const { handleLogout } = useAuth();
-
   const isAdmin = roles.some((r) => r.roleName === "Admin");
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const handleLinkClick = () => setMenuOpen(false);
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
-        <Link to="/">
+        <Link to="/" onClick={handleLinkClick}>
           <img src={logo} alt="Logo" />
         </Link>
       </div>
 
-      <ul className={styles.navLinks}>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/books">Books</Link>
-        </li>
-        <li>
-          <Link to="/about">About us</Link>
-        </li>
-        <li>
-          <Link to="/contacts">Contacts</Link>
-        </li>
-
-        {isAdmin && (
+      <div
+        className={`${styles.navLinks} ${menuOpen ? styles.active : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <ul>
           <li>
-            <Link to="/admin">Admin Panel</Link>
+            <Link to="/" onClick={handleLinkClick}>
+              Home
+            </Link>
           </li>
-        )}
+          <li>
+            <Link to="/books" onClick={handleLinkClick}>
+              Books
+            </Link>
+          </li>
+          <li>
+            <Link to="/about" onClick={handleLinkClick}>
+              About us
+            </Link>
+          </li>
+          <li>
+            <Link to="/contacts" onClick={handleLinkClick}>
+              Contacts
+            </Link>
+          </li>
 
-        {isAuthenticated && (
-          <>
+          {isAdmin && (
             <li>
-              <Link to="/favorites">Favorites</Link>
+              <Link to="/admin" onClick={handleLinkClick}>
+                Admin Panel
+              </Link>
             </li>
-            <li>
-              <Link to="/orders">Orders</Link>
-            </li>
-            <li>
-              <Link to="/cart">Cart</Link>
-            </li>
-          </>
-        )}
-      </ul>
+          )}
+
+          {isAuthenticated && (
+            <>
+              <li>
+                <Link to="/favorites" onClick={handleLinkClick}>
+                  Favorites
+                </Link>
+              </li>
+              <li>
+                <Link to="/orders" onClick={handleLinkClick}>
+                  Orders
+                </Link>
+              </li>
+              <li>
+                <Link to="/cart" onClick={handleLinkClick}>
+                  Cart
+                </Link>
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
 
       <div className={styles.auth}>
         {isAuthenticated && user ? (
@@ -72,6 +99,17 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
             Login
           </button>
         )}
+      </div>
+
+      {/* Гамбургер-иконка */}
+      <div
+        className={`${styles.hamburger} ${menuOpen ? styles.open : ""}`}
+        onClick={toggleMenu}
+        aria-label="Toggle menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </nav>
   );

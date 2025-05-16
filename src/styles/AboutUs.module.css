@@ -5,7 +5,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Quicksand", sans-serif;
   position: relative;
   z-index: 1;
 }

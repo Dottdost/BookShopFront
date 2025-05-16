@@ -7,11 +7,23 @@
   padding: 16px 32px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  z-index: 100;
 }
 
 .logo img {
-  width: 100px;
-  height: auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(106, 13, 173, 0.3);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.logo img:hover {
+  box-shadow: 0 8px 20px rgba(106, 13, 173, 0.4);
+  transform: scale(1.05);
 }
 
 .navLinks {
@@ -20,10 +32,18 @@
   list-style: none;
 }
 
+.navLinks ul {
+  display: flex;
+  gap: 24px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
 .navLinks li a {
   text-decoration: none;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 520;
   color: #333;
   transition: color 0.2s ease-in-out;
 }
@@ -58,155 +78,87 @@
   color: #fff;
 }
 
-.dark .navbar {
-  background-color: #1c1c1c;
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  width: 30px;
+  height: 22px;
+  justify-content: space-between;
 }
 
-.dark .navLinks li a {
-  color: #e0e0e0;
+.hamburger span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #6a0dad;
+  border-radius: 3px;
+  transition: 0.3s;
 }
 
-.dark .navLinks li a:hover {
-  color: #bb86fc;
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
 }
 
-.dark .auth button {
-  background-color: #bb86fc;
-  color: #1c1c1c;
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
 }
 
-.dark .auth button:hover {
-  background-color: #9a67ea;
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
 }
 
-.dark .profileButton {
-  background-color: transparent;
-  color: #bb86fc;
-  border: 2px solid #bb86fc;
-}
-
-.dark .profileButton:hover {
-  background-color: #bb86fc;
-  color: #1c1c1c;
-}
-
-.slider {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  border-radius: 34px;
-  transition: 0.4s;
-}
-
-input:checked + .slider {
-  background-color: #bb86fc;
-}
-
-.slider::before {
-  content: "";
-  position: absolute;
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 3px;
-  background-color: white;
-  border-radius: 50%;
-  transition: 0.4s;
-}
-
-input:checked + .slider::before {
-  transform: translateX(24px);
-}
-
+/* Мобильная версия */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 12px 24px;
-  }
-
-  .logo img {
-    width: 80px;
-  }
-
   .navLinks {
-    gap: 16px;
+    position: fixed;
+    top: 91px;
+    right: 0;
+    height: calc(100% - 91px);
+    width: 220px;
+    background-color: #e5d9f2;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    padding-top: 1rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .navLinks.active {
+    transform: translateX(0);
+  }
+
+  .navLinks ul {
+    flex-direction: column;
+    gap: 20px;
   }
 
   .navLinks li a {
-    font-size: 13px;
+    font-size: 16px;
+    padding: 10px 20px;
+    display: block;
   }
 
-  .auth button {
-    padding: 6px 12px;
-    font-size: 14px;
+  .hamburger {
+    display: flex;
   }
 
-  .toggleSwitch {
-    width: 40px;
-    height: 20px;
-  }
-
-  .slider::before {
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-  }
-
-  input:checked + .slider::before {
-    transform: translateX(18px);
+  .auth {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
-  .navbar {
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 16px;
-  }
-
   .logo img {
-    width: 70px;
-    margin-bottom: 10px;
+    width: 80px;
+    height: 80px;
   }
 
   .navLinks {
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
+    width: 180px;
   }
 
   .navLinks li a {
     font-size: 14px;
-  }
-
-  .auth {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    justify-content: center;
-  }
-
-  .auth button {
-    padding: 6px 10px;
-    font-size: 14px;
-  }
-
-  .toggleSwitch {
-    width: 36px;
-    height: 18px;
-  }
-
-  .slider::before {
-    height: 12px;
-    width: 12px;
-    left: 3px;
-    bottom: 3px;
-  }
-
-  input:checked + .slider::before {
-    transform: translateX(16px);
   }
 }

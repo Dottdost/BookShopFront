@@ -43,11 +43,11 @@ const OrderManager = () => {
         setOrders(response.data.$values);
       } else {
         console.error("Expected an array of orders, but got:", response.data);
-        toast.error("Ошибка при загрузке заказов: неверный формат ответа.");
+        toast.error("Expected an array of orders, but got.");
       }
     } catch (error) {
       console.error("Error while fetching orders:", error);
-      toast.error("Ошибка при загрузке заказов.");
+      toast.error("Error while fetching orders.");
     }
   };
   const handleStatusChange = async (orderId: string, newStatus: string) => {

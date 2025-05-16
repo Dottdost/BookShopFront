@@ -24,7 +24,6 @@
   width: 100%; /* Используем 100% ширины контейнера */
   max-width: 360px; /* Ограничиваем максимальную ширину */
   position: relative;
-  font-family: "Quicksand", sans-serif;
   border: 2px solid #b8e0c6;
   overflow: hidden;
 }

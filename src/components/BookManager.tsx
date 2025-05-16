@@ -39,7 +39,7 @@ const BookManager = () => {
 
   const handleSavedBook = () => {
     fetchBooks();
-    setSelectedBook(null); // Reset form
+    setSelectedBook(null);
     toast.success("Book saved successfully!");
   };
 
