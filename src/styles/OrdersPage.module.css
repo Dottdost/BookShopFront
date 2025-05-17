@@ -69,23 +69,42 @@ h1 {
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
   h1 {
     font-size: 1.8rem;
+    text-align: center;
   }
 
   .ordersList {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    justify-items: center;
   }
 
   .orderCard {
     width: 100%;
-    max-width: 320px;
+    max-width: 360px;
+    padding: 1rem;
+  }
+
+  .orderItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
   }
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.75rem;
+  }
+
   h1 {
     font-size: 1.6rem;
+    margin-bottom: 1rem;
+    text-align: center;
   }
 
   .ordersList {
@@ -93,6 +112,16 @@ h1 {
   }
 
   .orderCard {
-    padding: 16px;
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .orderItem {
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+  }
+
+  .orderCard h2 {
+    font-size: 1.1rem;
   }
 }

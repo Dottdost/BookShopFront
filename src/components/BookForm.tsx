@@ -75,43 +75,21 @@ const BookForm = ({ book, onSaved }: Props) => {
 
     try {
       if (form.id) {
-        // Если есть новый файл, используем FormData (PUT с файлом)
-        if (form.imageFile) {
-          const formData = new FormData();
-          formData.append("Title", form.title);
-          formData.append("Author", form.author);
-          formData.append("Price", String(form.price));
-          formData.append("Stock", String(form.stock));
-          formData.append("Description", form.description);
-          formData.append("GenreId", form.genreId ? String(form.genreId) : "");
-          formData.append(
-            "PublisherId",
-            form.publisherId ? String(form.publisherId) : ""
-          );
-          formData.append("ImageFile", form.imageFile);
-
-          await axios.put(
-            `https://localhost:44308/api/books/${form.id}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-        } else {
-          // Если файла нет, отправляем JSON без imageFile
-          await axios.put(`https://localhost:44308/api/books/${form.id}`, {
-            title: form.title,
-            author: form.author,
-            price: form.price,
+        // Обновляем stock
+        await axios.patch(
+          `https://localhost:44308/api/books/${form.id}/stock`,
+          {
             stock: form.stock,
-            description: form.description,
-            genreId: form.genreId ?? null,
-            publisherId: form.publisherId ?? null,
-            // НЕ отправляем imageFile, чтобы не ломать сервер
-          });
-        }
+          }
+        );
+
+        // Обновляем price
+        await axios.patch(
+          `https://localhost:44308/api/books/${form.id}/price`,
+          {
+            price: form.price,
+          }
+        );
       } else {
         // Создание книги (POST) с файлом
         const formData = new FormData();
@@ -193,6 +171,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         onChange={handleChange}
         placeholder="Book Title"
         style={inputStyle}
+        disabled={!!form.id}
       />
       <input
         name="author"
@@ -200,6 +179,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         onChange={handleChange}
         placeholder="Author"
         style={inputStyle}
+        disabled={!!form.id}
       />
       <input
         name="price"
@@ -223,6 +203,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         onChange={handleChange}
         placeholder="Description"
         style={inputStyle}
+        disabled={!!form.id}
       />
 
       <select
@@ -230,6 +211,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         value={form.genreId || ""}
         onChange={handleChange}
         style={inputStyle}
+        disabled={!!form.id}
       >
         <option value="">Select Genre</option>
         {genres.map((genre) => (
@@ -244,6 +226,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         value={form.publisherId || ""}
         onChange={handleChange}
         style={inputStyle}
+        disabled={!!form.id}
       >
         <option value="">Select Publisher</option>
         {publishers.map((publisher) => (
@@ -253,40 +236,42 @@ const BookForm = ({ book, onSaved }: Props) => {
         ))}
       </select>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label
-          htmlFor="image-upload"
-          style={{
-            ...buttonStyle,
-            backgroundColor: "#f0f0f0",
-            color: "#333",
-            display: "inline-block",
-            width: "auto",
-          }}
-        >
-          {form.imageFile
-            ? `Selected: ${form.imageFile.name}`
-            : "Choose Cover Image"}
-        </label>
-        <input
-          id="image-upload"
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              setForm((prev) => ({
-                ...prev,
-                imageFile: file,
-              }));
-            }
-          }}
-          style={{ display: "none" }}
-        />
-      </div>
+      {!form.id && (
+        <div style={{ marginBottom: "12px" }}>
+          <label
+            htmlFor="image-upload"
+            style={{
+              ...buttonStyle,
+              backgroundColor: "#f0f0f0",
+              color: "#333",
+              display: "inline-block",
+              width: "auto",
+            }}
+          >
+            {form.imageFile
+              ? `Selected: ${form.imageFile.name}`
+              : "Choose Cover Image"}
+          </label>
+          <input
+            id="image-upload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setForm((prev) => ({
+                  ...prev,
+                  imageFile: file,
+                }));
+              }
+            }}
+            style={{ display: "none" }}
+          />
+        </div>
+      )}
 
       <button type="submit" style={buttonStyle}>
-        {form.id ? "Update Book" : "Add Book"}
+        {form.id ? "Update Price and Stock" : "Add Book"}
       </button>
     </form>
   );

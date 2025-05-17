@@ -126,50 +126,76 @@ h1 {
 .button:hover {
   background-color: #6f4a8e;
 }
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
-  }
-
-  .table td img {
-    width: 40px;
-    height: 55px;
-  }
-
-  .quantityInput {
-    width: 50px;
-  }
-
-  .removeButton {
-    padding: 6px 10px;
-  }
-
-  .summary {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
 @media (max-width: 480px) {
   h1 {
     font-size: 1.6rem;
+    margin-bottom: 1.2rem;
   }
 
-  .table th,
-  .table td {
+  .table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tr {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 0.8rem;
   }
 
+  .table td {
+    padding: 0.4rem 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+    color: #5e3a87;
+    min-width: 90px;
+  }
+
+  /* Скрываем картинки в таблице */
   .table td img {
-    width: 35px;
-    height: 50px;
+    display: none;
   }
 
   .quantityInput {
     width: 45px;
+    font-size: 0.9rem;
   }
 
   .removeButton {
-    padding: 5px 8px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  .summary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .button,
+  .clearButton {
+    padding: 10px;
+    font-size: 0.95rem;
+    width: 100%;
+    text-align: center;
   }
 }

@@ -88,22 +88,48 @@
   font-size: 0.85rem;
   color: #666;
 }
+@media (max-width: 480px) {
+  .home {
+    height: 28vh;
+  }
 
-@media (max-width: 768px) {
+  .text {
+    font-size: clamp(14px, 4.5vw, 22px);
+    padding: 0 0.5rem;
+    text-align: center;
+  }
+
+  .contentWrapper {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .recommendationsTitle {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
   .bookGrid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .card {
+    padding: 0.4rem;
+    border-radius: 8px;
   }
 
   .imageContainer {
-    height: 160px;
+    height: 100px; /* ниже для более вытянутого эффекта */
+    border-radius: 5px;
+    margin-bottom: 0.4rem;
   }
 
   .title {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+    margin: 0.3rem 0 0.2rem;
   }
 
   .bookAuthor {
-    font-size: 0.8rem;
+    font-size: 0.65rem;
   }
 }

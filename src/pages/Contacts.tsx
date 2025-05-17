@@ -11,13 +11,14 @@ const Contacts = () => {
         <div className={styles.contactCard}>
           <h2>Hamida Samad-zade</h2>
           <p>
-            Email:{" "}
-            <a href="mailto:eelikosamed@gmail.com">elikosamed@gmail.com</a>
+            Email:
+            <a href="mailto:elikosamed@gmail.com">elikosamed@gmail.com</a>
           </p>
         </div>
         <div className={styles.contactCard}>
           <h2>Eteri Jafarova</h2>
           <p>
+            Email:
             <a href="mailto:etericeferova2005@gmail.com">
               etericeferova2005@gmail.com
             </a>
