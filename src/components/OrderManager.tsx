@@ -23,7 +23,6 @@ const statusToNumber = {
 
 const OrderManager = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-
   const token = localStorage.getItem("accessToken");
 
   const axiosConfig = {
@@ -42,48 +41,43 @@ const OrderManager = () => {
       if (response.data && Array.isArray(response.data.$values)) {
         setOrders(response.data.$values);
       } else {
-        console.error("Expected an array of orders, but got:", response.data);
-        toast.error("Expected an array of orders, but got.");
+        toast.error("Unexpected response format.");
       }
     } catch (error) {
-      console.error("Error while fetching orders:", error);
-      toast.error("Error while fetching orders.");
+      console.error("Error fetching orders:", error);
+      toast.error("Failed to load orders.");
     }
   };
+
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     const numericStatus =
       statusToNumber[newStatus as keyof typeof statusToNumber];
-
-    console.log("Updating status:", { orderId, newStatus, numericStatus });
 
     try {
       await axios.patch(
         `https://localhost:44308/api/Order/${orderId}/status`,
         { status: numericStatus },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        axiosConfig
       );
       fetchOrders();
+      toast.success(`Order #${orderId} status updated.`);
     } catch (error) {
-      console.error("Error while updating order status:", error);
+      console.error("Error updating order status:", error);
+      toast.error("Failed to update order status.");
     }
   };
 
   const handleDelete = async (orderId: string) => {
-    if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
-      await axios.delete(`https://localhost:44308/api/Order/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.delete(
+        `https://localhost:44308/api/Order/${orderId}`,
+        axiosConfig
+      );
       fetchOrders();
+      toast.success(`Order #${orderId} deleted.`);
     } catch (error) {
-      console.error("Error while deleting order:", error);
+      console.error("Error deleting order:", error);
+      toast.error("Failed to delete order.");
     }
   };
 
@@ -98,7 +92,6 @@ const OrderManager = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>User ID</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -108,9 +101,9 @@ const OrderManager = () => {
             orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.id}</td>
-                <td>{order.userId}</td>
                 <td>
                   <select
+                    className={styles.select}
                     value={order.status}
                     onChange={(e) =>
                       handleStatusChange(order.id, e.target.value)
@@ -125,7 +118,7 @@ const OrderManager = () => {
                 </td>
                 <td>
                   <button
-                    className={styles.delete}
+                    className={styles.deleteBtn}
                     onClick={() => handleDelete(order.id)}
                   >
                     Delete
@@ -135,7 +128,7 @@ const OrderManager = () => {
             ))
           ) : (
             <tr>
-              <td colSpan={4}>No orders found.</td>
+              <td colSpan={3}>No orders found.</td>
             </tr>
           )}
         </tbody>

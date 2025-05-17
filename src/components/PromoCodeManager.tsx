@@ -61,8 +61,8 @@ const PromoCodeManager = () => {
       setDiscount(0);
       setExpiryDate("");
       fetchPromoCodes();
-    } catch (err) {
-      console.error("Error creating promocode:", err);
+    } catch (error: unknown) {
+      console.error("Error creating promocode:", error);
       toast.error("Error creating promocode.");
     }
   };
@@ -74,11 +74,26 @@ const PromoCodeManager = () => {
         null,
         axiosConfig
       );
-      toast.success("Promo codedeactivated.");
+      toast.success("Promo code deactivated.");
       fetchPromoCodes();
-    } catch (err) {
-      console.error("Ошибка при деактивации:", err);
+    } catch (error: unknown) {
+      console.error("Ошибка при деактивации:", error);
       toast.error("Error deactivating promocode.");
+    }
+  };
+
+  const activatePromoCode = async (code: string) => {
+    try {
+      await axios.post(
+        `https://localhost:44308/api/v1/PromoCode/Activate?code=${code}`,
+        null,
+        axiosConfig
+      );
+      toast.success("Promo code activated.");
+      fetchPromoCodes();
+    } catch (error: unknown) {
+      console.error("Ошибка при активации:", error);
+      toast.error("Error activating promocode.");
     }
   };
 
@@ -90,8 +105,8 @@ const PromoCodeManager = () => {
       );
       toast.success("Promocode removed.");
       fetchPromoCodes();
-    } catch (err) {
-      console.error("Ошибка при удалении промокода:", err);
+    } catch (error: unknown) {
+      console.error("Ошибка при удалении промокода:", error);
       toast.error("Error deleting promocode.");
     }
   };
@@ -151,6 +166,12 @@ const PromoCodeManager = () => {
                     onClick={() => deactivatePromoCode(p.code)}
                   >
                     Deactivate
+                  </button>
+                  <button
+                    className={styles.editBtn}
+                    onClick={() => activatePromoCode(p.code)}
+                  >
+                    Activate
                   </button>
                   <button
                     className={styles.deleteBtn}

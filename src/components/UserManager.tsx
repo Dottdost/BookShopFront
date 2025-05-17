@@ -4,6 +4,16 @@ import styles from "../styles/Manager.module.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+type ApiUser = {
+  userName: string;
+  email: string;
+  roles?: { $values: string[] } | string[] | null;
+};
+
+type ApiResponse = {
+  $values: ApiUser[];
+};
+
 type User = {
   userName: string;
   email: string;
@@ -17,22 +27,42 @@ const UserManager = () => {
 
   const axiosConfig = {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token ?? ""}`,
     },
   };
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(
+      const res = await axios.get<ApiResponse>(
         "https://localhost:44308/api/v1/Admin/get-all-users",
         axiosConfig
       );
 
-      if (res.data && Array.isArray(res.data.$values)) {
-        setUsers(res.data.$values);
-      } else {
-        console.error("Ожидался массив пользователей, но получено:", res.data);
-      }
+      const apiUsers = res.data?.$values ?? [];
+
+      const normalizedUsers: User[] = apiUsers.map((u) => {
+        // Получаем роли с учётом возможных вариантов
+        let roles: string[] = [];
+
+        if (u.roles) {
+          if (Array.isArray(u.roles)) {
+            roles = u.roles;
+          } else if (
+            typeof u.roles === "object" &&
+            Array.isArray((u.roles as { $values: string[] }).$values)
+          ) {
+            roles = (u.roles as { $values: string[] }).$values;
+          }
+        }
+
+        return {
+          userName: u.userName,
+          email: u.email,
+          roles,
+        };
+      });
+
+      setUsers(normalizedUsers);
     } catch (err) {
       console.error("Ошибка при загрузке пользователей:", err);
       toast.error("Error loading users.");
@@ -45,7 +75,7 @@ const UserManager = () => {
         `https://localhost:44308/api/v1/Admin/delete-user-by-name/${userName}`,
         axiosConfig
       );
-      fetchUsers();
+      await fetchUsers();
       toast.success("Пользователь удален.");
     } catch (err) {
       console.error("Ошибка при удалении пользователя:", err);
@@ -60,7 +90,7 @@ const UserManager = () => {
         null,
         axiosConfig
       );
-      fetchUsers();
+      await fetchUsers();
       toast.success("Роль админа назначена.");
     } catch (err) {
       console.error("Ошибка при назначении роли админа:", err);
@@ -75,7 +105,7 @@ const UserManager = () => {
         null,
         axiosConfig
       );
-      fetchUsers();
+      await fetchUsers();
       toast.success("Роль админа удалена.");
     } catch (err) {
       console.error("Ошибка при удалении роли админа:", err);
@@ -103,9 +133,7 @@ const UserManager = () => {
             users.map((u) => (
               <tr key={u.userName}>
                 <td>{u.email}</td>
-                <td>
-                  {Array.isArray(u.roles) ? u.roles.join(", ") : "No roles"}
-                </td>
+                <td>{u.roles.length > 0 ? u.roles.join(", ") : "No roles"}</td>
                 <td>
                   <button
                     className={styles.editBtn}

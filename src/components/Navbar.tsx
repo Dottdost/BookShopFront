@@ -101,7 +101,6 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
         )}
       </div>
 
-      {/* Гамбургер-иконка */}
       <div
         className={`${styles.hamburger} ${menuOpen ? styles.open : ""}`}
         onClick={toggleMenu}

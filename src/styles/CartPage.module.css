@@ -111,10 +111,21 @@ h1 {
   transition: background-color 0.3s ease;
 }
 
+.button {
+  background-color: #5e3a87;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 .clearButton:hover {
   background-color: #6f4a8e;
 }
-
+.button:hover {
+  background-color: #6f4a8e;
+}
 @media (max-width: 768px) {
   h1 {
     font-size: 2rem;

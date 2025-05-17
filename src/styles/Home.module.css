@@ -23,22 +23,87 @@
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-@media (max-width: 768px) {
-  .home {
-    height: 30vh;
-  }
-
-  .text {
-    font-size: clamp(18px, 5vw, 32px);
-  }
+.contentWrapper {
+  padding: 2rem;
+  background: #f5f5f7;
 }
 
-@media (min-width: 1200px) {
-  .home {
-    height: 50vh;
+.recommendationsTitle {
+  font-size: 1.8rem;
+  text-align: center;
+  color: #3d2c5c;
+  margin-bottom: 1.5rem;
+}
+.bookGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.imageContainer {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bookInfo {
+  text-align: center;
+  width: 100%;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0 0.25rem;
+  color: #3d2c5c;
+}
+
+.bookAuthor {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .bookGrid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
   }
 
-  .text {
-    font-size: clamp(28px, 4vw, 48px);
+  .imageContainer {
+    height: 160px;
+  }
+
+  .title {
+    font-size: 0.95rem;
+  }
+
+  .bookAuthor {
+    font-size: 0.8rem;
   }
 }

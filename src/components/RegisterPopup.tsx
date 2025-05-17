@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 import AuthModal from "./AuthModal";
 import styles from "../styles/RegisterPopup.module.css";
 
@@ -6,10 +8,14 @@ const RegisterPopup: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  const user = useSelector((state: RootState) => state.auth.user);
+
   useEffect(() => {
-    const timer = setTimeout(() => setShowPopup(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!user) {
+      const timer = setTimeout(() => setShowPopup(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   const handleRegisterClick = () => {
     setShowPopup(false);
@@ -33,7 +39,10 @@ const RegisterPopup: React.FC = () => {
               className={styles.image}
             />
             <h2>Join us!</h2>
-            <p>Register to get 20% discount!</p>
+            <p>
+              ✨ Sign up to receive a magical promo code upon confirmation - and
+              enjoy 15% off your next adventure! 🛍
+            </p>
             <button className={styles.button} onClick={handleRegisterClick}>
               Register Now
             </button>
@@ -41,7 +50,12 @@ const RegisterPopup: React.FC = () => {
         </div>
       )}
 
-      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
+          onResetPasswordClick={() => {}}
+        />
+      )}
     </>
   );
 };

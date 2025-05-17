@@ -173,7 +173,12 @@ const CartPage = () => {
                       />
                     </td>
                     <td>{item.title ?? "Untitled"}</td>
-                    <td>${item.price.toFixed(2)}</td>
+                    <td>
+                      $
+                      {item.price != null
+                        ? (item.price * item.quantity).toFixed(2)
+                        : "N/A"}
+                    </td>
                     <td>
                       <input
                         type="number"
@@ -215,7 +220,7 @@ const CartPage = () => {
               Clear Cart
             </button>
             <button
-              className={styles.placeOrderButton}
+              className={styles.button}
               onClick={() => setShowCardModal(true)}
             >
               Place Order
@@ -296,8 +301,15 @@ const CartPage = () => {
               onChange={handleAddressInputChange}
             />
 
-            <button onClick={handlePlaceOrder}>Submit</button>
-            <button onClick={() => setShowCardModal(false)}>Cancel</button>
+            <button className={styles.button} onClick={handlePlaceOrder}>
+              Submit
+            </button>
+            <button
+              className={styles.button}
+              onClick={() => setShowCardModal(false)}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}
