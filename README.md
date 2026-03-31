@@ -1,54 +1,97 @@
-# React + TypeScript + Vite
+# 📚 Cheshire Shelf — Modern Book Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript)
+![Redux](https://img.shields.io/badge/Redux_Toolkit-593D88?style=for-the-badge&logo=redux)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite)
 
-Currently, two official plugins are available:
+## A modern, elegant full-featured online bookstore built with **React** and **TypeScript**, focused on clean UI, smooth UX, and scalable architecture.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+### 👤 User
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🔐 Authentication & authorization (JWT)
+- 📖 Browse book catalog
+- 🔍 View detailed book pages
+- ❤️ Add/remove favorites
+- 🛒 Add books to cart
+- 📦 Place orders
+- 💾 Data persistence per user (localStorage)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 🛠 Admin
+
+- ➕ Add books
+- ✏️ Edit books
+- ❌ Delete books
+- 👥 Manage users
+- 📦 Manage orders
+
+---
+
+## 🛠 Tech Stack
+
+- ⚛️ React
+- 🟦 TypeScript
+- 🔐 JWT Authentication
+- 🧠 Redux Toolkit
+- 🌐 React Router
+- 🔗 Axios
+- 🎨 CSS (separate styling)
+
+---
+
+## 📸 Screenshots
+
+---
+
+---
+
+## ⚙️ Installation & Setup
+
+```bash
+git clone https://github.com/Dottdost/BookShopFront.git
+cd BookShopFront
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🔌 Backend
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+This project works with backend API running at:
+
 ```
+https://localhost:44308
+```
+
+Make sure the backend is running before starting the frontend.
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+ ├── components/   # reusable UI components
+ ├── hooks/        # custom hooks
+ ├── pages/        # application pages
+ ├── store/        # Redux slices
+ ├── styles/
+ └── types/        # TypeScript types
+```
+
+---
+
+## 🔮 Future Improvements
+
+- ⭐ Reviews & ratings system
+- 🌍 Multi-language support
+- 📱 Improved responsive design
+
+---
+
+## 👩‍💻 Author
+
+Made with ❤️ by Hamida

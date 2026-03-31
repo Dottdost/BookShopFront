@@ -9,7 +9,7 @@ const Contacts = () => {
       </p>
       <div className={styles.contactList}>
         <div className={styles.contactCard}>
-          <h2>Hamida Samad-zade</h2>
+          <h2>Hamida Samad-zada</h2>
           <p>
             Email:
             <a href="mailto:elikosamed@gmail.com">elikosamed@gmail.com</a>
