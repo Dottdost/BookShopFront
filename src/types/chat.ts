@@ -3,11 +3,14 @@ export interface ChatSummary {
   userId?: string;
   userName?: string;
   customerName?: string;
+  adminId?: string | null;
+  adminName?: string | null;
   supportUserId?: string | null;
   supportName?: string | null;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
+  closedAt?: string | null;
   lastMessage?: string;
 }
 
@@ -18,6 +21,7 @@ export interface ChatMessage {
   senderUserId?: string;
   senderName?: string;
   userName?: string;
+  senderRole?: string;
   text?: string;
   message?: string;
   content?: string;
