@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FiGlobe, FiMoon, FiSun } from "react-icons/fi";
 import logo from "../assets/12345.jpg";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useAuth } from "../hooks/useAuth";
 import { changeAppLanguage, languages, type AppLanguage } from "../i18n";
+import { useTheme } from "../context/ThemeContext";
 import styles from "../styles/Navbar.module.css";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +16,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
   const { t, i18n } = useTranslation();
+  const { isDark, toggleTheme } = useTheme();
   const { user, roles, isAuthenticated } = useSelector(
     (state: RootState) => state.auth,
   );
@@ -84,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
               </li>
               <li>
                 <Link to="/support-chats" onClick={handleLinkClick}>
-                  Support
+                  {t("admin.supportChats")}
                 </Link>
               </li>
             </>
@@ -114,12 +117,21 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
 
       <div className={styles.auth}>
         <button
+          className={styles.iconButton}
+          type="button"
+          onClick={toggleTheme}
+          aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+        >
+          {isDark ? <FiSun /> : <FiMoon />}
+        </button>
+        <button
           className={styles.languageButton}
           type="button"
           onClick={handleLanguageChange}
           aria-label={t("language.label")}
         >
-          🌐 {currentLanguage.toUpperCase()}
+          <FiGlobe />
+          <span>{currentLanguage.toUpperCase()}</span>
         </button>
 
         {isAuthenticated && user ? (
