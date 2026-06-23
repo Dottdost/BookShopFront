@@ -4,10 +4,12 @@ import { Book } from "../types";
 import BookForm from "../components/BookForm";
 import styles from "../styles/Manager.module.css";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const PAGE_SIZE = 10;
 
 const BookManager = () => {
+  const { t } = useTranslation();
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,25 +38,25 @@ const BookManager = () => {
       }
     } catch (error) {
       console.error("Error fetching books:", error);
-      toast.error("Failed to fetch books.");
+      toast.error(t("admin.failedFetchBooks"));
     }
-  }, [page, searchTerm]);
+  }, [page, searchTerm, t]);
 
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`https://localhost:44308/api/books/${id}`);
-      toast.success("Book deleted successfully!");
+      toast.success(t("admin.bookDeleted"));
       fetchBooks();
     } catch (error) {
       console.error("Error deleting book:", error);
-      toast.error("Failed to delete book.");
+      toast.error(t("admin.failedDeleteBook"));
     }
   };
 
   const handleSavedBook = () => {
     fetchBooks();
     setSelectedBook(null);
-    toast.success("Book saved successfully!");
+    toast.success(t("admin.bookSaved"));
   };
 
   useEffect(() => {
@@ -63,7 +65,7 @@ const BookManager = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setPage(1); // Reset to first page on new search
+    setPage(1);
   };
 
   const renderPageButtons = () => {
@@ -85,13 +87,13 @@ const BookManager = () => {
 
   return (
     <div className={styles.manager}>
-      <h2>Book Management</h2>
+      <h2>{t("admin.bookManagement")}</h2>
 
       <BookForm book={selectedBook} onSaved={handleSavedBook} />
 
       <input
         type="text"
-        placeholder="Search by title..."
+        placeholder={t("admin.searchTitle")}
         value={searchTerm}
         onChange={handleSearchChange}
         className={styles.searchInput}
@@ -100,10 +102,10 @@ const BookManager = () => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Price</th>
-            <th>Actions</th>
+            <th>{t("common.title")}</th>
+            <th>{t("common.author")}</th>
+            <th>{t("common.price")}</th>
+            <th>{t("common.actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -117,13 +119,13 @@ const BookManager = () => {
                   className={styles.editBtn}
                   onClick={() => setSelectedBook(b)}
                 >
-                  Edit
+                  {t("common.edit")}
                 </button>
                 <button
                   className={styles.deleteBtn}
                   onClick={() => handleDelete(b.id)}
                 >
-                  Delete
+                  {t("common.delete")}
                 </button>
               </td>
             </tr>
@@ -136,7 +138,7 @@ const BookManager = () => {
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           disabled={page === 1}
         >
-          Prev
+          {t("common.prev")}
         </button>
 
         {renderPageButtons()}
@@ -145,7 +147,7 @@ const BookManager = () => {
           onClick={() => setPage((prev) => prev + 1)}
           disabled={books.length < PAGE_SIZE}
         >
-          Next
+          {t("common.next")}
         </button>
       </div>
     </div>
