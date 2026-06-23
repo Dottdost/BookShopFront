@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "../styles/Manager.module.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 
 type ApiUser = {
   userName: string;
@@ -21,6 +22,7 @@ type User = {
 };
 
 const UserManager = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
 
   const token = localStorage.getItem("accessToken");
@@ -41,7 +43,6 @@ const UserManager = () => {
       const apiUsers = res.data?.$values ?? [];
 
       const normalizedUsers: User[] = apiUsers.map((u) => {
-        // Получаем роли с учётом возможных вариантов
         let roles: string[] = [];
 
         if (u.roles) {
@@ -64,8 +65,8 @@ const UserManager = () => {
 
       setUsers(normalizedUsers);
     } catch (err) {
-      console.error("Ошибка при загрузке пользователей:", err);
-      toast.error("Error loading users.");
+      console.error("Error loading users:", err);
+      toast.error(t("admin.usersLoadError"));
     }
   };
 
@@ -76,10 +77,10 @@ const UserManager = () => {
         axiosConfig
       );
       await fetchUsers();
-      toast.success("Пользователь удален.");
+      toast.success(t("admin.userDeleted"));
     } catch (err) {
-      console.error("Ошибка при удалении пользователя:", err);
-      toast.error("Error deleting user.");
+      console.error("Error deleting user:", err);
+      toast.error(t("admin.deleteUserError"));
     }
   };
 
@@ -91,10 +92,10 @@ const UserManager = () => {
         axiosConfig
       );
       await fetchUsers();
-      toast.success("Роль админа назначена.");
+      toast.success(t("admin.adminAssigned"));
     } catch (err) {
-      console.error("Ошибка при назначении роли админа:", err);
-      toast.error("Error assigning admin role.");
+      console.error("Error assigning admin role:", err);
+      toast.error(t("admin.assignAdminError"));
     }
   };
 
@@ -106,10 +107,10 @@ const UserManager = () => {
         axiosConfig
       );
       await fetchUsers();
-      toast.success("Роль админа удалена.");
+      toast.success(t("admin.adminRemoved"));
     } catch (err) {
-      console.error("Ошибка при удалении роли админа:", err);
-      toast.error("Error while deleting admin role.");
+      console.error("Error removing admin role:", err);
+      toast.error(t("admin.removeAdminError"));
     }
   };
 
@@ -119,13 +120,13 @@ const UserManager = () => {
 
   return (
     <div className={styles.manager}>
-      <h2>User Management</h2>
+      <h2>{t("admin.userManagement")}</h2>
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actions</th>
+            <th>{t("auth.email")}</th>
+            <th>{t("admin.roles")}</th>
+            <th>{t("common.actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -133,32 +134,32 @@ const UserManager = () => {
             users.map((u) => (
               <tr key={u.userName}>
                 <td>{u.email}</td>
-                <td>{u.roles.length > 0 ? u.roles.join(", ") : "No roles"}</td>
+                <td>{u.roles.length > 0 ? u.roles.join(", ") : t("admin.noRoles")}</td>
                 <td>
                   <button
                     className={styles.editBtn}
                     onClick={() => assignAdmin(u.userName)}
                   >
-                    Make Admin
+                    {t("admin.makeAdmin")}
                   </button>
                   <button
                     className={styles.editBtn}
                     onClick={() => removeAdmin(u.userName)}
                   >
-                    Remove Admin
+                    {t("admin.removeAdmin")}
                   </button>
                   <button
                     className={styles.deleteBtn}
                     onClick={() => deleteUser(u.userName)}
                   >
-                    Delete
+                    {t("common.delete")}
                   </button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={3}>No users available</td>
+              <td colSpan={3}>{t("admin.noUsers")}</td>
             </tr>
           )}
         </tbody>
