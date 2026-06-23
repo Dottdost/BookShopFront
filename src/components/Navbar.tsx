@@ -12,10 +12,15 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
   const { user, roles, isAuthenticated } = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) => state.auth,
   );
   const { handleLogout } = useAuth();
-  const isAdmin = roles.some((r) => r.roleName === "Admin");
+  const isAdmin = roles.some(
+    (r) =>
+      r.roleName === "Admin" ||
+      r.roleName === "AppAdmin" ||
+      r.roleName === "SuperAdmin",
+  );
 
   const [menuOpen, setMenuOpen] = useState(false);
 

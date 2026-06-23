@@ -4,6 +4,7 @@ import axios from "axios";
 import styles from "../styles/BooksPage.module.css";
 import BookCard from "../components/BookCard";
 import { Book, Genre } from "../types";
+import { FiSearch } from "react-icons/fi";
 
 type GenreTree = Genre & { subgenres: Genre[] };
 
@@ -101,7 +102,7 @@ const BooksPage: React.FC = () => {
           className={styles.searchBtn}
           onClick={() => applySearch(searchQuery)}
         >
-          🔍
+          <FiSearch />
         </button>
       </div>
 
