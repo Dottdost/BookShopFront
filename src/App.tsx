@@ -18,6 +18,7 @@ import ResetPasswordModal from "./components/ResetPasswordModal";
 import CartPage from "./pages/CartPage";
 import SupportChatWidget from "./components/SupportChatWidget";
 import SupportChatsPage from "./pages/SupportChatsPage";
+import { ThemeProvider } from "./context/ThemeContext";
 import { ToastContainer } from "react-toastify";
 
 function App() {
@@ -40,35 +41,37 @@ function App() {
 
   return (
     <Provider store={store}>
-      <Router>
-        <Navbar openAuthModal={openAuthModal} />
-        <RegisterPopup />
+      <ThemeProvider>
+        <Router>
+          <Navbar openAuthModal={openAuthModal} />
+          <RegisterPopup />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/books" element={<BooksPage />} />
-          <Route path="/books/:id" element={<BookDetails />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/contacts" element={<Contacts />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/support-chats" element={<SupportChatsPage />} />
-          <Route path="/cart" element={<CartPage />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/books" element={<BooksPage />} />
+            <Route path="/books/:id" element={<BookDetails />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/contacts" element={<Contacts />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/support-chats" element={<SupportChatsPage />} />
+            <Route path="/cart" element={<CartPage />} />
+          </Routes>
 
-        {isAuthModalOpen && (
-          <AuthModal
-            onClose={closeAuthModal}
-            onResetPasswordClick={openResetModal}
-          />
-        )}
-        {isResetModalOpen && <ResetPasswordModal onClose={closeResetModal} />}
-        <SupportChatWidget />
-        <ToastContainer />
+          {isAuthModalOpen && (
+            <AuthModal
+              onClose={closeAuthModal}
+              onResetPasswordClick={openResetModal}
+            />
+          )}
+          {isResetModalOpen && <ResetPasswordModal onClose={closeResetModal} />}
+          <SupportChatWidget />
+          <ToastContainer />
 
-        <Footer />
-      </Router>
+          <Footer />
+        </Router>
+      </ThemeProvider>
     </Provider>
   );
 }
