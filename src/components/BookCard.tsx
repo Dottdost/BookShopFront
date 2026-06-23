@@ -1,11 +1,13 @@
 import { Book } from "../types/book";
 import styles from "../styles/BookCard.module.css";
+import { useTranslation } from "react-i18next";
 
 interface BookCardProps {
   book: Book;
 }
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
+  const { t } = useTranslation();
   const isOutOfStock = book.stock === 0;
 
   const imageSrc =
@@ -21,7 +23,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
     >
       <div className={styles.imageContainer}>
         {isOutOfStock && (
-          <div className={styles.outOfStockBadge}>Out of Stock</div>
+          <div className={styles.outOfStockBadge}>{t("books.outOfStock")}</div>
         )}
         <img src={imageSrc} alt={book.title} className={styles.image} />
         <div className={styles.overlay}>
