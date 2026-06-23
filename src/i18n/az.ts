@@ -182,6 +182,7 @@ const az = {
     orders: "Sifarişlər",
     genres: "Janrlar",
     promos: "Promokodlar",
+    supportChats: "Dəstək çatları",
     bookManagement: "Kitabların idarə edilməsi",
     userManagement: "İstifadəçilərin idarə edilməsi",
     orderManagement: "Sifarişlərin idarə edilməsi",
