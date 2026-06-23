@@ -16,6 +16,8 @@ import BookDetails from "./components/BookDetails";
 import BooksPage from "./pages/BooksPage";
 import ResetPasswordModal from "./components/ResetPasswordModal";
 import CartPage from "./pages/CartPage";
+import SupportChatWidget from "./components/SupportChatWidget";
+import SupportChatsPage from "./pages/SupportChatsPage";
 import { ToastContainer } from "react-toastify";
 
 function App() {
@@ -51,6 +53,7 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/support-chats" element={<SupportChatsPage />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>
 
@@ -61,6 +64,7 @@ function App() {
           />
         )}
         {isResetModalOpen && <ResetPasswordModal onClose={closeResetModal} />}
+        <SupportChatWidget />
         <ToastContainer />
 
         <Footer />
