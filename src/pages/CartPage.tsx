@@ -6,8 +6,10 @@ import styles from "../styles/CartPage.module.css";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const CartPage = () => {
+  const { t } = useTranslation();
   const { cartItems, removeItem, changeQuantity, clear } = useCart();
   const user = useSelector((state: RootState) => state.auth.user);
   const { placeOrder } = useOrders(user?.id ?? "");
@@ -46,7 +48,7 @@ const CartPage = () => {
 
   const handlePlaceOrder = async () => {
     if (!user) {
-      toast.warn("Please log in to place an order.");
+      toast.warn(t("cart.loginRequired"));
       return;
     }
 
@@ -54,12 +56,12 @@ const CartPage = () => {
     const { street, city, state, postalCode, country } = addressDetails;
 
     if (!cardNumber || !cardHolderName || !expirationDate || !cvv) {
-      toast.warn("Please fill in all card details.");
+      toast.warn(t("cart.fillCard"));
       return;
     }
 
     if (!street || !city || !state || !postalCode || !country) {
-      toast.warn("Please fill in all address details.");
+      toast.warn(t("cart.fillAddress"));
       return;
     }
 
@@ -114,7 +116,7 @@ const CartPage = () => {
 
       placeOrder(orderResponse.data);
       clear();
-      toast.success("Order placed successfully!");
+      toast.success(t("cart.orderSuccess"));
       setShowCardModal(false);
     } catch (error) {
       console.error("Order error:", error);
@@ -124,31 +126,31 @@ const CartPage = () => {
           typeof errorMsg === "string" &&
           errorMsg.toLowerCase().includes("promo code")
         ) {
-          toast.error("Invalid or expired promo code.");
+          toast.error(t("cart.invalidPromo"));
         } else {
-          toast.error("Failed to place order. Please try again.");
+          toast.error(t("cart.orderFailed"));
         }
       } else {
-        toast.error("Unexpected error occurred.");
+        toast.error(t("cart.unexpectedError"));
       }
     }
   };
 
   return (
     <div className={styles.container}>
-      <h1>Your Cart</h1>
+      <h1>{t("cart.title")}</h1>
       {cartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <p>{t("cart.empty")}</p>
       ) : (
         <>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
+                <th>{t("common.image")}</th>
+                <th>{t("common.title")}</th>
+                <th>{t("common.price")}</th>
+                <th>{t("common.quantity")}</th>
+                <th>{t("common.total")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -172,12 +174,12 @@ const CartPage = () => {
                         }
                       />
                     </td>
-                    <td>{item.title ?? "Untitled"}</td>
+                    <td>{item.title ?? t("cart.untitled")}</td>
                     <td>
                       $
                       {item.price != null
                         ? (item.price * item.quantity).toFixed(2)
-                        : "N/A"}
+                        : t("cart.notAvailable")}
                     </td>
                     <td>
                       <input
@@ -195,6 +197,7 @@ const CartPage = () => {
                       <button
                         className={styles.removeButton}
                         onClick={() => removeItem(item.bookId)}
+                        aria-label={t("cart.remove")}
                       >
                         ✕
                       </button>
@@ -207,23 +210,23 @@ const CartPage = () => {
 
           <div className={styles.summary}>
             <p>
-              <strong>Total:</strong> ${totalPrice.toFixed(2)}
+              <strong>{t("common.total")}:</strong> ${totalPrice.toFixed(2)}
             </p>
             <input
               type="text"
-              placeholder="Enter promo code"
+              placeholder={t("cart.enterPromo")}
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
               className={styles.promoInput}
             />
             <button className={styles.clearButton} onClick={clear}>
-              Clear Cart
+              {t("cart.clear")}
             </button>
             <button
               className={styles.button}
               onClick={() => setShowCardModal(true)}
             >
-              Place Order
+              {t("cart.placeOrder")}
             </button>
           </div>
         </>
@@ -232,24 +235,24 @@ const CartPage = () => {
       {showCardModal && (
         <div className={styles.cardModal}>
           <div className={styles.cardModalContent}>
-            <h2>Enter Card & Address</h2>
+            <h2>{t("cart.enterCardAddress")}</h2>
 
-            <h3>Card Info</h3>
-            <label>Card Number</label>
+            <h3>{t("cart.cardInfo")}</h3>
+            <label>{t("cart.cardNumber")}</label>
             <input
               type="text"
               name="cardNumber"
               value={cardDetails.cardNumber}
               onChange={handleCardInputChange}
             />
-            <label>Cardholder Name</label>
+            <label>{t("cart.cardholderName")}</label>
             <input
               type="text"
               name="cardHolderName"
               value={cardDetails.cardHolderName}
               onChange={handleCardInputChange}
             />
-            <label>Expiration Date</label>
+            <label>{t("cart.expirationDate")}</label>
             <input
               type="date"
               name="expirationDate"
@@ -264,36 +267,36 @@ const CartPage = () => {
               onChange={handleCardInputChange}
             />
 
-            <h3>Shipping Address</h3>
-            <label>Street</label>
+            <h3>{t("cart.shippingAddress")}</h3>
+            <label>{t("cart.street")}</label>
             <input
               type="text"
               name="street"
               value={addressDetails.street}
               onChange={handleAddressInputChange}
             />
-            <label>City</label>
+            <label>{t("cart.city")}</label>
             <input
               type="text"
               name="city"
               value={addressDetails.city}
               onChange={handleAddressInputChange}
             />
-            <label>State</label>
+            <label>{t("cart.state")}</label>
             <input
               type="text"
               name="state"
               value={addressDetails.state}
               onChange={handleAddressInputChange}
             />
-            <label>Postal Code</label>
+            <label>{t("cart.postalCode")}</label>
             <input
               type="text"
               name="postalCode"
               value={addressDetails.postalCode}
               onChange={handleAddressInputChange}
             />
-            <label>Country</label>
+            <label>{t("cart.country")}</label>
             <input
               type="text"
               name="country"
@@ -302,13 +305,13 @@ const CartPage = () => {
             />
 
             <button className={styles.button} onClick={handlePlaceOrder}>
-              Submit
+              {t("common.submit")}
             </button>
             <button
               className={styles.button}
               onClick={() => setShowCardModal(false)}
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </div>

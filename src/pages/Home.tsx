@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "../styles/Home.module.css";
 
 interface Book {
@@ -20,15 +21,16 @@ const bookIds = [
 ];
 
 const Home = () => {
+  const { t, i18n } = useTranslation();
   const [text, setText] = useState<string>("");
   const [books, setBooks] = useState<Book[]>([]);
 
-  const fullText =
-    "Welcome to Cheshire Shelf! Step into a world where stories come to life!";
+  const fullText = t("home.welcome");
   const typingSpeed = 70;
 
   useEffect(() => {
     let index = 0;
+    setText("");
     const typingInterval = setInterval(() => {
       if (index < fullText.length) {
         setText(fullText.slice(0, index + 1));
@@ -38,7 +40,7 @@ const Home = () => {
       }
     }, typingSpeed);
     return () => clearInterval(typingInterval);
-  }, []);
+  }, [fullText, i18n.language]);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -65,7 +67,7 @@ const Home = () => {
 
       <div className={styles.contentWrapper}>
         <h2 className={styles.recommendationsTitle}>
-          Recommendations from Cheshire Shelf Team
+          {t("home.recommendations")}
         </h2>
         <div className={styles.bookGrid}>
           {books.map((book) => (
