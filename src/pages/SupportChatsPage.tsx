@@ -72,9 +72,26 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const activeChatIdRef = useRef("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    activeChatIdRef.current = activeChat?.id ?? "";
+  }, [activeChat?.id]);
+
   const appendMessage = useCallback((message: ChatMessage) => {
+    const activeChatId = activeChatIdRef.current;
+
+    if (!message.chatId || message.chatId !== activeChatId) {
+      void Promise.all([getWaitingChats(), getMyChats()])
+        .then(([waiting, mine]) => {
+          setWaitingChats(waiting);
+          setMyChats(mine);
+        })
+        .catch(() => undefined);
+      return;
+    }
+
     setMessages((currentMessages) => {
       if (message.id && currentMessages.some((item) => item.id === message.id)) {
         return currentMessages;
