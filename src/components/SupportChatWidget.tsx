@@ -16,7 +16,16 @@ const getMessageSenderId = (message: ChatMessage) =>
   message.senderId ?? message.senderUserId ?? "";
 
 const SupportChatWidget = () => {
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { user, roles, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  const isAdmin = roles.some(
+    (role) =>
+      role.roleName === "Admin" ||
+      role.roleName === "AppAdmin" ||
+      role.roleName === "SuperAdmin",
+  );
+
   const [open, setOpen] = useState(false);
   const [chatId, setChatId] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -37,7 +46,7 @@ const SupportChatWidget = () => {
   }, []);
 
   const { connected } = useChatConnection({
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && !isAdmin,
     onMessageReceived: appendMessage,
   });
 
@@ -56,7 +65,7 @@ const SupportChatWidget = () => {
   }, []);
 
   const loadChat = useCallback(async () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || isAdmin) {
       return;
     }
 
@@ -77,7 +86,7 @@ const SupportChatWidget = () => {
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated, loadMessages]);
+  }, [isAuthenticated, isAdmin, loadMessages]);
 
   useEffect(() => {
     if (open) {
@@ -86,7 +95,7 @@ const SupportChatWidget = () => {
   }, [open, loadChat]);
 
   useEffect(() => {
-    if (!open || !chatId) {
+    if (!open || !chatId || isAdmin) {
       return;
     }
 
@@ -95,7 +104,7 @@ const SupportChatWidget = () => {
     }, 3000);
 
     return () => window.clearInterval(interval);
-  }, [open, chatId, loadMessages]);
+  }, [open, chatId, isAdmin, loadMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -152,7 +161,7 @@ const SupportChatWidget = () => {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || isAdmin) {
     return null;
   }
 
