@@ -5,10 +5,12 @@ import styles from "../styles/BooksPage.module.css";
 import BookCard from "../components/BookCard";
 import { Book, Genre } from "../types";
 import { FiSearch } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 type GenreTree = Genre & { subgenres: Genre[] };
 
 const BooksPage: React.FC = () => {
+  const { t } = useTranslation();
   const [books, setBooks] = useState<Book[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,7 +21,6 @@ const BooksPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // При монтировании читаем URL-параметры search и genre
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const q = params.get("search") || "";
@@ -28,7 +29,6 @@ const BooksPage: React.FC = () => {
     setSelectedGenre(g ? +g : null);
   }, [location.search]);
 
-  // Загрузка книг и жанров
   useEffect(() => {
     (async () => {
       try {
@@ -49,7 +49,6 @@ const BooksPage: React.FC = () => {
     })();
   }, []);
 
-  // Построение дерева жанров
   const genreTree: GenreTree[] = genres
     .filter((g) => !g.parentGenreId)
     .map((root) => ({
@@ -57,7 +56,6 @@ const BooksPage: React.FC = () => {
       subgenres: genres.filter((g) => g.parentGenreId === root.id),
     }));
 
-  // Фильтрация книг по поиску и жанру
   const filtered = books.filter((b) => {
     const q = searchQuery.toLowerCase();
     const matchesText =
@@ -66,7 +64,6 @@ const BooksPage: React.FC = () => {
     return matchesText && matchesGenre;
   });
 
-  // Обновление URL-параметров
   const applySearch = (q: string) => {
     const params = new URLSearchParams(location.search);
     if (q) params.set("search", q);
@@ -83,16 +80,15 @@ const BooksPage: React.FC = () => {
     setOpenGenreId(openGenreId === id ? null : id);
 
   if (loading) {
-    return <div className={styles.loading}>Loading…</div>;
+    return <div className={styles.loading}>{t("common.loading")}</div>;
   }
 
   return (
     <div className={styles.page}>
-      {/* Поисковая строка */}
       <div className={styles.searchBar}>
         <input
           type="text"
-          placeholder="Search by title or author"
+          placeholder={t("books.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && applySearch(searchQuery)}
@@ -106,7 +102,6 @@ const BooksPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Горизонтальное меню жанров */}
       <nav className={styles.genreNav}>
         <ul>
           <li
@@ -118,7 +113,7 @@ const BooksPage: React.FC = () => {
               setOpenGenreId(null);
             }}
           >
-            <span>All</span>
+            <span>{t("books.all")}</span>
           </li>
           {genreTree.map((g) => (
             <li
@@ -163,10 +158,9 @@ const BooksPage: React.FC = () => {
         </ul>
       </nav>
 
-      {/* Сетка карточек */}
       <main className={styles.booksGrid}>
         {filtered.length === 0 ? (
-          <p className={styles.noBooks}>No books found</p>
+          <p className={styles.noBooks}>{t("books.noBooks")}</p>
         ) : (
           filtered.map((book) => (
             <Link
