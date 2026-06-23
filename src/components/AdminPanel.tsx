@@ -5,6 +5,7 @@ import BookManager from "./BookManager";
 import UserManager from "./UserManager";
 import OrderManager from "./OrderManager";
 import PromoCodeManager from "./PromoCodeManager";
+import SupportChatsPage from "../pages/SupportChatsPage";
 
 const AdminPanel = () => {
   const { t } = useTranslation();
@@ -20,6 +21,8 @@ const AdminPanel = () => {
         return <OrderManager />;
       case "PromoCodeManager":
         return <PromoCodeManager />;
+      case "supportChats":
+        return <SupportChatsPage embedded />;
       default:
         return null;
     }
@@ -52,6 +55,12 @@ const AdminPanel = () => {
           onClick={() => setActiveTab("PromoCodeManager")}
         >
           🎟️ {t("admin.promos")}
+        </button>
+        <button
+          className={activeTab === "supportChats" ? styles.active : ""}
+          onClick={() => setActiveTab("supportChats")}
+        >
+          💬 Support Chats
         </button>
       </div>
       <div className={styles.content}>{renderContent()}</div>
