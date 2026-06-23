@@ -1,0 +1,32 @@
+export interface ChatSummary {
+  id: string;
+  userId?: string;
+  userName?: string;
+  customerName?: string;
+  supportUserId?: string | null;
+  supportName?: string | null;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  lastMessage?: string;
+}
+
+export interface ChatMessage {
+  id?: string;
+  chatId: string;
+  senderId?: string;
+  senderUserId?: string;
+  senderName?: string;
+  userName?: string;
+  text?: string;
+  message?: string;
+  content?: string;
+  createdAt?: string;
+  sentAt?: string;
+  isMine?: boolean;
+}
+
+export interface SendMessageRequest {
+  chatId: string;
+  text: string;
+}
