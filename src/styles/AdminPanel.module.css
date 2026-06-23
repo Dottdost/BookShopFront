@@ -1,6 +1,6 @@
 .wrapper {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .sidebar {
@@ -35,8 +35,8 @@
 }
 
 .active {
-  background-color: #7b4b94;
-  color: white;
+  background-color: #7b4b94 !important;
+  color: white !important;
 }
 
 .content {
