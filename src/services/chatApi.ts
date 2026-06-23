@@ -28,9 +28,6 @@ const unwrapValues = <T>(data: T | { $values?: T }): T => {
 export const normalizeMessageText = (message: ChatMessage) =>
   message.text ?? message.message ?? message.content ?? "";
 
-export const normalizeChatId = (chat: ChatSummary | null | undefined) =>
-  chat?.id ?? "";
-
 export const getMyChats = async (): Promise<ChatSummary[]> => {
   const response = await chatClient.get<ChatSummary[] | { $values?: ChatSummary[] }>(
     "/api/chat/my",
@@ -56,6 +53,14 @@ export const createChat = async (): Promise<ChatSummary> => {
 
 export const takeChat = async (chatId: string): Promise<void> => {
   await chatClient.post(`/api/chat/take/${chatId}`);
+};
+
+export const exitChat = async (chatId: string): Promise<void> => {
+  await chatClient.post(`/api/chat/exit/${chatId}`);
+};
+
+export const closeChat = async (chatId: string): Promise<void> => {
+  await chatClient.post(`/api/chat/close/${chatId}`);
 };
 
 export const getChatMessages = async (chatId: string): Promise<ChatMessage[]> => {
