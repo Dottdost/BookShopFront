@@ -182,6 +182,7 @@ const en = {
     orders: "Orders",
     genres: "Genres",
     promos: "Promo codes",
+    supportChats: "Support Chats",
     bookManagement: "Book Management",
     userManagement: "User Management",
     orderManagement: "Order Management",
