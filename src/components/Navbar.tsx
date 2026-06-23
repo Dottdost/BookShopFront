@@ -76,11 +76,18 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
           </li>
 
           {isAdmin && (
-            <li>
-              <Link to="/admin" onClick={handleLinkClick}>
-                {t("nav.admin")}
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link to="/admin" onClick={handleLinkClick}>
+                  {t("nav.admin")}
+                </Link>
+              </li>
+              <li>
+                <Link to="/support-chats" onClick={handleLinkClick}>
+                  Support
+                </Link>
+              </li>
+            </>
           )}
 
           {isAuthenticated && (
