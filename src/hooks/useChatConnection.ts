@@ -12,7 +12,6 @@ export const useChatConnection = ({
   enabled,
   onMessageReceived,
 }: UseChatConnectionOptions) => {
-  const connectionRef = useRef<signalR.HubConnection | null>(null);
   const onMessageReceivedRef = useRef(onMessageReceived);
   const [connected, setConnected] = useState(false);
 
@@ -53,7 +52,6 @@ export const useChatConnection = ({
       .start()
       .then(() => {
         if (!cancelled) {
-          connectionRef.current = connection;
           setConnected(true);
         }
       })
@@ -69,7 +67,6 @@ export const useChatConnection = ({
       connection.off("NewMessage", handleIncomingMessage);
       connection.off("ChatMessageReceived", handleIncomingMessage);
       connection.stop().catch(() => undefined);
-      connectionRef.current = null;
       setConnected(false);
     };
   }, [enabled]);
