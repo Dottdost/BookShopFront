@@ -4,13 +4,16 @@ import logo from "../assets/12345.jpg";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useAuth } from "../hooks/useAuth";
+import { changeAppLanguage, languages, type AppLanguage } from "../i18n";
 import styles from "../styles/Navbar.module.css";
+import { useTranslation } from "react-i18next";
 
 interface NavbarProps {
   openAuthModal: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
+  const { t, i18n } = useTranslation();
   const { user, roles, isAuthenticated } = useSelector(
     (state: RootState) => state.auth,
   );
@@ -24,9 +27,19 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const currentLanguage = languages.includes(i18n.language as AppLanguage)
+    ? (i18n.language as AppLanguage)
+    : "en";
+
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   const handleLinkClick = () => setMenuOpen(false);
+
+  const handleLanguageChange = async () => {
+    const currentIndex = languages.indexOf(currentLanguage);
+    const nextLanguage = languages[(currentIndex + 1) % languages.length];
+    await changeAppLanguage(nextLanguage);
+  };
 
   return (
     <nav className={styles.navbar}>
@@ -43,29 +56,29 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
         <ul>
           <li>
             <Link to="/" onClick={handleLinkClick}>
-              Home
+              {t("nav.home")}
             </Link>
           </li>
           <li>
             <Link to="/books" onClick={handleLinkClick}>
-              Books
+              {t("nav.books")}
             </Link>
           </li>
           <li>
             <Link to="/about" onClick={handleLinkClick}>
-              About us
+              {t("nav.about")}
             </Link>
           </li>
           <li>
             <Link to="/contacts" onClick={handleLinkClick}>
-              Contacts
+              {t("nav.contacts")}
             </Link>
           </li>
 
           {isAdmin && (
             <li>
               <Link to="/admin" onClick={handleLinkClick}>
-                Admin Panel
+                {t("nav.admin")}
               </Link>
             </li>
           )}
@@ -74,17 +87,17 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
             <>
               <li>
                 <Link to="/favorites" onClick={handleLinkClick}>
-                  Favorites
+                  {t("nav.favorites")}
                 </Link>
               </li>
               <li>
                 <Link to="/orders" onClick={handleLinkClick}>
-                  Orders
+                  {t("nav.orders")}
                 </Link>
               </li>
               <li>
                 <Link to="/cart" onClick={handleLinkClick}>
-                  Cart
+                  {t("nav.cart")}
                 </Link>
               </li>
             </>
@@ -93,15 +106,24 @@ const Navbar: React.FC<NavbarProps> = ({ openAuthModal }) => {
       </div>
 
       <div className={styles.auth}>
+        <button
+          className={styles.languageButton}
+          type="button"
+          onClick={handleLanguageChange}
+          aria-label={t("language.label")}
+        >
+          🌐 {currentLanguage.toUpperCase()}
+        </button>
+
         {isAuthenticated && user ? (
           <div className={styles.userSection}>
             <button className={styles.logoutButton} onClick={handleLogout}>
-              Logout
+              {t("nav.logout")}
             </button>
           </div>
         ) : (
           <button className={styles.loginButton} onClick={openAuthModal}>
-            Login
+            {t("nav.login")}
           </button>
         )}
       </div>
