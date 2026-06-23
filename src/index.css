@@ -1,21 +1,154 @@
 @import url("https://fonts.googleapis.com/css2?family=Marcellus&display=swap");
 
+:root {
+  color-scheme: light;
+  --dark: 0;
+  --bg: #f5f0e8;
+  --bg2: #fffdf7;
+  --bg3: #ece2d4;
+  --text: #241f1b;
+  --text2: #756a60;
+  --text3: #9b8d80;
+  --border: rgba(139, 92, 246, 0.18);
+  --accent: #8b5cf6;
+  --accent2: #a78bfa;
+  --accent-bg: rgba(139, 92, 246, 0.12);
+  --header-bg: rgba(255, 253, 247, 0.82);
+  --drawer-bg: #fffdf7;
+  --card: rgba(255, 253, 247, 0.86);
+  --card-strong: #fffdf7;
+  --shadow: 0 18px 45px rgba(52, 36, 20, 0.12);
+  --shadow-strong: 0 28px 75px rgba(52, 36, 20, 0.18);
+  --radius: 24px;
+  --background-color: var(--bg);
+  --text-color: var(--text);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --dark: 1;
+  --bg: #0b0b10;
+  --bg2: #13131f;
+  --bg3: #1a1a25;
+  --text: #ffffff;
+  --text2: #b9b4c7;
+  --text3: #777188;
+  --border: rgba(139, 92, 246, 0.22);
+  --accent: #8b5cf6;
+  --accent2: #c4b5fd;
+  --accent-bg: rgba(139, 92, 246, 0.14);
+  --header-bg: rgba(11, 11, 16, 0.82);
+  --drawer-bg: #13131a;
+  --card: rgba(19, 19, 31, 0.86);
+  --card-strong: #13131f;
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+  --shadow-strong: 0 28px 75px rgba(0, 0, 0, 0.42);
+  --background-color: var(--bg);
+  --text-color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--bg);
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: var(--background-color);
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, var(--accent-bg), transparent 34rem),
+    linear-gradient(135deg, var(--bg), var(--bg2));
+  color: var(--text);
   font-family: "Marcellus", serif;
   font-style: normal;
   font-weight: 400;
+  transition: background-color 0.3s, color 0.3s;
+}
 
-  transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
 }
 
 h1,
 h2,
 h3 {
   font-family: "Marcellus", serif;
-  font-size: 3.5rem;
   font-weight: 400;
-  color: var(--text-color);
-  letter-spacing: 0.05em;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+h1 {
+  font-size: clamp(2.35rem, 5vw, 4.4rem);
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2vw, 2rem);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+input,
+select,
+textarea {
+  background: var(--card-strong);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+::selection {
+  background: var(--accent-bg);
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.Toastify__toast {
+  border-radius: 18px;
+  background: var(--card-strong);
+  color: var(--text);
+  box-shadow: var(--shadow);
 }
