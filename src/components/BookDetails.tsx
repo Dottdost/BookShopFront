@@ -5,8 +5,10 @@ import styles from "../styles/BookDetails.module.css";
 import { useFavorites } from "../hooks/useFavorites";
 import { useCart } from "../hooks/useCart";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const BookDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [book, setBook] = useState<Book | null>(null);
 
@@ -21,16 +23,16 @@ const BookDetails = () => {
         setBook(data);
       } catch (error) {
         console.error("Error fetching book details:", error);
-        toast.error("Failed to load book details");
+        toast.error(t("details.failedLoad"));
       }
     };
     fetchBook();
-  }, [id]);
+  }, [id, t]);
 
   const handleAddToCart = () => {
     if (!book) return;
     addItem(book);
-    toast.success(`"${book.title}" added to cart!`, {
+    toast.success(t("details.addedToCart", { title: book.title }), {
       position: "bottom-left",
       autoClose: 3000,
     });
@@ -41,20 +43,20 @@ const BookDetails = () => {
 
     if (isFavorite(book.id)) {
       removeFavorite(book.id);
-      toast.info(`"${book.title}" removed from favorites`, {
+      toast.info(t("details.removedFromFavorites", { title: book.title }), {
         position: "bottom-left",
         autoClose: 3000,
       });
     } else {
       addFavorite(book);
-      toast.success(`"${book.title}" added to favorites`, {
+      toast.success(t("details.addedToFavorites", { title: book.title }), {
         position: "bottom-left",
         autoClose: 3000,
       });
     }
   };
 
-  if (!book) return <div>Loading...</div>;
+  if (!book) return <div>{t("common.loading")}</div>;
 
   const imageSrc =
     typeof book.imageUrl === "string" && book.imageUrl.length > 0
@@ -65,23 +67,23 @@ const BookDetails = () => {
     <div className={styles.detailsContainer}>
       <div className={styles.leftSide}>
         <img src={imageSrc} alt={book.title} className={styles.image} />
-        <p className={styles.stock}>In stock: {book.stock}</p>
+        <p className={styles.stock}>{t("details.stockCount", { count: book.stock })}</p>
       </div>
       <div className={styles.rightSide}>
         <h2>{book.title}</h2>
         <p>
-          <strong>Author:</strong> {book.author}
+          <strong>{t("details.author")}:</strong> {book.author}
         </p>
         <p>
-          <strong>Description:</strong> {book.description}
+          <strong>{t("details.description")}:</strong> {book.description}
         </p>
         <div className={styles.buttons}>
           <button onClick={handleToggleFavorite}>
             {isFavorite(book.id)
-              ? "♥ Remove from favorites"
-              : "♡ Add to favorites"}
+              ? t("details.removeFromFavorites")
+              : t("details.addToFavorites")}
           </button>
-          <button onClick={handleAddToCart}>🛒 Add to cart</button>
+          <button onClick={handleAddToCart}>🛒 {t("details.addToCart")}</button>
         </div>
       </div>
     </div>
