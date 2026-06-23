@@ -3,6 +3,7 @@ import styles from "../styles/AuthModal.module.css";
 import { useAuth } from "../hooks/useAuth";
 import classNames from "classnames";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onClose: () => void;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
+  const { t } = useTranslation();
   const [isRegistering, setIsRegistering] = useState(true);
   const [formData, setFormData] = useState({
     userName: "",
@@ -47,13 +49,11 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
         const newErrors = { userName: "", password: "" };
 
         if (formData.userName && !validateUsername(formData.userName)) {
-          newErrors.userName =
-            "Username must be at least 6 characters and include a letter, number, and special character.";
+          newErrors.userName = t("auth.usernameHint");
         }
 
         if (formData.password && !validatePassword(formData.password)) {
-          newErrors.password =
-            "Password must be at least 8 characters, include lowercase, uppercase, number, and special character.";
+          newErrors.password = t("auth.passwordHint");
         }
 
         setErrors(newErrors);
@@ -61,7 +61,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [formData.userName, formData.password, isRegistering]);
+  }, [formData.userName, formData.password, isRegistering, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,18 +69,18 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
 
     if (isRegistering) {
       if (!validateUsername(formData.userName)) {
-        setError("Invalid username.");
-        toast.error("Invalid username.");
+        setError(t("auth.invalidUsername"));
+        toast.error(t("auth.invalidUsername"));
         return;
       }
       if (!validatePassword(formData.password)) {
-        setError("Invalid password.");
-        toast.error("Invalid password.");
+        setError(t("auth.invalidPassword"));
+        toast.error(t("auth.invalidPassword"));
         return;
       }
       if (formData.password !== formData.confirmPassword) {
-        setError("Passwords do not match.");
-        toast.error("Passwords do not match.");
+        setError(t("auth.passwordsDoNotMatch"));
+        toast.error(t("auth.passwordsDoNotMatch"));
         return;
       }
 
@@ -91,11 +91,11 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
       );
 
       if (success) {
-        toast.success("Registration successful! Please login.");
+        toast.success(t("auth.registrationSuccess"));
         setIsRegistering(false);
       } else {
-        setError(error || "Registration failed");
-        toast.error(error || "Registration failed");
+        setError(error || t("auth.registrationFailed"));
+        toast.error(error || t("auth.registrationFailed"));
       }
     } else {
       const { success, error } = await handleLogin(
@@ -104,11 +104,11 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
       );
 
       if (success) {
-        toast.success("Login successful!");
+        toast.success(t("auth.loginSuccess"));
         onClose();
       } else {
-        setError(error || "Login failed");
-        toast.error(error || "Login failed");
+        setError(error || t("auth.loginFailed"));
+        toast.error(error || t("auth.loginFailed"));
       }
     }
   };
@@ -122,7 +122,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
         <button className={styles.close} onClick={onClose}>
           &times;
         </button>
-        <h2>{isRegistering ? "Register" : "Login"}</h2>
+        <h2>{isRegistering ? t("auth.register") : t("auth.login")}</h2>
 
         {error && <p className={styles.error}>{error}</p>}
 
@@ -133,7 +133,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
               name="userName"
               value={formData.userName}
               onChange={handleChange}
-              placeholder="Username"
+              placeholder={t("auth.username")}
               required
               className={classNames({
                 [styles.valid]:
@@ -163,7 +163,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Email"
+                placeholder={t("auth.email")}
                 required
               />
             </div>
@@ -175,7 +175,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Password"
+              placeholder={t("auth.password")}
               required
               className={classNames({
                 [styles.valid]:
@@ -205,20 +205,20 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Confirm Password"
+                placeholder={t("auth.confirmPassword")}
                 required
               />
             </div>
           )}
 
           <button type="submit" className={styles.button}>
-            {isRegistering ? "Register" : "Login"}
+            {isRegistering ? t("auth.register") : t("auth.login")}
           </button>
         </form>
 
         {!isRegistering && (
           <p className={styles.forgotPassword}>
-            Forgot password?{" "}
+            {t("auth.forgotPassword")} {" "}
             <span
               className={styles.switchLink}
               onClick={() => {
@@ -226,15 +226,13 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
                 onResetPasswordClick();
               }}
             >
-              Reset here
+              {t("auth.resetHere")}
             </span>
           </p>
         )}
 
         <p className={styles.switchText}>
-          {isRegistering
-            ? "Already have an account?"
-            : "Don't have an account?"}{" "}
+          {isRegistering ? t("auth.alreadyHaveAccount") : t("auth.noAccount")} {" "}
           <span
             className={styles.switchLink}
             onClick={() => {
@@ -249,7 +247,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
               setErrors({ userName: "", password: "" });
             }}
           >
-            {isRegistering ? "Login" : "Register"}
+            {isRegistering ? t("auth.login") : t("auth.register")}
           </span>
         </p>
       </div>
