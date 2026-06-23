@@ -7,11 +7,12 @@ export interface ChatSummary {
   adminName?: string | null;
   supportUserId?: string | null;
   supportName?: string | null;
-  status?: string;
+  status?: string | number;
   createdAt?: string;
   updatedAt?: string;
   closedAt?: string | null;
   lastMessage?: string;
+  lastMessageAt?: string;
 }
 
 export interface ChatMessage {
@@ -25,6 +26,7 @@ export interface ChatMessage {
   text?: string;
   message?: string;
   content?: string;
+  body?: string;
   createdAt?: string;
   sentAt?: string;
   isMine?: boolean;

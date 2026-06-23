@@ -28,7 +28,7 @@ export const fetchOrders = createAsyncThunk<Order[], string>(
   async (userId: string, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://localhost:44308/api/Order/user/${userId}`
+        `https://localhost:44308/api/Order/user/${userId}`,
       );
 
       const rawOrders = response.data?.$values || response.data;
@@ -49,8 +49,8 @@ export const fetchOrders = createAsyncThunk<Order[], string>(
                   price: item.unitPrice ?? bookData?.price ?? 0,
                   title: item.title ?? bookData?.title ?? "Unknown Book",
                 };
-              }
-            )
+              },
+            ),
           );
 
           return {
@@ -58,14 +58,14 @@ export const fetchOrders = createAsyncThunk<Order[], string>(
             createdAt: order.orderDate || new Date().toISOString(),
             orderItems,
           };
-        })
+        }),
       );
 
       return normalized;
     } catch (error: any) {
       return rejectWithValue(error.message || "Ошибка при загрузке заказов");
     }
-  }
+  },
 );
 
 const ordersSlice = createSlice({
