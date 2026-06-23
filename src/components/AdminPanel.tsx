@@ -60,7 +60,7 @@ const AdminPanel = () => {
           className={activeTab === "supportChats" ? styles.active : ""}
           onClick={() => setActiveTab("supportChats")}
         >
-          💬 Support Chats
+          💬 {t("admin.supportChats")}
         </button>
       </div>
       <div className={styles.content}>{renderContent()}</div>
