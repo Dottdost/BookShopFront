@@ -182,6 +182,7 @@ const ru = {
     orders: "Заказы",
     genres: "Жанры",
     promos: "Промокоды",
+    supportChats: "Чаты поддержки",
     bookManagement: "Управление книгами",
     userManagement: "Управление пользователями",
     orderManagement: "Управление заказами",
