@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Book } from "../types/book";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   book: Book | null;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const BookForm = ({ book, onSaved }: Props) => {
+  const { t } = useTranslation();
   const [form, setForm] = useState<Book & { imageFile?: File }>({
     id: 0,
     title: "",
@@ -75,7 +77,6 @@ const BookForm = ({ book, onSaved }: Props) => {
 
     try {
       if (form.id) {
-        // Обновляем stock
         await axios.patch(
           `https://localhost:44308/api/books/${form.id}/stock`,
           {
@@ -83,7 +84,6 @@ const BookForm = ({ book, onSaved }: Props) => {
           }
         );
 
-        // Обновляем price
         await axios.patch(
           `https://localhost:44308/api/books/${form.id}/price`,
           {
@@ -91,7 +91,6 @@ const BookForm = ({ book, onSaved }: Props) => {
           }
         );
       } else {
-        // Создание книги (POST) с файлом
         const formData = new FormData();
         formData.append("Title", form.title);
         formData.append("Author", form.author);
@@ -169,7 +168,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         name="title"
         value={form.title}
         onChange={handleChange}
-        placeholder="Book Title"
+        placeholder={t("bookForm.bookTitle")}
         style={inputStyle}
         disabled={!!form.id}
       />
@@ -177,7 +176,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         name="author"
         value={form.author}
         onChange={handleChange}
-        placeholder="Author"
+        placeholder={t("common.author")}
         style={inputStyle}
         disabled={!!form.id}
       />
@@ -186,7 +185,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         type="number"
         value={form.price}
         onChange={handleChange}
-        placeholder="Price"
+        placeholder={t("common.price")}
         style={inputStyle}
       />
       <input
@@ -194,14 +193,14 @@ const BookForm = ({ book, onSaved }: Props) => {
         type="number"
         value={form.stock}
         onChange={handleChange}
-        placeholder="Stock"
+        placeholder={t("details.stock")}
         style={inputStyle}
       />
       <input
         name="description"
         value={form.description}
         onChange={handleChange}
-        placeholder="Description"
+        placeholder={t("details.description")}
         style={inputStyle}
         disabled={!!form.id}
       />
@@ -213,7 +212,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         style={inputStyle}
         disabled={!!form.id}
       >
-        <option value="">Select Genre</option>
+        <option value="">{t("bookForm.selectGenre")}</option>
         {genres.map((genre) => (
           <option key={genre.id} value={genre.id}>
             {genre.name}
@@ -228,7 +227,7 @@ const BookForm = ({ book, onSaved }: Props) => {
         style={inputStyle}
         disabled={!!form.id}
       >
-        <option value="">Select Publisher</option>
+        <option value="">{t("bookForm.selectPublisher")}</option>
         {publishers.map((publisher) => (
           <option key={publisher.id} value={publisher.id}>
             {publisher.name}
@@ -249,8 +248,8 @@ const BookForm = ({ book, onSaved }: Props) => {
             }}
           >
             {form.imageFile
-              ? `Selected: ${form.imageFile.name}`
-              : "Choose Cover Image"}
+              ? t("bookForm.selectedFile", { name: form.imageFile.name })
+              : t("bookForm.chooseCover")}
           </label>
           <input
             id="image-upload"
@@ -271,7 +270,7 @@ const BookForm = ({ book, onSaved }: Props) => {
       )}
 
       <button type="submit" style={buttonStyle}>
-        {form.id ? "Update Price and Stock" : "Add Book"}
+        {form.id ? t("bookForm.updatePriceStock") : t("bookForm.addBook")}
       </button>
     </form>
   );
