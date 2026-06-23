@@ -19,9 +19,6 @@
   top: 0;
   z-index: 100;
 }
-/* =========================
-   🧠 ЛОГО
-   ========================= */
 
 .logo img {
   width: 60px;
@@ -29,7 +26,6 @@
   border-radius: 50%;
   object-fit: cover;
 
-  /* мягкая тень */
   box-shadow: 0 4px 15px rgba(124, 92, 255, 0.4);
 
   cursor: pointer;
@@ -40,10 +36,6 @@
   transform: scale(1.08) rotate(2deg);
   box-shadow: 0 8px 25px rgba(124, 92, 255, 0.6);
 }
-
-/* =========================
-   🔗 НАВИГАЦИЯ
-   ========================= */
 
 .navLinks {
   display: flex;
@@ -58,7 +50,6 @@
   list-style: none;
 }
 
-/* ссылки */
 .navLinks li a {
   position: relative;
   text-decoration: none;
@@ -69,7 +60,6 @@
   transition: color 0.2s ease;
 }
 
-/* underline анимация */
 .navLinks li a::after {
   content: "";
   position: absolute;
@@ -89,13 +79,10 @@
   width: 100%;
 }
 
-/* =========================
-   🔘 КНОПКИ (LOGIN / LOGOUT)
-   ========================= */
-
 .auth {
   display: flex;
   gap: 12px;
+  align-items: center;
 }
 
 .auth button {
@@ -118,9 +105,15 @@
   box-shadow: 0 10px 25px rgba(124, 92, 255, 0.6);
 }
 
-/* =========================
-   👤 PROFILE BUTTON
-   ========================= */
+.languageButton {
+  min-width: 72px;
+  padding: 10px 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px rgba(124, 92, 255, 0.2) !important;
+  font-weight: 700;
+}
 
 .profileButton {
   background: transparent;
@@ -131,10 +124,6 @@
 .profileButton:hover {
   background: rgba(124, 92, 255, 0.1);
 }
-
-/* =========================
-   🍔 BURGER MENU
-   ========================= */
 
 .hamburger {
   display: none;
@@ -154,7 +143,6 @@
   transition: 0.3s;
 }
 
-/* анимация крестика */
 .hamburger.open span:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px);
 }
@@ -167,10 +155,6 @@
   transform: rotate(-45deg) translate(6px, -6px);
 }
 
-/* =========================
-   📱 MOBILE VERSION
-   ========================= */
-
 @media (max-width: 768px) {
   .navLinks {
     position: fixed;
@@ -179,7 +163,6 @@
     height: calc(100% - 80px);
     width: 240px;
 
-    /* стекло */
     background: rgba(26, 27, 35, 0.95);
     backdrop-filter: blur(10px);
 
@@ -209,13 +192,10 @@
     display: flex;
   }
 
-  /* скрываем кнопки (можно потом красиво вынести в меню) */
   .auth {
     display: none;
   }
 }
-
-/*  SMALL DEVICES*/
 
 @media (max-width: 480px) {
   .navbar {
