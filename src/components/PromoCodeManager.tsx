@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "../styles/Manager.module.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 
 type PromoCode = {
   id: string;
@@ -13,6 +14,7 @@ type PromoCode = {
 };
 
 const PromoCodeManager = () => {
+  const { t } = useTranslation();
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [newCode, setNewCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -35,10 +37,10 @@ const PromoCodeManager = () => {
       if (res.data && Array.isArray(res.data.$values)) {
         setPromoCodes(res.data.$values);
       } else {
-        console.error("Ожидался массив промокодов, но получено:", res.data);
+        console.error("Unexpected promo code response:", res.data);
       }
     } catch (error) {
-      console.error("Ошибка при загрузке промокодов:", error);
+      console.error("Error loading promo codes:", error);
     }
   };
 
@@ -56,14 +58,14 @@ const PromoCodeManager = () => {
         axiosConfig
       );
 
-      toast.success("Promocode created.");
+      toast.success(t("admin.promoCreated"));
       setNewCode("");
       setDiscount(0);
       setExpiryDate("");
       fetchPromoCodes();
     } catch (error: unknown) {
       console.error("Error creating promocode:", error);
-      toast.error("Error creating promocode.");
+      toast.error(t("admin.promoCreateError"));
     }
   };
 
@@ -74,11 +76,11 @@ const PromoCodeManager = () => {
         null,
         axiosConfig
       );
-      toast.success("Promo code deactivated.");
+      toast.success(t("admin.promoDeactivated"));
       fetchPromoCodes();
     } catch (error: unknown) {
-      console.error("Ошибка при деактивации:", error);
-      toast.error("Error deactivating promocode.");
+      console.error("Error deactivating promocode:", error);
+      toast.error(t("admin.promoDeactivateError"));
     }
   };
 
@@ -89,11 +91,11 @@ const PromoCodeManager = () => {
         null,
         axiosConfig
       );
-      toast.success("Promo code activated.");
+      toast.success(t("admin.promoActivated"));
       fetchPromoCodes();
     } catch (error: unknown) {
-      console.error("Ошибка при активации:", error);
-      toast.error("Error activating promocode.");
+      console.error("Error activating promocode:", error);
+      toast.error(t("admin.promoActivateError"));
     }
   };
 
@@ -103,11 +105,11 @@ const PromoCodeManager = () => {
         `https://localhost:44308/api/v1/PromoCode/Delete?code=${code}`,
         axiosConfig
       );
-      toast.success("Promocode removed.");
+      toast.success(t("admin.promoRemoved"));
       fetchPromoCodes();
     } catch (error: unknown) {
-      console.error("Ошибка при удалении промокода:", error);
-      toast.error("Error deleting promocode.");
+      console.error("Error deleting promocode:", error);
+      toast.error(t("admin.promoDeleteError"));
     }
   };
 
@@ -117,18 +119,18 @@ const PromoCodeManager = () => {
 
   return (
     <div className={styles.manager}>
-      <h2>Promo Code Management</h2>
+      <h2>{t("admin.promoManagement")}</h2>
 
       <div className={styles.form}>
         <input
           type="text"
-          placeholder="Code"
+          placeholder={t("admin.code")}
           value={newCode}
           onChange={(e) => setNewCode(e.target.value)}
         />
         <input
           type="number"
-          placeholder="Discount (%)"
+          placeholder={`${t("admin.discount")} (%)`}
           value={discount}
           onChange={(e) => setDiscount(parseFloat(e.target.value))}
         />
@@ -138,18 +140,18 @@ const PromoCodeManager = () => {
           onChange={(e) => setExpiryDate(e.target.value)}
         />
         <button className={styles.editBtn} onClick={createPromoCode}>
-          Create Promo Code
+          {t("admin.createPromo")}
         </button>
       </div>
 
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Code</th>
-            <th>Discount</th>
-            <th>Expiry</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>{t("admin.code")}</th>
+            <th>{t("admin.discount")}</th>
+            <th>{t("admin.expiry")}</th>
+            <th>{t("common.status")}</th>
+            <th>{t("common.actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -159,32 +161,32 @@ const PromoCodeManager = () => {
                 <td>{p.code}</td>
                 <td>{p.discount}%</td>
                 <td>{new Date(p.expiryDate).toLocaleDateString()}</td>
-                <td>{p.isActive ? "Active" : "Inactive"}</td>
+                <td>{p.isActive ? t("admin.active") : t("admin.inactive")}</td>
                 <td>
                   <button
                     className={styles.editBtn}
                     onClick={() => deactivatePromoCode(p.code)}
                   >
-                    Deactivate
+                    {t("admin.deactivate")}
                   </button>
                   <button
                     className={styles.editBtn}
                     onClick={() => activatePromoCode(p.code)}
                   >
-                    Activate
+                    {t("admin.activate")}
                   </button>
                   <button
                     className={styles.deleteBtn}
                     onClick={() => deletePromoCode(p.code)}
                   >
-                    Delete
+                    {t("common.delete")}
                   </button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={5}>No promo codes available</td>
+              <td colSpan={5}>{t("admin.noPromoCodes")}</td>
             </tr>
           )}
         </tbody>
