@@ -175,6 +175,12 @@
   color: #2d2018;
 }
 
+.embeddedPage {
+  min-height: auto;
+  padding: 0;
+  background: transparent;
+}
+
 .pageHeader {
   display: flex;
   align-items: center;
@@ -259,6 +265,45 @@
 
 .emptyChat {
   margin: auto;
+}
+
+.chatMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.statusPill {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 247, 238, 0.16);
+  color: #fff7ee;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerActions button {
+  border: 1px solid rgba(255, 247, 238, 0.45);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff7ee;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.headerActions .dangerButton {
+  border-color: #b3261e;
+  background: #b3261e;
 }
 
 @media (max-width: 800px) {
