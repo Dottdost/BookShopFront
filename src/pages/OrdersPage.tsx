@@ -4,8 +4,10 @@ import styles from "../styles/OrdersPage.module.css";
 import { useOrders } from "../hooks/useOrders";
 import { useEffect, useState } from "react";
 import { Order, OrderItem } from "../types";
+import { useTranslation } from "react-i18next";
 
 const OrdersPage = () => {
+  const { t } = useTranslation();
   const userId = useSelector((state: RootState) => state.auth.user?.id);
   const [isUserReady, setIsUserReady] = useState(false);
   const { orders, loading, error } = useOrders(userId || "");
@@ -14,29 +16,31 @@ const OrdersPage = () => {
     if (userId) setIsUserReady(true);
   }, [userId]);
 
-  if (!isUserReady) return <p>Loading user...</p>;
-  if (loading) return <p>Loading orders...</p>;
+  if (!isUserReady) return <p>{t("orders.loadingUser")}</p>;
+  if (loading) return <p>{t("orders.loadingOrders")}</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <div className={styles.container}>
-      <h1>Your Orders</h1>
+      <h1>{t("orders.title")}</h1>
       {orders.length === 0 ? (
-        <p>No orders found.</p>
+        <p>{t("orders.empty")}</p>
       ) : (
         <div className={styles.ordersList}>
           {orders.map((order: Order) => (
             <div key={order.id} className={styles.orderCard}>
-              <h2>Order #{order.id}</h2>
+              <h2>{t("orders.orderNumber", { id: order.id })}</h2>
               <p>
-                <strong>Date:</strong>{" "}
+                <strong>{t("orders.date")}:</strong>{" "}
                 {new Date(order.createdAt).toLocaleDateString()}
               </p>
               <p>
-                <strong>Status:</strong> {order.status || "Unknown"}
+                <strong>{t("orders.status")}:</strong>{" "}
+                {order.status || t("orders.unknown")}
               </p>
               <p>
-                <strong>Total Items:</strong> {order.orderItems?.length || 0}
+                <strong>{t("orders.totalItems")}:</strong>{" "}
+                {order.orderItems?.length || 0}
               </p>
 
               <div className={styles.orderItems}>
@@ -54,16 +58,16 @@ const OrdersPage = () => {
                         <div className={styles.bookImageWrapper}></div>
                         <div className={styles.bookInfo}>
                           <p>
-                            <strong>{item.title || "Unknown Book"}</strong>
+                            <strong>{item.title || t("orders.unknownBook")}</strong>
                           </p>
-                          <p>Quantity: {quantity}</p>
-                          <p>Price: ${price.toFixed(2)}</p>
+                          <p>{t("common.quantity")}: {quantity}</p>
+                          <p>{t("common.price")}: ${price.toFixed(2)}</p>
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <p>No items in this order.</p>
+                  <p>{t("orders.noItems")}</p>
                 )}
               </div>
             </div>

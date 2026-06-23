@@ -1,24 +1,25 @@
+import { useTranslation } from "react-i18next";
 import styles from "../styles/Contacts.module.css";
 
 const Contacts = () => {
+  const { t } = useTranslation();
+
   return (
     <div className={styles.contacts}>
-      <h1>Contact Us</h1>
-      <p>
-        You can reach us during business hours for any questions or assistance!
-      </p>
+      <h1>{t("contacts.title")}</h1>
+      <p>{t("contacts.subtitle")}</p>
       <div className={styles.contactList}>
         <div className={styles.contactCard}>
           <h2>Hamida Samad-zada</h2>
           <p>
-            Email:
+            {t("contacts.email")}: 
             <a href="mailto:elikosamed@gmail.com">elikosamed@gmail.com</a>
           </p>
         </div>
         <div className={styles.contactCard}>
           <h2>Eteri Jafarova</h2>
           <p>
-            Email:
+            {t("contacts.email")}: 
             <a href="mailto:etericeferova2005@gmail.com">
               etericeferova2005@gmail.com
             </a>
@@ -26,9 +27,9 @@ const Contacts = () => {
         </div>
       </div>
       <div className={styles.schedule}>
-        <h3>Business Hours</h3>
-        <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-        <p>Saturday - Sunday: Closed</p>
+        <h3>{t("contacts.businessHours")}</h3>
+        <p>{t("contacts.weekdays")}</p>
+        <p>{t("contacts.weekend")}</p>
       </div>
     </div>
   );
