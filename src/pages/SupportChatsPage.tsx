@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store";
 import {
+  closeChat,
+  exitChat,
   getChatMessages,
   getMyChats,
   getWaitingChats,
@@ -13,10 +15,47 @@ import { useChatConnection } from "../hooks/useChatConnection";
 import type { ChatMessage, ChatSummary } from "../types/chat";
 import styles from "../styles/SupportChat.module.css";
 
+interface SupportChatsPageProps {
+  embedded?: boolean;
+}
+
 const getMessageSenderId = (message: ChatMessage) =>
   message.senderId ?? message.senderUserId ?? "";
 
-const SupportChatsPage = () => {
+const getCustomerName = (chat: ChatSummary) =>
+  chat.customerName ?? chat.userName ?? "Customer";
+
+const getAdminId = (chat: ChatSummary) =>
+  chat.adminId ?? chat.supportUserId ?? "";
+
+const isAdminMessage = (
+  message: ChatMessage,
+  chat: ChatSummary,
+  currentUserId?: string,
+) => {
+  const senderId = getMessageSenderId(message);
+  const adminId = getAdminId(chat);
+
+  if (message.isMine || message.senderRole?.toLowerCase() === "admin") {
+    return true;
+  }
+
+  if (!senderId) {
+    return false;
+  }
+
+  if (senderId === currentUserId || senderId === "admin") {
+    return true;
+  }
+
+  if (adminId) {
+    return senderId === adminId;
+  }
+
+  return Boolean(chat.userId && senderId !== chat.userId);
+};
+
+const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
   const { user, roles } = useSelector((state: RootState) => state.auth);
   const isAdmin = roles.some(
     (role) =>
@@ -72,6 +111,7 @@ const SupportChatsPage = () => {
 
   const openChat = useCallback(async (chat: ChatSummary) => {
     setActiveChat(chat);
+    setText("");
     setError("");
 
     try {
@@ -88,11 +128,55 @@ const SupportChatsPage = () => {
 
     try {
       await takeChat(chat.id);
+      const takenChat: ChatSummary = {
+        ...chat,
+        adminId: chat.adminId ?? user?.id ?? null,
+        supportUserId: chat.supportUserId ?? user?.id ?? null,
+        supportName: chat.supportName ?? user?.userName ?? null,
+      };
+      await openChat(takenChat);
       await loadChats();
-      await openChat(chat);
     } catch (err) {
       console.error(err);
       setError("Failed to take chat.");
+    }
+  };
+
+  const handleExitChat = async () => {
+    if (!activeChat?.id) {
+      return;
+    }
+
+    setError("");
+
+    try {
+      await exitChat(activeChat.id);
+      setActiveChat(null);
+      setMessages([]);
+      setText("");
+      await loadChats();
+    } catch (err) {
+      console.error(err);
+      setError("Failed to exit chat.");
+    }
+  };
+
+  const handleCloseChat = async () => {
+    if (!activeChat?.id) {
+      return;
+    }
+
+    setError("");
+
+    try {
+      await closeChat(activeChat.id);
+      setActiveChat(null);
+      setMessages([]);
+      setText("");
+      await loadChats();
+    } catch (err) {
+      console.error(err);
+      setError("Failed to close chat.");
     }
   };
 
@@ -108,12 +192,19 @@ const SupportChatsPage = () => {
 
     try {
       const optimisticMessage: ChatMessage = {
-        id: `local-${Date.now()}`,
+        id: `admin-local-${Date.now()}`,
         chatId: activeChat.id,
-        senderId: user?.id,
-        senderName: user?.userName,
+        senderId:
+          activeChat.adminId ??
+          activeChat.supportUserId ??
+          user?.id ??
+          user?.userName ??
+          "admin",
+        senderName: user?.userName ?? activeChat.supportName ?? "Admin",
+        senderRole: "Admin",
         text: trimmedText,
         createdAt: new Date().toISOString(),
+        isMine: true,
       };
 
       appendMessage(optimisticMessage);
@@ -166,7 +257,7 @@ const SupportChatsPage = () => {
   }
 
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${embedded ? styles.embeddedPage : ""}`}>
       <div className={styles.pageHeader}>
         <div>
           <h1>Support Chats</h1>
@@ -182,7 +273,7 @@ const SupportChatsPage = () => {
       <div className={styles.adminLayout}>
         <aside className={styles.chatSidebar}>
           <section>
-            <h3>Waiting</h3>
+            <h3>Waiting Chats</h3>
             {loading && <p className={styles.emptyState}>Loading...</p>}
             {!loading && waitingChats.length === 0 && (
               <p className={styles.emptyState}>No waiting chats</p>
@@ -194,14 +285,14 @@ const SupportChatsPage = () => {
                 key={chat.id}
                 onClick={() => void handleTakeChat(chat)}
               >
-                <strong>{chat.customerName ?? chat.userName ?? "Customer"}</strong>
+                <strong>{getCustomerName(chat)}</strong>
                 <span>{chat.lastMessage ?? "Take this chat"}</span>
               </button>
             ))}
           </section>
 
           <section>
-            <h3>My chats</h3>
+            <h3>My Chats</h3>
             {!loading && myChats.length === 0 && (
               <p className={styles.emptyState}>No active chats</p>
             )}
@@ -212,7 +303,7 @@ const SupportChatsPage = () => {
                 key={chat.id}
                 onClick={() => void openChat(chat)}
               >
-                <strong>{chat.customerName ?? chat.userName ?? "Customer"}</strong>
+                <strong>{getCustomerName(chat)}</strong>
                 <span>{chat.lastMessage ?? chat.status ?? "Open chat"}</span>
               </button>
             ))}
@@ -226,14 +317,29 @@ const SupportChatsPage = () => {
             <>
               <header className={styles.chatHeader}>
                 <div>
-                  <h3>{activeChat.customerName ?? activeChat.userName ?? "Customer"}</h3>
-                  <p>Chat ID: {activeChat.id}</p>
+                  <h3>{getCustomerName(activeChat)}</h3>
+                  <div className={styles.chatMeta}>
+                    <span className={styles.statusPill}>{activeChat.status ?? "Active"}</span>
+                    <p>Chat ID: {activeChat.id}</p>
+                  </div>
+                </div>
+                <div className={styles.headerActions}>
+                  <button type="button" onClick={handleExitChat}>
+                    Exit
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.dangerButton}
+                    onClick={handleCloseChat}
+                  >
+                    Close
+                  </button>
                 </div>
               </header>
 
               <div className={styles.messageList}>
                 {sortedMessages.map((message, index) => {
-                  const isMine = getMessageSenderId(message) === user?.id || message.isMine;
+                  const isMine = isAdminMessage(message, activeChat, user?.id);
 
                   return (
                     <article
