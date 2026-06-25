@@ -70,7 +70,7 @@ export const useChatConnection = ({
   }, [onMessageReceived]);
 
   useEffect(() => {
-    if (!enabled) {
+    if (!enabled || !chatId) {
       setConnected(false);
       return;
     }
@@ -91,8 +91,6 @@ export const useChatConnection = ({
       .build();
 
     const handleIncomingMessage = (...args: unknown[]) => {
-      console.log("CHAT SIGNALR RECEIVED:", args);
-
       const message = createMessageFromArgs(args, chatId);
 
       if (!message) return;
@@ -101,8 +99,6 @@ export const useChatConnection = ({
     };
 
     async function joinCurrentChat() {
-      if (!chatId) return;
-
       if (connection.state !== signalR.HubConnectionState.Connected) return;
 
       await connection.invoke("JoinChat", chatId);
@@ -111,8 +107,6 @@ export const useChatConnection = ({
 
     async function start() {
       try {
-        console.log("Trying to connect chat hub:", getChatHubUrl());
-
         connection.on("ReceiveMessage", handleIncomingMessage);
         connection.on("MessageReceived", handleIncomingMessage);
         connection.on("NewMessage", handleIncomingMessage);
@@ -132,8 +126,7 @@ export const useChatConnection = ({
           }
         });
 
-        connection.onclose((error) => {
-          console.log("Chat hub closed:", error);
+        connection.onclose(() => {
           setConnected(false);
         });
 
@@ -141,9 +134,7 @@ export const useChatConnection = ({
 
         if (cancelled) return;
 
-        console.log("Chat hub connected.");
         setConnected(true);
-
         await joinCurrentChat();
       } catch (error) {
         console.error("Chat hub connection failed:", error);
@@ -163,12 +154,8 @@ export const useChatConnection = ({
           connection.off("NewMessage", handleIncomingMessage);
           connection.off("ChatMessageReceived", handleIncomingMessage);
 
-          if (
-            chatId &&
-            connection.state === signalR.HubConnectionState.Connected
-          ) {
+          if (connection.state === signalR.HubConnectionState.Connected) {
             await connection.invoke("LeaveChat", chatId);
-            console.log("Left chat group:", chatId);
           }
 
           await connection.stop();

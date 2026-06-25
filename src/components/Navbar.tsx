@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiGlobe, FiMoon, FiSun } from "react-icons/fi";
-import logo from "../assets/12345.jpg";
+import logo from "../assets/sticker.webp";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useAuth } from "../hooks/useAuth";

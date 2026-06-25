@@ -8,6 +8,17 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 
+type OrderRequest = {
+  userId: string;
+  userAddressId: string;
+  userBankCardId: string;
+  orderItems: {
+    bookId: string | number;
+    quantity: number;
+  }[];
+  promoCode?: string;
+};
+
 const CartPage = () => {
   const { t } = useTranslation();
   const { cartItems, removeItem, changeQuantity, clear } = useCart();
@@ -16,6 +27,7 @@ const CartPage = () => {
 
   const [showCardModal, setShowCardModal] = useState(false);
   const [promoCode, setPromoCode] = useState("");
+
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
     cardHolderName: "",
@@ -33,17 +45,29 @@ const CartPage = () => {
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 
-  const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCardDetails((prev) => ({ ...prev, [name]: value }));
+  const handleCardInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, value } = event.target;
+
+    setCardDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleAddressInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAddressDetails((prev) => ({ ...prev, [name]: value }));
+  const handleAddressInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, value } = event.target;
+
+    setAddressDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handlePlaceOrder = async () => {
@@ -75,9 +99,10 @@ const CartPage = () => {
       };
 
       const cardResponse = await axios.post(
-        "https://localhost:44308/api/Card",
-        cardPayload
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/Card",
+        cardPayload,
       );
+
       const userBankCardId = cardResponse.data.id;
 
       const addressPayload = {
@@ -90,12 +115,13 @@ const CartPage = () => {
       };
 
       const addressResponse = await axios.post(
-        "https://localhost:44308/api/Adress",
-        addressPayload
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/Adress",
+        addressPayload,
       );
+
       const userAddressId = addressResponse.data.id;
 
-      const orderRequest: any = {
+      const orderRequest: OrderRequest = {
         userId: user.id,
         userAddressId,
         userBankCardId,
@@ -110,8 +136,8 @@ const CartPage = () => {
       }
 
       const orderResponse = await axios.post(
-        "https://localhost:44308/api/Order",
-        orderRequest
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/Order",
+        orderRequest,
       );
 
       placeOrder(orderResponse.data);
@@ -120,8 +146,10 @@ const CartPage = () => {
       setShowCardModal(false);
     } catch (error) {
       console.error("Order error:", error);
+
       if (axios.isAxiosError(error)) {
         const errorMsg = error.response?.data;
+
         if (
           typeof errorMsg === "string" &&
           errorMsg.toLowerCase().includes("promo code")
@@ -137,8 +165,9 @@ const CartPage = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <h1>{t("cart.title")}</h1>
+
       {cartItems.length === 0 ? (
         <p>{t("cart.empty")}</p>
       ) : (
@@ -154,6 +183,7 @@ const CartPage = () => {
                 <th></th>
               </tr>
             </thead>
+
             <tbody>
               {cartItems.map((item, index) => {
                 const imageSrc =
@@ -163,36 +193,47 @@ const CartPage = () => {
 
                 return (
                   <tr key={`${item.bookId}-${index}`}>
-                    <td>
+                    <td data-label={t("common.image")}>
                       <img
                         src={imageSrc}
                         alt={item.title ?? "Book"}
                         className={styles.image}
-                        onError={(e) =>
-                          ((e.target as HTMLImageElement).src =
-                            "/book-placeholder.jpg")
-                        }
+                        onError={(event) => {
+                          event.currentTarget.src = "/book-placeholder.jpg";
+                        }}
                       />
                     </td>
-                    <td>{item.title ?? t("cart.untitled")}</td>
-                    <td>
+
+                    <td data-label={t("common.title")}>
+                      {item.title ?? t("cart.untitled")}
+                    </td>
+
+                    <td data-label={t("common.price")}>
                       $
                       {item.price != null
-                        ? (item.price * item.quantity).toFixed(2)
+                        ? item.price.toFixed(2)
                         : t("cart.notAvailable")}
                     </td>
-                    <td>
+
+                    <td data-label={t("common.quantity")}>
                       <input
                         type="number"
                         min={1}
                         value={item.quantity}
-                        onChange={(e) =>
-                          changeQuantity(item.bookId, Number(e.target.value))
+                        onChange={(event) =>
+                          changeQuantity(
+                            item.bookId,
+                            Number(event.target.value),
+                          )
                         }
                         className={styles.quantityInput}
                       />
                     </td>
-                    <td>${(item.price * item.quantity).toFixed(2)}</td>
+
+                    <td data-label={t("common.total")}>
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </td>
+
                     <td>
                       <button
                         className={styles.removeButton}
@@ -212,16 +253,19 @@ const CartPage = () => {
             <p>
               <strong>{t("common.total")}:</strong> ${totalPrice.toFixed(2)}
             </p>
+
             <input
               type="text"
               placeholder={t("cart.enterPromo")}
               value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
+              onChange={(event) => setPromoCode(event.target.value)}
               className={styles.promoInput}
             />
+
             <button className={styles.clearButton} onClick={clear}>
               {t("cart.clear")}
             </button>
+
             <button
               className={styles.button}
               onClick={() => setShowCardModal(true)}
@@ -238,6 +282,7 @@ const CartPage = () => {
             <h2>{t("cart.enterCardAddress")}</h2>
 
             <h3>{t("cart.cardInfo")}</h3>
+
             <label>{t("cart.cardNumber")}</label>
             <input
               type="text"
@@ -245,6 +290,7 @@ const CartPage = () => {
               value={cardDetails.cardNumber}
               onChange={handleCardInputChange}
             />
+
             <label>{t("cart.cardholderName")}</label>
             <input
               type="text"
@@ -252,6 +298,7 @@ const CartPage = () => {
               value={cardDetails.cardHolderName}
               onChange={handleCardInputChange}
             />
+
             <label>{t("cart.expirationDate")}</label>
             <input
               type="date"
@@ -259,6 +306,7 @@ const CartPage = () => {
               value={cardDetails.expirationDate}
               onChange={handleCardInputChange}
             />
+
             <label>CVV</label>
             <input
               type="text"
@@ -268,6 +316,7 @@ const CartPage = () => {
             />
 
             <h3>{t("cart.shippingAddress")}</h3>
+
             <label>{t("cart.street")}</label>
             <input
               type="text"
@@ -275,6 +324,7 @@ const CartPage = () => {
               value={addressDetails.street}
               onChange={handleAddressInputChange}
             />
+
             <label>{t("cart.city")}</label>
             <input
               type="text"
@@ -282,6 +332,7 @@ const CartPage = () => {
               value={addressDetails.city}
               onChange={handleAddressInputChange}
             />
+
             <label>{t("cart.state")}</label>
             <input
               type="text"
@@ -289,6 +340,7 @@ const CartPage = () => {
               value={addressDetails.state}
               onChange={handleAddressInputChange}
             />
+
             <label>{t("cart.postalCode")}</label>
             <input
               type="text"
@@ -296,6 +348,7 @@ const CartPage = () => {
               value={addressDetails.postalCode}
               onChange={handleAddressInputChange}
             />
+
             <label>{t("cart.country")}</label>
             <input
               type="text"
@@ -307,8 +360,9 @@ const CartPage = () => {
             <button className={styles.button} onClick={handlePlaceOrder}>
               {t("common.submit")}
             </button>
+
             <button
-              className={styles.button}
+              className={styles.clearButton}
               onClick={() => setShowCardModal(false)}
             >
               {t("common.cancel")}
@@ -316,7 +370,7 @@ const CartPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 };
 

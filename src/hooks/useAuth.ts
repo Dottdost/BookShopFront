@@ -29,7 +29,7 @@ export const useAuth = () => {
 
     try {
       const response = await fetch(
-        "https://localhost:44308/api/v1/Auth/Login",
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/v1/Auth/Login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -92,7 +92,7 @@ export const useAuth = () => {
 
     try {
       const response = await fetch(
-        "https://localhost:44308/api/v1/Account/Register",
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/v1/Account/Register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

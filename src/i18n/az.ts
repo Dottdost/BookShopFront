@@ -52,8 +52,10 @@ const az = {
     resetHere: "Buradan sıfırla",
     alreadyHaveAccount: "Artıq hesabın var?",
     noAccount: "Hesabın yoxdur?",
-    usernameHint: "İstifadəçi adı ən azı 6 simvol olmalı və hərf, rəqəm və xüsusi simvol daxil etməlidir.",
-    passwordHint: "Şifrə ən azı 8 simvol olmalı və kiçik hərf, böyük hərf, rəqəm və xüsusi simvol daxil etməlidir.",
+    usernameHint:
+      "İstifadəçi adı ən azı 6 simvol olmalı və hərf, rəqəm və xüsusi simvol daxil etməlidir.",
+    passwordHint:
+      "Şifrə ən azı 8 simvol olmalı və kiçik hərf, böyük hərf, rəqəm və xüsusi simvol daxil etməlidir.",
     invalidUsername: "İstifadəçi adı düzgün deyil.",
     invalidPassword: "Şifrə düzgün deyil.",
     passwordsDoNotMatch: "Şifrələr uyğun gəlmir.",
@@ -69,11 +71,53 @@ const az = {
   },
   home: {
     title: "Növbəti sevimli kitabını tap",
-    subtitle: "Sənin üçün yaradılmış hekayələri, müəllifləri və dünyaları kəşf et.",
+    subtitle:
+      "Sənin üçün yaradılmış hekayələri, müəllifləri və dünyaları kəşf et.",
     shopNow: "Alış-verişə başla",
     featured: "Seçilmiş kitablar",
-    welcome: "Cheshire Shelf-ə xoş gəlmisiniz! Hekayələrin canlandığı dünyaya addım atın!",
+    welcome:
+      "Cheshire Shelf-ə xoş gəlmisiniz! Hekayələrin canlandığı dünyaya addım atın!",
     recommendations: "Cheshire Shelf komandasından tövsiyələr",
+
+    heroTitle: "Xoş gəlmisiniz",
+    eyebrow: "Digital Bookshop Experience",
+    heroSubtitle:
+      "Ağıllı axtarış, favoritlər, səbət, sifarişlər və canlı dəstək ilə rahat onlayn kitab mağazası — yumşaq rəqəmsal kitabxana kimi.",
+    exploreBooks: "Kitablara bax",
+    findNextRead: "Növbəti kitabını tap",
+    coverAuthor: "Bookshop System",
+
+    specialTitle: "Bu layihəni xüsusi edən nədir?",
+    specialIntro:
+      "Təsadüfi tövsiyələr əvəzinə bu səhifə layihənin özünü göstərir: faydalı funksiyaları, təmiz dizaynı və real alış-veriş axını olan kitab platforması.",
+
+    featureBrowseTitle: "Gözəl kataloq",
+    featureBrowseText:
+      "Kitablar janr filtrləri, axtarış və animasiyalı kartlarla təqdim olunur, buna görə kataloq müasir və rahat görünür.",
+    featureShelfTitle: "Şəxsi rəf",
+    featureShelfText:
+      "İstifadəçilər favoritləri saxlaya, kitabları səbətə əlavə edə və alış-verişə davam edə bilərlər.",
+    featureSupportTitle: "Canlı dəstək",
+    featureSupportText:
+      "Dəstək çatında müştərilər və adminlər real vaxtda əlaqə saxlayır, polling isə yenilənməni stabil saxlayır.",
+
+    quote:
+      "Kitab mağazası insanın qalmaq istədiyi bir yer kimi hiss olunmalıdır.",
+    quoteAuthor: "— Cheshire Shelf fəlsəfəsi",
+
+    howItWorks: "Necə işləyir",
+    stepOneTitle: "Axtar və kəşf et",
+    stepOneText: "Kitabları ad, müəllif və ya janra görə tap.",
+    stepTwoTitle: "Saxla və al",
+    stepTwoText: "Kitabları favoritlərə və ya səbətə sadə şəkildə əlavə et.",
+    stepThreeTitle: "Dəstəklə sifariş et",
+    stepThreeText: "Sifarişləri izlə və lazım olduqda dəstəyə yaz.",
+
+    ctaTitle: "Rəfə daxil olmağa hazırsan?",
+    ctaText:
+      "Layihə frontend, backend, authentication, admin tools, sifarişlər və live chat funksiyalarını bir kitab mağazası təcrübəsində birləşdirir.",
+    openCatalog: "Kataloqu aç",
+    browseLibrary: "Kitabxanaya bax",
   },
   about: {
     title: "Cheshire Shelf haqqında",
@@ -84,7 +128,8 @@ const az = {
   },
   contacts: {
     title: "Bizimlə əlaqə",
-    subtitle: "Hər hansı sual və ya kömək üçün iş saatlarında bizə müraciət edə bilərsiniz!",
+    subtitle:
+      "Hər hansı sual və ya kömək üçün iş saatlarında bizə müraciət edə bilərsiniz!",
     email: "Email",
     businessHours: "İş saatları",
     weekdays: "Bazar ertəsi - Cümə: 9:00 - 18:00",
@@ -112,9 +157,9 @@ const az = {
     addToFavorites: "♡ Seçilmişlərə əlavə et",
     removeFromFavorites: "♥ Seçilmişlərdən sil",
     failedLoad: "Kitab məlumatlarını yükləmək alınmadı",
-    addedToCart: "\"{{title}}\" səbətə əlavə edildi!",
-    addedToFavorites: "\"{{title}}\" seçilmişlərə əlavə edildi",
-    removedFromFavorites: "\"{{title}}\" seçilmişlərdən silindi",
+    addedToCart: '"{{title}}" səbətə əlavə edildi!',
+    addedToFavorites: '"{{title}}" seçilmişlərə əlavə edildi',
+    removedFromFavorites: '"{{title}}" seçilmişlərdən silindi',
   },
   favorites: {
     title: "Seçilmişləriniz",
@@ -172,7 +217,8 @@ const az = {
   footer: {
     delivery: "Çatdırılma: 3-5 gün",
     contacts: "Əlaqə",
-    tagline: "Ümid edirik ki, kitablar dünyasına səyahətiniz bizimlə maraqlı olacaq!",
+    tagline:
+      "Ümid edirik ki, kitablar dünyasına səyahətiniz bizimlə maraqlı olacaq!",
     imageAlt: "Kitab",
   },
   admin: {
@@ -241,6 +287,12 @@ const az = {
     chooseCover: "Üz qabığını seç",
     updatePriceStock: "Qiymət və stoku yenilə",
     addBook: "Kitab əlavə et",
+  },
+  registerPopup: {
+    title: "Cheshire Shelf-ə qoşul",
+    subtitle:
+      "Hesab yarat, sehrli promo kod qazan və növbəti kitab macərana 15% endirim əldə et.",
+    button: "Qeydiyyatdan keç",
   },
 };
 

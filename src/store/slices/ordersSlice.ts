@@ -16,7 +16,9 @@ const initialState: OrdersState = {
 
 const fetchBookById = async (bookId: string) => {
   try {
-    const res = await axios.get(`https://localhost:44308/api/books/${bookId}`);
+    const res = await axios.get(
+      `http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/books/${bookId}`,
+    );
     return res.data;
   } catch (error) {
     return null;
@@ -28,7 +30,7 @@ export const fetchOrders = createAsyncThunk<Order[], string>(
   async (userId: string, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://localhost:44308/api/Order/user/${userId}`,
+        `http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/Order/user/${userId}`,
       );
 
       const rawOrders = response.data?.$values || response.data;

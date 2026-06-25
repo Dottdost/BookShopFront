@@ -109,9 +109,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
     async (silent = false) => {
       if (!isAdmin) return;
 
-      if (!silent) {
-        setLoading(true);
-      }
+      if (!silent) setLoading(true);
 
       setError("");
 
@@ -130,9 +128,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
           setError("Failed to load chats.");
         }
       } finally {
-        if (!silent) {
-          setLoading(false);
-        }
+        if (!silent) setLoading(false);
       }
     },
     [isAdmin],

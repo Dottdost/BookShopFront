@@ -1,167 +1,220 @@
-* {
-  box-sizing: border-box; /* Учитываем отступы и границы */
-}
-
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(34, 34, 34, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  inset: 0;
   z-index: 9999;
-  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(12, 10, 18, 0.58);
+  backdrop-filter: blur(14px);
+  animation: overlayFadeIn 0.22s ease both;
 }
 
 .modal {
-  background: linear-gradient(135deg, #ffffff, #f0fff0);
-  padding: 24px 20px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  width: 100%; /* Используем 100% ширины контейнера */
-  max-width: 360px; /* Ограничиваем максимальную ширину */
   position: relative;
-  border: 2px solid #b8e0c6;
-  overflow: hidden;
+  width: min(430px, 100%);
+  max-height: min(90vh, 760px);
+  overflow-y: auto;
+  padding: clamp(1.2rem, 4vw, 1.7rem);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 18% 10%, var(--accent-bg), transparent 42%),
+    var(--card-strong);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-strong);
+  animation: modalFadeIn 0.28s ease both;
 }
 
 .close {
-  background: none;
-  border: none;
-  font-size: 26px;
-  font-weight: bold;
   position: absolute;
-  top: 12px;
-  right: 16px;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--accent-bg);
+  color: var(--accent);
   cursor: pointer;
-  color: #4a1c8a;
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 900;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 16px;
-  color: #4a1c8a;
-  font-size: 24px;
+.close:hover {
+  transform: translateY(-1px) rotate(4deg);
+  border-color: var(--border-strong);
 }
 
-form {
-  display: flex;
-  flex-direction: column;
+.title {
+  margin: 0 2.5rem 1rem 0;
+  color: var(--text);
+  font-size: clamp(2rem, 6vw, 3rem);
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    var(--accent2),
+    var(--brown2)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.form {
+  display: grid;
+  gap: 0.75rem;
 }
 
 .inputWrapper {
   position: relative;
-  margin-bottom: 12px;
 }
 
-input {
-  padding: 10px 12px;
-  border: 1px solid #c5dec9;
-  border-radius: 10px;
-  font-size: 16px;
-  background-color: #f8fff8;
+.input {
   width: 100%;
-  box-sizing: border-box; /* Учитываем отступы в ширине */
+  min-height: 48px;
+  padding: 0.85rem 2.8rem 0.85rem 1rem;
+  border-radius: 17px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-weight: 800;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-bg);
 }
 
 .valid {
-  border: 1px solid green;
-  transition: border-color 0.3s ease;
+  border-color: var(--success);
 }
 
 .invalid {
-  border: 1px solid red;
-  transition: border-color 0.3s ease;
+  border-color: var(--danger);
 }
 
 .icon {
   position: absolute;
-  right: 12px;
+  right: 0.95rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 18px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
 }
 
 .success {
-  color: green;
-  opacity: 1;
+  color: var(--success);
 }
 
 .errorIcon {
-  color: red;
-  opacity: 1;
+  color: var(--danger);
+}
+
+.errorHint,
+.hint {
+  display: block;
+  margin: -0.35rem 0 0.25rem;
+  padding-left: 0.25rem;
+  min-height: 14px;
+  color: var(--text3);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.45;
 }
 
 .errorHint {
-  color: #e63946;
-  font-size: 12px;
-  margin-top: 4px;
-  text-align: left;
-  padding-left: 2px;
-  min-height: 14px;
-}
-
-.hint {
-  font-size: 12px;
-  margin-top: 4px;
-  text-align: left;
-  padding-left: 2px;
-  color: #888;
-  min-height: 14px;
+  color: var(--danger);
 }
 
 .button {
-  padding: 12px;
-  background-color: #4a1c8a;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
+  min-height: 48px;
+  margin-top: 0.4rem;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 16px;
-  min-height: 44px;
-  transition: background 0.3s ease;
-  margin-top: 8px;
+  color: white;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: var(--shadow-purple);
+  font-weight: 1000;
 }
 
 .button:hover {
-  background-color: #6f2ba0;
+  transform: translateY(-2px);
 }
 
 .error {
-  color: #e63946;
-  font-size: 14px;
-  margin-bottom: 10px;
+  margin: 0 0 0.85rem;
+  padding: 0.8rem 1rem;
+  border-radius: 18px;
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.22);
   text-align: center;
+  font-weight: 850;
 }
 
-.switchText {
+.switchText,
+.forgotPassword {
+  margin: 1rem 0 0;
+  color: var(--text2);
   text-align: center;
-  margin-top: 12px;
-  font-size: 14px;
-  color: #444;
+  font-size: 0.94rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.forgotPassword {
+  margin-top: 0.9rem;
 }
 
 .switchLink {
-  color: #4a1c8a;
+  color: var(--accent);
   cursor: pointer;
-  font-weight: bold;
-  margin-left: 4px;
-  transition: color 0.2s ease;
+  font-weight: 1000;
+  margin-left: 0.25rem;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .switchLink:hover {
-  color: #6f2ba0;
+  color: var(--accent3);
 }
 
-@media (max-width: 600px) {
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 520px) {
   .modal {
-    width: 90%;
-    padding: 20px;
-    box-sizing: border-box; /* Чтобы padding не выходил за пределы */
+    border-radius: 28px;
+    padding: 1.1rem;
+  }
+
+  .title {
+    font-size: 2rem;
   }
 }

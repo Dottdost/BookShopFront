@@ -9,8 +9,59 @@ import { useTranslation } from "react-i18next";
 
 type GenreTree = Genre & { subgenres: Genre[] };
 
+type ValuesResponse<T> = {
+  $values?: T[];
+};
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com";
+
+const unwrapArray = <T,>(data: unknown): T[] => {
+  if (Array.isArray(data)) {
+    return data as T[];
+  }
+
+  if (!data || typeof data !== "object") {
+    return [];
+  }
+
+  const objectData = data as Record<string, unknown>;
+
+  if (Array.isArray(objectData.$values)) {
+    return objectData.$values as T[];
+  }
+
+  if (Array.isArray(objectData.items)) {
+    return objectData.items as T[];
+  }
+
+  if (
+    objectData.items &&
+    typeof objectData.items === "object" &&
+    Array.isArray((objectData.items as ValuesResponse<T>).$values)
+  ) {
+    return (objectData.items as ValuesResponse<T>).$values ?? [];
+  }
+
+  if (Array.isArray(objectData.data)) {
+    return objectData.data as T[];
+  }
+
+  if (
+    objectData.data &&
+    typeof objectData.data === "object" &&
+    Array.isArray((objectData.data as ValuesResponse<T>).$values)
+  ) {
+    return (objectData.data as ValuesResponse<T>).$values ?? [];
+  }
+
+  return [];
+};
+
 const BooksPage: React.FC = () => {
   const { t } = useTranslation();
+
   const [books, setBooks] = useState<Book[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,78 +74,138 @@ const BooksPage: React.FC = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
+
     const q = params.get("search") || "";
     const g = params.get("genre");
+
     setSearchQuery(q);
-    setSelectedGenre(g ? +g : null);
+    setSelectedGenre(g ? Number(g) : null);
   }, [location.search]);
 
   useEffect(() => {
-    (async () => {
+    const fetchBooks = async () => {
       try {
-        const [booksRes, genresRes] = await Promise.all([
-          fetch("https://localhost:44308/api/books?page=1&pageSize=50"),
-          axios.get("https://localhost:44308/api/genres/all"),
-        ]);
-        const bData = await booksRes.json();
-        setBooks(bData.$values ?? bData);
+        setLoading(true);
 
-        const gData: Genre[] = genresRes.data.$values;
-        setGenres(gData);
-      } catch (err) {
-        console.error(err);
+        const response = await axios.get(`${API_BASE_URL}/api/books`, {
+          params: {
+            page: 1,
+            pageSize: 100,
+          },
+          headers: {
+            Accept: "text/plain",
+          },
+        });
+
+        console.log("BOOKS RESPONSE:", response.data);
+
+        const booksData = unwrapArray<Book>(response.data);
+
+        console.log("BOOKS NORMALIZED:", booksData);
+
+        setBooks(booksData);
+      } catch (error) {
+        console.error("Error loading books:", error);
+        setBooks([]);
       } finally {
         setLoading(false);
       }
-    })();
+    };
+
+    const fetchGenres = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/genres/all`, {
+          headers: {
+            Accept: "text/plain",
+          },
+        });
+
+        console.log("GENRES RESPONSE:", response.data);
+
+        const genresData = unwrapArray<Genre>(response.data);
+
+        setGenres(genresData);
+      } catch (error) {
+        console.error("Error loading genres:", error);
+        setGenres([]);
+      }
+    };
+
+    void fetchBooks();
+    void fetchGenres();
   }, []);
 
   const genreTree: GenreTree[] = genres
-    .filter((g) => !g.parentGenreId)
+    .filter((genre) => !genre.parentGenreId)
     .map((root) => ({
       ...root,
-      subgenres: genres.filter((g) => g.parentGenreId === root.id),
+      subgenres: genres.filter((genre) => genre.parentGenreId === root.id),
     }));
 
-  const filtered = books.filter((b) => {
-    const q = searchQuery.toLowerCase();
-    const matchesText =
-      b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q);
-    const matchesGenre = selectedGenre === null || +b.genreId === selectedGenre;
+  const filtered = books.filter((book) => {
+    const q = searchQuery.trim().toLowerCase();
+
+    const title = book.title?.toLowerCase() ?? "";
+    const author = book.author?.toLowerCase() ?? "";
+
+    const matchesText = !q || title.includes(q) || author.includes(q);
+
+    const matchesGenre =
+      selectedGenre === null || Number(book.genreId) === selectedGenre;
+
     return matchesText && matchesGenre;
   });
 
   const applySearch = (q: string) => {
     const params = new URLSearchParams(location.search);
-    if (q) params.set("search", q);
-    else params.delete("search");
+
+    if (q.trim()) {
+      params.set("search", q.trim());
+    } else {
+      params.delete("search");
+    }
+
     navigate(`/books?${params.toString()}`, { replace: true });
   };
-  const applyGenre = (gId: number | null) => {
+
+  const applyGenre = (genreId: number | null) => {
     const params = new URLSearchParams(location.search);
-    if (gId !== null) params.set("genre", String(gId));
-    else params.delete("genre");
+
+    if (genreId !== null) {
+      params.set("genre", String(genreId));
+    } else {
+      params.delete("genre");
+    }
+
     navigate(`/books?${params.toString()}`, { replace: true });
   };
-  const toggleGenreMenu = (id: number) =>
-    setOpenGenreId(openGenreId === id ? null : id);
+
+  const toggleGenreMenu = (id: number) => {
+    setOpenGenreId((current) => (current === id ? null : id));
+  };
 
   if (loading) {
     return <div className={styles.loading}>{t("common.loading")}</div>;
   }
 
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <div className={styles.searchBar}>
         <input
           type="text"
           placeholder={t("books.searchPlaceholder")}
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && applySearch(searchQuery)}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              applySearch(searchQuery);
+            }
+          }}
           className={styles.searchInput}
         />
+
         <button
+          type="button"
           className={styles.searchBtn}
           onClick={() => applySearch(searchQuery)}
         >
@@ -115,40 +226,43 @@ const BooksPage: React.FC = () => {
           >
             <span>{t("books.all")}</span>
           </li>
-          {genreTree.map((g) => (
+
+          {genreTree.map((genre) => (
             <li
-              key={g.id}
+              key={genre.id}
               className={`${styles.genreItem} ${
-                selectedGenre === g.id ? styles.active : ""
+                selectedGenre === genre.id ? styles.active : ""
               }`}
             >
               <div
                 className={styles.genreTitle}
                 onClick={() => {
-                  applyGenre(g.id);
-                  toggleGenreMenu(g.id);
+                  applyGenre(genre.id);
+                  toggleGenreMenu(genre.id);
                 }}
               >
-                <span>{g.name}</span>
-                {g.subgenres.length > 0 && (
+                <span>{genre.name}</span>
+
+                {genre.subgenres.length > 0 && (
                   <span
                     className={`${styles.arrow} ${
-                      openGenreId === g.id ? styles.open : ""
+                      openGenreId === genre.id ? styles.open : ""
                     }`}
                   />
                 )}
               </div>
-              {g.subgenres.length > 0 && openGenreId === g.id && (
+
+              {genre.subgenres.length > 0 && openGenreId === genre.id && (
                 <ul className={styles.subMenu}>
-                  {g.subgenres.map((s) => (
+                  {genre.subgenres.map((subgenre) => (
                     <li
-                      key={s.id}
+                      key={subgenre.id}
                       className={`${styles.subItem} ${
-                        selectedGenre === s.id ? styles.active : ""
+                        selectedGenre === subgenre.id ? styles.active : ""
                       }`}
-                      onClick={() => applyGenre(s.id)}
+                      onClick={() => applyGenre(subgenre.id)}
                     >
-                      {s.name}
+                      {subgenre.name}
                     </li>
                   ))}
                 </ul>
@@ -158,7 +272,7 @@ const BooksPage: React.FC = () => {
         </ul>
       </nav>
 
-      <main className={styles.booksGrid}>
+      <section className={styles.booksGrid}>
         {filtered.length === 0 ? (
           <p className={styles.noBooks}>{t("books.noBooks")}</p>
         ) : (
@@ -172,8 +286,8 @@ const BooksPage: React.FC = () => {
             </Link>
           ))
         )}
-      </main>
-    </div>
+      </section>
+    </main>
   );
 };
 

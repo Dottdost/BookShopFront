@@ -5,7 +5,7 @@ import type {
   SendMessageRequest,
 } from "../types/chat";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://localhost:44308";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com";
 
 const chatClient = axios.create({
   baseURL: API_BASE_URL,
@@ -52,19 +52,17 @@ function unwrapArray(data: unknown): unknown[] {
 }
 
 function unwrapObject(data: unknown): JsonRecord | null {
-  if (isRecord(data)) {
-    const values = data.$values;
+  if (!isRecord(data)) return null;
 
-    if (Array.isArray(values)) {
-      const first = values[0];
+  const values = data.$values;
 
-      return isRecord(first) ? first : null;
-    }
+  if (Array.isArray(values)) {
+    const first = values[0];
 
-    return data;
+    return isRecord(first) ? first : null;
   }
 
-  return null;
+  return data;
 }
 
 function removeRefs<T>(items: unknown[]): T[] {
@@ -94,15 +92,11 @@ export const getChatHubUrl = () => `${API_BASE_URL}/chatHub`;
 export const getMyChats = async (): Promise<ChatSummary[]> => {
   const response = await chatClient.get("/api/chat/my");
 
-  console.log("MY CHATS RESPONSE:", response.data);
-
   return removeRefs<ChatSummary>(unwrapArray(response.data));
 };
 
 export const getWaitingChats = async (): Promise<ChatSummary[]> => {
   const response = await chatClient.get("/api/chat/waiting");
-
-  console.log("WAITING CHATS RESPONSE:", response.data);
 
   return removeRefs<ChatSummary>(unwrapArray(response.data));
 };
@@ -110,11 +104,10 @@ export const getWaitingChats = async (): Promise<ChatSummary[]> => {
 export const createChat = async (): Promise<ChatSummary> => {
   const response = await chatClient.post("/api/chat/create");
 
-  console.log("CREATE CHAT RESPONSE:", response.data);
-
   const chat = unwrapObject(response.data);
 
   if (!chat?.id || typeof chat.id !== "string") {
+    console.log("CREATE CHAT RESPONSE:", response.data);
     throw new Error("Unexpected create chat response format.");
   }
 
@@ -126,8 +119,8 @@ export const takeChat = async (chatId: string): Promise<void> => {
 };
 
 export const exitChat = async (_chatId: string): Promise<void> => {
-  // Exit в UI не должен закрывать/удалять чат на backend.
-  // Он просто убирает открытый чат у админа.
+  // Как в Expo: Exit у админа — это просто выйти из окна.
+  // Backend не трогаем, чат не закрываем.
   return Promise.resolve();
 };
 
@@ -139,8 +132,6 @@ export const getChatMessages = async (
   chatId: string,
 ): Promise<ChatMessage[]> => {
   const response = await chatClient.get(`/api/chat/${chatId}/messages`);
-
-  console.log("CHAT MESSAGES RESPONSE:", response.data);
 
   return removeRefs<ChatMessage>(unwrapArray(response.data));
 };

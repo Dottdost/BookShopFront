@@ -24,7 +24,7 @@ const BookForm = ({ book, onSaved }: Props) => {
 
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
   const [publishers, setPublishers] = useState<{ id: number; name: string }[]>(
-    []
+    [],
   );
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const BookForm = ({ book, onSaved }: Props) => {
   const fetchGenres = async () => {
     try {
       const response = await axios.get(
-        "https://localhost:44308/api/genres/all"
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/genres/all",
       );
       const values = response.data?.$values;
       if (Array.isArray(values)) setGenres(values);
@@ -53,7 +53,7 @@ const BookForm = ({ book, onSaved }: Props) => {
   const fetchPublishers = async () => {
     try {
       const response = await axios.get(
-        "https://localhost:44308/api/v1/publishers"
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/v1/publishers",
       );
       const values = response.data?.$values;
       if (Array.isArray(values)) setPublishers(values);
@@ -63,7 +63,7 @@ const BookForm = ({ book, onSaved }: Props) => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
@@ -78,17 +78,17 @@ const BookForm = ({ book, onSaved }: Props) => {
     try {
       if (form.id) {
         await axios.patch(
-          `https://localhost:44308/api/books/${form.id}/stock`,
+          `http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/books/${form.id}/stock`,
           {
             stock: form.stock,
-          }
+          },
         );
 
         await axios.patch(
-          `https://localhost:44308/api/books/${form.id}/price`,
+          `http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/books/${form.id}/price`,
           {
             price: form.price,
-          }
+          },
         );
       } else {
         const formData = new FormData();
@@ -100,17 +100,21 @@ const BookForm = ({ book, onSaved }: Props) => {
         formData.append("GenreId", form.genreId ? String(form.genreId) : "");
         formData.append(
           "PublisherId",
-          form.publisherId ? String(form.publisherId) : ""
+          form.publisherId ? String(form.publisherId) : "",
         );
         if (form.imageFile) {
           formData.append("ImageFile", form.imageFile);
         }
 
-        await axios.post("https://localhost:44308/api/books", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
+        await axios.post(
+          "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/books",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           },
-        });
+        );
       }
 
       onSaved();

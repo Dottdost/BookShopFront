@@ -52,8 +52,10 @@ const en = {
     resetHere: "Reset here",
     alreadyHaveAccount: "Already have an account?",
     noAccount: "Don't have an account?",
-    usernameHint: "Username must be at least 6 characters and include a letter, number, and special character.",
-    passwordHint: "Password must be at least 8 characters, include lowercase, uppercase, number, and special character.",
+    usernameHint:
+      "Username must be at least 6 characters and include a letter, number, and special character.",
+    passwordHint:
+      "Password must be at least 8 characters, include lowercase, uppercase, number, and special character.",
     invalidUsername: "Invalid username.",
     invalidPassword: "Invalid password.",
     passwordsDoNotMatch: "Passwords do not match.",
@@ -72,8 +74,48 @@ const en = {
     subtitle: "Discover stories, authors, and worlds made for you.",
     shopNow: "Shop now",
     featured: "Featured Books",
-    welcome: "Welcome to Cheshire Shelf! Step into a world where stories come to life!",
+    welcome:
+      "Welcome to Cheshire Shelf! Step into a world where stories come to life!",
     recommendations: "Recommendations from Cheshire Shelf Team",
+
+    heroTitle: "Welcome to",
+    eyebrow: "Digital Bookshop Experience",
+    heroSubtitle:
+      "A cozy online bookstore with smart browsing, favorites, cart, orders and live support — designed like a soft digital library.",
+    exploreBooks: "Explore books",
+    findNextRead: "Find your next read",
+    coverAuthor: "Bookshop System",
+
+    specialTitle: "What makes it special?",
+    specialIntro:
+      "Instead of random recommendations, this page presents the project itself: a polished bookstore platform with useful features, clean design and a real shopping flow.",
+
+    featureBrowseTitle: "Beautiful browsing",
+    featureBrowseText:
+      "Books are organized with genre filters, search and animated cards, so the catalog feels smooth and modern.",
+    featureShelfTitle: "Personal shelf",
+    featureShelfText:
+      "Users can save favorites, add books to cart and continue their shopping journey across the site.",
+    featureSupportTitle: "Live support",
+    featureSupportText:
+      "The support chat connects customers and admins with real-time updates and a fallback polling system.",
+
+    quote: "A bookstore should feel like a place you want to stay in.",
+    quoteAuthor: "— Cheshire Shelf philosophy",
+
+    howItWorks: "How it works",
+    stepOneTitle: "Search and discover",
+    stepOneText: "Browse books by title, author or genre.",
+    stepTwoTitle: "Save and shop",
+    stepTwoText: "Add books to favorites or cart with a simple flow.",
+    stepThreeTitle: "Order with support",
+    stepThreeText: "Track orders and contact support directly when needed.",
+
+    ctaTitle: "Ready to enter the shelf?",
+    ctaText:
+      "The project combines frontend, backend, authentication, admin tools, orders and live chat — all inside one bookstore experience.",
+    openCatalog: "Open catalog",
+    browseLibrary: "Browse library",
   },
   about: {
     title: "About Cheshire Shelf",
@@ -84,7 +126,8 @@ const en = {
   },
   contacts: {
     title: "Contact Us",
-    subtitle: "You can reach us during business hours for any questions or assistance!",
+    subtitle:
+      "You can reach us during business hours for any questions or assistance!",
     email: "Email",
     businessHours: "Business Hours",
     weekdays: "Monday - Friday: 9:00 AM - 6:00 PM",
@@ -112,9 +155,9 @@ const en = {
     addToFavorites: "♡ Add to favorites",
     removeFromFavorites: "♥ Remove from favorites",
     failedLoad: "Failed to load book details",
-    addedToCart: "\"{{title}}\" added to cart!",
-    addedToFavorites: "\"{{title}}\" added to favorites",
-    removedFromFavorites: "\"{{title}}\" removed from favorites",
+    addedToCart: '"{{title}}" added to cart!',
+    addedToFavorites: '"{{title}}" added to favorites',
+    removedFromFavorites: '"{{title}}" removed from favorites',
   },
   favorites: {
     title: "Your Favorites",
@@ -172,7 +215,8 @@ const en = {
   footer: {
     delivery: "Delivery: 3-5 days",
     contacts: "Contacts",
-    tagline: "We hope that your journey into the world of books will be exciting with us!",
+    tagline:
+      "We hope that your journey into the world of books will be exciting with us!",
     imageAlt: "Book",
   },
   admin: {
@@ -241,6 +285,12 @@ const en = {
     chooseCover: "Choose Cover Image",
     updatePriceStock: "Update Price and Stock",
     addBook: "Add Book",
+  },
+  registerPopup: {
+    title: "Join Cheshire Shelf",
+    subtitle:
+      "Create an account to unlock a magical promo code and enjoy 15% off your next reading adventure.",
+    button: "Register now",
   },
 };
 

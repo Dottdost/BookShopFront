@@ -1,100 +1,97 @@
 .container {
-  padding: 2rem;
-  color: #2d1e4f;
-  background: linear-gradient(135deg, #e5d9f2, #b7e1c1);
+  min-height: 100vh;
+  padding: clamp(1rem, 4vw, 2.4rem);
+  color: var(--text);
+  background:
+    radial-gradient(circle at 12% 10%, var(--accent-bg), transparent 32rem),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(167, 139, 250, 0.15),
+      transparent 30rem
+    ),
+    linear-gradient(135deg, var(--bg), var(--bg2));
   position: relative;
-  animation: fadeInBooks 1s ease-out;
-  min-height: calc(100vh - 2rem);
-  padding-bottom: 0.25rem;
+  overflow: hidden;
+  animation: fadeInFavorites 0.55s ease both;
 }
 
 .container::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(5px);
-  z-index: -1;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.035) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  pointer-events: none;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: #5e3a87;
-  animation: fadeInBooks 1s ease-out;
+.container > h1 {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 100%);
+  margin: 0 auto 1.5rem;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    var(--accent2),
+    var(--brown2)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.container > p {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 100%);
+  margin: 1.5rem auto;
+  padding: 1.2rem 1.4rem;
+  border-radius: 28px;
+  text-align: center;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  box-shadow: var(--shadow);
+  font-weight: 900;
+  backdrop-filter: blur(18px);
 }
 
 .booksGrid {
+  position: relative;
+  z-index: 1;
+  width: min(1220px, 100%);
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
 }
 
-.bookCard {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-  animation: fadeInBooks 1.5s ease-out;
+@keyframes fadeInFavorites {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.bookCard h2 {
-  color: #6a0dad;
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-}
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
 
-.bookCard p {
-  color: #333;
-  font-size: 1rem;
-}
-
-.bookCard a {
-  color: #6a0dad;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.bookCard a:hover {
-  text-decoration: underline;
-  color: #e91e63;
-}
-
-.bookCard:hover {
-  transform: translateY(-5px);
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.5rem;
+  .container > h1 {
     text-align: center;
-    margin-bottom: 1rem;
   }
 
   .booksGrid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
-    justify-items: center;
-  }
-
-  .bookCard {
-    padding: 12px;
-    width: 100%;
-    max-width: 180px;
-    border-radius: 10px;
-  }
-
-  .bookCard h2 {
-    font-size: 1rem;
-    margin-bottom: 6px;
-  }
-
-  .bookCard p {
-    font-size: 0.85rem;
-  }
-
-  .bookCard a {
-    font-size: 0.85rem;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 0.9rem;
   }
 }

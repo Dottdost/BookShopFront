@@ -20,13 +20,16 @@ const BookManager = () => {
 
   const fetchBooks = useCallback(async () => {
     try {
-      const response = await axios.get("https://localhost:44308/api/books", {
-        params: {
-          page,
-          pageSize: PAGE_SIZE,
-          search: searchTerm,
+      const response = await axios.get(
+        "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/books",
+        {
+          params: {
+            page,
+            pageSize: PAGE_SIZE,
+            search: searchTerm,
+          },
         },
-      });
+      );
 
       const data = response.data;
       if (Array.isArray(data.items)) {
@@ -44,7 +47,9 @@ const BookManager = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`https://localhost:44308/api/books/${id}`);
+      await axios.delete(
+        `http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com/api/books/${id}`,
+      );
       toast.success(t("admin.bookDeleted"));
       fetchBooks();
     } catch (error) {
@@ -79,7 +84,7 @@ const BookManager = () => {
           className={i === page ? styles.activePage : ""}
         >
           {i}
-        </button>
+        </button>,
       );
     }
     return buttons;
@@ -99,40 +104,42 @@ const BookManager = () => {
         className={styles.searchInput}
       />
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>{t("common.title")}</th>
-            <th>{t("common.author")}</th>
-            <th>{t("common.price")}</th>
-            <th>{t("common.actions")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {books.map((b) => (
-            <tr key={b.id}>
-              <td>{b.title}</td>
-              <td>{b.author}</td>
-              <td>${b.price.toFixed(2)}</td>
-              <td>
-                <button
-                  className={styles.editBtn}
-                  onClick={() => setSelectedBook(b)}
-                >
-                  {t("common.edit")}
-                </button>
-                <button
-                  className={styles.deleteBtn}
-                  onClick={() => handleDelete(b.id)}
-                >
-                  {t("common.delete")}
-                </button>
-              </td>
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          {" "}
+          <thead>
+            <tr>
+              <th>{t("common.title")}</th>
+              <th>{t("common.author")}</th>
+              <th>{t("common.price")}</th>
+              <th>{t("common.actions")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            {books.map((b) => (
+              <tr key={b.id}>
+                <td>{b.title}</td>
+                <td>{b.author}</td>
+                <td>${b.price.toFixed(2)}</td>
+                <td>
+                  <button
+                    className={styles.editBtn}
+                    onClick={() => setSelectedBook(b)}
+                  >
+                    {t("common.edit")}
+                  </button>
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={() => handleDelete(b.id)}
+                  >
+                    {t("common.delete")}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className={styles.pagination}>
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}

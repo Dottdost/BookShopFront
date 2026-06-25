@@ -27,36 +27,24 @@ function isWaitingChat(chat: ChatSummary) {
   return status === "1" || status === "waiting" || status === "pending";
 }
 
-function hasAssignedSupport(chat: ChatSummary) {
-  return Boolean(chat.adminId || chat.supportUserId);
-}
-
-function canReuseChat(chat: ChatSummary) {
-  if (!chat?.id || isClosedChat(chat)) return false;
-
-  return isWaitingChat(chat) || hasAssignedSupport(chat);
-}
-
 function getChatDate(chat: ChatSummary) {
   return new Date(
-    chat.updatedAt ??
+    chat.createdAt ??
+      chat.updatedAt ??
       chat.lastMessageAt ??
-      chat.createdAt ??
       chat.closedAt ??
       0,
   ).getTime();
 }
 
-function pickUserChat(chats: ChatSummary[]) {
-  const validChats = chats.filter(canReuseChat);
+function pickWaitingUserChat(chats: ChatSummary[]) {
+  const waitingChats = chats.filter(
+    (chat) => chat?.id && !isClosedChat(chat) && isWaitingChat(chat),
+  );
 
-  if (validChats.length === 0) return null;
+  if (waitingChats.length === 0) return null;
 
-  return [...validChats].sort((a, b) => getChatDate(b) - getChatDate(a))[0];
-}
-
-function findChat(chats: ChatSummary[], chatId: string) {
-  return chats.find((chat) => chat.id === chatId) ?? null;
+  return [...waitingChats].sort((a, b) => getChatDate(b) - getChatDate(a))[0];
 }
 
 const SupportChatWidget = () => {
@@ -129,7 +117,7 @@ const SupportChatWidget = () => {
 
     try {
       const chats = await getMyChats();
-      const currentChat = pickUserChat(chats);
+      const currentChat = pickWaitingUserChat(chats);
 
       if (currentChat?.id) {
         setChatId(currentChat.id);
@@ -145,38 +133,30 @@ const SupportChatWidget = () => {
     }
   }, [isAuthenticated, isAdmin, loadMessages, resetChatState]);
 
-  async function resolveChatBeforeSend() {
-    if (!chatId) {
-      const createdChat = await createChat();
-
-      setChatId(createdChat.id);
-      setMessages([]);
-
-      return createdChat.id;
-    }
-
-    const chats = await getMyChats();
-    const currentChat = findChat(chats, chatId);
-
-    if (currentChat && canReuseChat(currentChat)) {
-      return chatId;
-    }
-
-    const freshWaitingChat = pickUserChat(chats);
-
-    if (freshWaitingChat?.id) {
-      setChatId(freshWaitingChat.id);
-      await loadMessages(freshWaitingChat.id);
-
-      return freshWaitingChat.id;
-    }
-
+  async function createFreshChat() {
     const createdChat = await createChat();
 
     setChatId(createdChat.id);
     setMessages([]);
 
     return createdChat.id;
+  }
+
+  async function resolveChatBeforeSend() {
+    const chats = await getMyChats();
+    const waitingChat = pickWaitingUserChat(chats);
+
+    if (waitingChat?.id) {
+      setChatId(waitingChat.id);
+
+      if (waitingChat.id !== chatId) {
+        await loadMessages(waitingChat.id);
+      }
+
+      return waitingChat.id;
+    }
+
+    return createFreshChat();
   }
 
   useEffect(() => {
