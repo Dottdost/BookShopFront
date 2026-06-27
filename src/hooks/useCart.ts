@@ -66,11 +66,11 @@ export const useCart = () => {
     dispatch(addToCart(item));
   };
 
-  const removeItem = (bookId: number) => {
+  const removeItem = (bookId: string | number) => {
     dispatch(removeFromCart(bookId));
   };
 
-  const changeQuantity = (bookId: number, quantity: number) => {
+  const changeQuantity = (bookId: string | number, quantity: number) => {
     dispatch(updateQuantity({ bookId, quantity }));
   };
 
