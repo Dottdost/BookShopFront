@@ -21,7 +21,7 @@ export default function MysticCat() {
   const [isTalking, setIsTalking] = useState(false);
   const [pupilMove, setPupilMove] = useState({ x: 0, y: 0 });
 
-  const speak = (text) => {
+  const speak = (text: string) => {
     if (!("speechSynthesis" in window)) return;
 
     window.speechSynthesis.cancel();
@@ -48,7 +48,7 @@ export default function MysticCat() {
   };
 
   useEffect(() => {
-    const handleMouseMove = (event) => {
+    const handleMouseMove = (event: MouseEvent) => {
       const mascot = document.getElementById("mystic-cat-mascot");
       if (!mascot) return;
 
