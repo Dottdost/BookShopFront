@@ -103,7 +103,7 @@ const BookForm = ({ book, onSaved }: Props) => {
           form.publisherId ? String(form.publisherId) : "",
         );
         if (form.imageFile) {
-          formData.append("ImageFile", form.imageFile);
+          formData.append("Image", form.imageFile);
         }
 
         await axios.post(
