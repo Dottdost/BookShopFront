@@ -5,12 +5,11 @@ import classNames from "classnames";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
-
+import WelcomeAnimation from "./WelcomeAnimation";
 interface Props {
   onClose: () => void;
   onResetPasswordClick: () => void;
 }
-
 const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
   const { t } = useTranslation();
 
@@ -24,7 +23,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
   });
 
   const [error, setError] = useState("");
-
+  const [showWelcome, setShowWelcome] = useState(false);
   const [errors, setErrors] = useState({
     userName: "",
     password: "",
@@ -108,6 +107,8 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
 
       if (success) {
         toast.success(t("auth.registrationSuccess"));
+
+        setShowWelcome(true);
         setIsRegistering(false);
       } else {
         setError(registerError || t("auth.registrationFailed"));
@@ -152,140 +153,150 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div
-        className={styles.modal}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <button className={styles.close} onClick={onClose} type="button">
-          &times;
-        </button>
+    <>
+      <div className={styles.overlay} onClick={onClose}>
+        <div
+          className={styles.modal}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <button className={styles.close} onClick={onClose} type="button">
+            &times;
+          </button>
 
-        <h2 className={styles.title}>
-          {isRegistering ? t("auth.register") : t("auth.login")}
-        </h2>
+          <h2 className={styles.title}>
+            {isRegistering ? t("auth.register") : t("auth.login")}
+          </h2>
 
-        {error && <p className={styles.error}>{error}</p>}
+          {error && <p className={styles.error}>{error}</p>}
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.inputWrapper}>
-            <input
-              type="text"
-              name="userName"
-              value={formData.userName}
-              onChange={handleChange}
-              placeholder={t("auth.username")}
-              required
-              className={classNames(styles.input, {
-                [styles.valid]:
-                  isRegistering && formData.userName && isUsernameValid,
-                [styles.invalid]:
-                  isRegistering && formData.userName && !isUsernameValid,
-              })}
-            />
-
-            {isRegistering && formData.userName && (
-              <span
-                className={`${styles.icon} ${
-                  isUsernameValid ? styles.success : styles.errorIcon
-                }`}
-              >
-                {isUsernameValid ? <FiCheckCircle /> : <FiXCircle />}
-              </span>
-            )}
-          </div>
-
-          {errors.userName && (
-            <small className={styles.errorHint}>{errors.userName}</small>
-          )}
-
-          {isRegistering && (
+          <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.inputWrapper}>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                name="userName"
+                value={formData.userName}
                 onChange={handleChange}
-                placeholder={t("auth.email")}
+                placeholder={t("auth.username")}
                 required
-                className={styles.input}
+                className={classNames(styles.input, {
+                  [styles.valid]:
+                    isRegistering && formData.userName && isUsernameValid,
+                  [styles.invalid]:
+                    isRegistering && formData.userName && !isUsernameValid,
+                })}
               />
+
+              {isRegistering && formData.userName && (
+                <span
+                  className={`${styles.icon} ${
+                    isUsernameValid ? styles.success : styles.errorIcon
+                  }`}
+                >
+                  {isUsernameValid ? <FiCheckCircle /> : <FiXCircle />}
+                </span>
+              )}
             </div>
-          )}
 
-          <div className={styles.inputWrapper}>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder={t("auth.password")}
-              required
-              className={classNames(styles.input, {
-                [styles.valid]:
-                  isRegistering && formData.password && isPasswordValid,
-                [styles.invalid]:
-                  isRegistering && formData.password && !isPasswordValid,
-              })}
-            />
-
-            {isRegistering && formData.password && (
-              <span
-                className={`${styles.icon} ${
-                  isPasswordValid ? styles.success : styles.errorIcon
-                }`}
-              >
-                {isPasswordValid ? <FiCheckCircle /> : <FiXCircle />}
-              </span>
+            {errors.userName && (
+              <small className={styles.errorHint}>{errors.userName}</small>
             )}
-          </div>
 
-          {errors.password && (
-            <small className={styles.errorHint}>{errors.password}</small>
-          )}
+            {isRegistering && (
+              <div className={styles.inputWrapper}>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder={t("auth.email")}
+                  required
+                  className={styles.input}
+                />
+              </div>
+            )}
 
-          {isRegistering && (
             <div className={styles.inputWrapper}>
               <input
                 type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
+                name="password"
+                value={formData.password}
                 onChange={handleChange}
-                placeholder={t("auth.confirmPassword")}
+                placeholder={t("auth.password")}
                 required
-                className={styles.input}
+                className={classNames(styles.input, {
+                  [styles.valid]:
+                    isRegistering && formData.password && isPasswordValid,
+                  [styles.invalid]:
+                    isRegistering && formData.password && !isPasswordValid,
+                })}
               />
+
+              {isRegistering && formData.password && (
+                <span
+                  className={`${styles.icon} ${
+                    isPasswordValid ? styles.success : styles.errorIcon
+                  }`}
+                >
+                  {isPasswordValid ? <FiCheckCircle /> : <FiXCircle />}
+                </span>
+              )}
             </div>
+
+            {errors.password && (
+              <small className={styles.errorHint}>{errors.password}</small>
+            )}
+
+            {isRegistering && (
+              <div className={styles.inputWrapper}>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder={t("auth.confirmPassword")}
+                  required
+                  className={styles.input}
+                />
+              </div>
+            )}
+
+            <button type="submit" className={styles.button}>
+              {isRegistering ? t("auth.register") : t("auth.login")}
+            </button>
+          </form>
+
+          {!isRegistering && (
+            <p className={styles.forgotPassword}>
+              {t("auth.forgotPassword")}{" "}
+              <span
+                className={styles.switchLink}
+                onClick={() => {
+                  onClose();
+                  onResetPasswordClick();
+                }}
+              >
+                {t("auth.resetHere")}
+              </span>
+            </p>
           )}
 
-          <button type="submit" className={styles.button}>
-            {isRegistering ? t("auth.register") : t("auth.login")}
-          </button>
-        </form>
-
-        {!isRegistering && (
-          <p className={styles.forgotPassword}>
-            {t("auth.forgotPassword")}{" "}
-            <span
-              className={styles.switchLink}
-              onClick={() => {
-                onClose();
-                onResetPasswordClick();
-              }}
-            >
-              {t("auth.resetHere")}
+          <p className={styles.switchText}>
+            {isRegistering ? t("auth.alreadyHaveAccount") : t("auth.noAccount")}{" "}
+            <span className={styles.switchLink} onClick={resetForm}>
+              {isRegistering ? t("auth.login") : t("auth.register")}
             </span>
           </p>
-        )}
-
-        <p className={styles.switchText}>
-          {isRegistering ? t("auth.alreadyHaveAccount") : t("auth.noAccount")}{" "}
-          <span className={styles.switchLink} onClick={resetForm}>
-            {isRegistering ? t("auth.login") : t("auth.register")}
-          </span>
-        </p>
+        </div>
       </div>
-    </div>
+
+      {showWelcome && (
+        <WelcomeAnimation
+          onClose={() => {
+            setShowWelcome(false);
+          }}
+        />
+      )}
+    </>
   );
 };
 
