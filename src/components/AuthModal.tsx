@@ -127,7 +127,6 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
 
       if (success) {
         setShowWelcome(true);
-        setIsRegistering(false);
 
         setFormData((prev) => ({
           ...prev,
@@ -135,6 +134,8 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
           password: "",
           confirmPassword: "",
         }));
+
+        setError("");
       } else {
         setError(registerError || t("auth.registrationFailed"));
         toast.error(registerError || t("auth.registrationFailed"));
