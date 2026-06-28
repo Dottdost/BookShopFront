@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import styles from "../styles/WelcomeAnimation.module.css";
 import welcomeVideo from "../assets/video.mp4";
 
@@ -6,7 +7,7 @@ interface WelcomeAnimationProps {
 }
 
 const WelcomeAnimation = ({ onClose }: WelcomeAnimationProps) => {
-  return (
+  return createPortal(
     <div className={styles.overlay}>
       <div className={styles.card}>
         <button className={styles.closeButton} type="button" onClick={onClose}>
@@ -42,7 +43,8 @@ const WelcomeAnimation = ({ onClose }: WelcomeAnimationProps) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 
