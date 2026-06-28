@@ -12,18 +12,28 @@ import {
   removeAdminByName,
 } from "../services/adminApi";
 
+const PAGE_SIZE = 10;
+
 const UserManager = () => {
   const { t } = useTranslation();
 
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchUsers = async () => {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const fetchUsers = async (currentPage = page) => {
     try {
       setLoading(true);
 
-      const result = await getUsers();
-      setUsers(result);
+      const result = await getUsers(currentPage, PAGE_SIZE);
+
+      setUsers(result.items);
+      setPage(result.page);
+      setTotalPages(result.totalPages);
+      setTotalCount(result.totalCount);
     } catch (error) {
       console.error("Error loading users:", error);
       toast.error(getErrorMessage(error, t("admin.usersLoadError")));
@@ -39,7 +49,11 @@ const UserManager = () => {
 
     try {
       await deleteUser(user);
-      await fetchUsers();
+
+      const nextPage =
+        users.length === 1 && page > 1 ? Math.max(1, page - 1) : page;
+
+      await fetchUsers(nextPage);
 
       toast.success(t("admin.userDeleted"));
     } catch (error) {
@@ -51,7 +65,7 @@ const UserManager = () => {
   const handleAssignAdmin = async (user: AdminUser) => {
     try {
       await assignAdminByName(user.userName);
-      await fetchUsers();
+      await fetchUsers(page);
 
       toast.success(t("admin.adminAssigned"));
     } catch (error) {
@@ -63,7 +77,7 @@ const UserManager = () => {
   const handleRemoveAdmin = async (user: AdminUser) => {
     try {
       await removeAdminByName(user.userName);
-      await fetchUsers();
+      await fetchUsers(page);
 
       toast.success(t("admin.adminRemoved"));
     } catch (error) {
@@ -72,17 +86,46 @@ const UserManager = () => {
     }
   };
 
+  const renderPageButtons = () => {
+    const buttons = [];
+    const maxButtons = 5;
+
+    let start = Math.max(1, page - 2);
+    const end = Math.min(totalPages, start + maxButtons - 1);
+
+    if (end - start < maxButtons - 1) {
+      start = Math.max(1, end - maxButtons + 1);
+    }
+
+    for (let i = start; i <= end; i += 1) {
+      buttons.push(
+        <button
+          key={i}
+          type="button"
+          onClick={() => setPage(i)}
+          disabled={i === page}
+          className={i === page ? styles.activePage : ""}
+        >
+          {i}
+        </button>,
+      );
+    }
+
+    return buttons;
+  };
+
   useEffect(() => {
-    void fetchUsers();
-  }, []);
+    void fetchUsers(page);
+  }, [page]);
 
   return (
     <div className={styles.manager}>
       <h2>{t("admin.userManagement")}</h2>
 
-      {loading && (
-        <p className={styles.managerSubtitle}>{t("common.loading")}</p>
-      )}
+      <p className={styles.managerSubtitle}>
+        Total users: {totalCount}
+        {loading ? ` • ${t("common.loading")}` : ""}
+      </p>
 
       <div className={styles.tableWrap}>
         <table className={styles.table}>
@@ -115,6 +158,7 @@ const UserManager = () => {
                   <td>
                     <button
                       className={styles.editBtn}
+                      type="button"
                       onClick={() => handleAssignAdmin(user)}
                     >
                       {t("admin.makeAdmin")}
@@ -122,6 +166,7 @@ const UserManager = () => {
 
                     <button
                       className={styles.editBtn}
+                      type="button"
                       onClick={() => handleRemoveAdmin(user)}
                     >
                       {t("admin.removeAdmin")}
@@ -129,6 +174,7 @@ const UserManager = () => {
 
                     <button
                       className={styles.deleteBtn}
+                      type="button"
                       onClick={() => handleDeleteUser(user)}
                     >
                       {t("common.delete")}
@@ -146,6 +192,30 @@ const UserManager = () => {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            type="button"
+            onClick={() => setPage((current) => Math.max(1, current - 1))}
+            disabled={page === 1 || loading}
+          >
+            {t("common.prev")}
+          </button>
+
+          {renderPageButtons()}
+
+          <button
+            type="button"
+            onClick={() =>
+              setPage((current) => Math.min(totalPages, current + 1))
+            }
+            disabled={page === totalPages || loading}
+          >
+            {t("common.next")}
+          </button>
+        </div>
+      )}
 
       <ToastContainer />
     </div>

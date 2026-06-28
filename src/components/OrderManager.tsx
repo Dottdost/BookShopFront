@@ -11,6 +11,8 @@ import {
   updateOrderStatus,
 } from "../services/adminApi";
 
+const PAGE_SIZE = 10;
+
 const statusOptions = [
   { value: 0, key: "Pending" },
   { value: 1, key: "Paid" },
@@ -39,8 +41,13 @@ const normalizeStatusNumber = (status: number | string) => {
 
 const OrderManager = () => {
   const { t } = useTranslation();
+
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   const statusLabelMap: Record<string, string> = {
     Pending: t("orders.pending"),
@@ -50,12 +57,16 @@ const OrderManager = () => {
     Canceled: t("admin.canceled"),
   };
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (currentPage = page) => {
     try {
       setLoading(true);
 
-      const result = await getOrders();
-      setOrders(result);
+      const result = await getOrders(currentPage, PAGE_SIZE);
+
+      setOrders(result.items);
+      setPage(result.page);
+      setTotalPages(result.totalPages);
+      setTotalCount(result.totalCount);
     } catch (error) {
       console.error("Error fetching orders:", error);
       toast.error(getErrorMessage(error, t("admin.failedLoadOrders")));
@@ -69,7 +80,8 @@ const OrderManager = () => {
 
     try {
       await updateOrderStatus(orderId, numericStatus);
-      await fetchOrders();
+      await fetchOrders(page);
+
       toast.success(t("admin.orderStatusUpdated", { id: orderId }));
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -78,9 +90,18 @@ const OrderManager = () => {
   };
 
   const handleDelete = async (orderId: string) => {
+    const confirmed = window.confirm(`Delete order "${orderId}"?`);
+
+    if (!confirmed) return;
+
     try {
       await deleteOrder(orderId);
-      await fetchOrders();
+
+      const nextPage =
+        orders.length === 1 && page > 1 ? Math.max(1, page - 1) : page;
+
+      await fetchOrders(nextPage);
+
       toast.success(t("admin.orderDeleted", { id: orderId }));
     } catch (error) {
       console.error("Error deleting order:", error);
@@ -88,17 +109,46 @@ const OrderManager = () => {
     }
   };
 
+  const renderPageButtons = () => {
+    const buttons = [];
+    const maxButtons = 5;
+
+    let start = Math.max(1, page - 2);
+    const end = Math.min(totalPages, start + maxButtons - 1);
+
+    if (end - start < maxButtons - 1) {
+      start = Math.max(1, end - maxButtons + 1);
+    }
+
+    for (let i = start; i <= end; i += 1) {
+      buttons.push(
+        <button
+          key={i}
+          type="button"
+          onClick={() => setPage(i)}
+          disabled={i === page}
+          className={i === page ? styles.activePage : ""}
+        >
+          {i}
+        </button>,
+      );
+    }
+
+    return buttons;
+  };
+
   useEffect(() => {
-    void fetchOrders();
-  }, []);
+    void fetchOrders(page);
+  }, [page]);
 
   return (
     <div className={styles.manager}>
       <h2>{t("admin.orderManagement")}</h2>
 
-      {loading && (
-        <p className={styles.managerSubtitle}>{t("common.loading")}</p>
-      )}
+      <p className={styles.managerSubtitle}>
+        Total orders: {totalCount}
+        {loading ? ` • ${t("common.loading")}` : ""}
+      </p>
 
       <div className={styles.tableWrap}>
         <table className={styles.table}>
@@ -106,6 +156,8 @@ const OrderManager = () => {
             <tr>
               <th>{t("admin.id")}</th>
               <th>{t("common.status")}</th>
+              <th>Total</th>
+              <th>Date</th>
               <th>{t("common.actions")}</th>
             </tr>
           </thead>
@@ -133,8 +185,27 @@ const OrderManager = () => {
                   </td>
 
                   <td>
+                    $
+                    {(
+                      order.finalPrice ??
+                      order.totalPrice ??
+                      order.originalPrice ??
+                      0
+                    ).toFixed(2)}
+                  </td>
+
+                  <td>
+                    {order.orderDate || order.createdAt
+                      ? new Date(
+                          order.orderDate ?? order.createdAt ?? "",
+                        ).toLocaleDateString()
+                      : "-"}
+                  </td>
+
+                  <td>
                     <button
                       className={styles.deleteBtn}
+                      type="button"
                       onClick={() => handleDelete(order.id)}
                     >
                       {t("common.delete")}
@@ -144,7 +215,7 @@ const OrderManager = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={3} className={styles.emptyState}>
+                <td colSpan={5} className={styles.emptyState}>
                   {loading ? t("common.loading") : t("admin.noOrders")}
                 </td>
               </tr>
@@ -152,6 +223,30 @@ const OrderManager = () => {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            type="button"
+            onClick={() => setPage((current) => Math.max(1, current - 1))}
+            disabled={page === 1 || loading}
+          >
+            {t("common.prev")}
+          </button>
+
+          {renderPageButtons()}
+
+          <button
+            type="button"
+            onClick={() =>
+              setPage((current) => Math.min(totalPages, current + 1))
+            }
+            disabled={page === totalPages || loading}
+          >
+            {t("common.next")}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

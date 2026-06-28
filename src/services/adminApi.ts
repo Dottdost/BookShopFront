@@ -9,8 +9,21 @@ type ValuesResponse<T> = {
 };
 
 type PagedResponse<T> = {
+  page?: number;
+  pageSize?: number;
+  totalPages?: number;
+  totalCount?: number;
   data?: ValuesResponse<T> | T[];
+  items?: ValuesResponse<T> | T[];
   $values?: T[];
+};
+
+export type PagedResult<T> = {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  totalCount: number;
 };
 
 export type AdminUser = {
@@ -31,7 +44,11 @@ export type AdminOrder = {
   id: string;
   status: number | string;
   createdAt?: string;
+  orderDate?: string;
   totalPrice?: number;
+  finalPrice?: number;
+  originalPrice?: number;
+  promoCode?: string;
 };
 
 export type PromoCode = {
@@ -85,7 +102,52 @@ const unwrapValues = <T>(data: unknown): T[] => {
     return (objectData.data as ValuesResponse<T>).$values ?? [];
   }
 
+  if (Array.isArray(objectData.items)) {
+    return objectData.items;
+  }
+
+  if (
+    objectData.items &&
+    typeof objectData.items === "object" &&
+    "$values" in objectData.items &&
+    Array.isArray((objectData.items as ValuesResponse<T>).$values)
+  ) {
+    return (objectData.items as ValuesResponse<T>).$values ?? [];
+  }
+
   return [];
+};
+
+const unwrapPaged = <T>(
+  data: unknown,
+  page: number,
+  pageSize: number,
+): PagedResult<T> => {
+  const items = unwrapValues<T>(data);
+
+  if (!data || typeof data !== "object") {
+    return {
+      items,
+      page,
+      pageSize,
+      totalPages: Math.max(1, Math.ceil(items.length / pageSize)),
+      totalCount: items.length,
+    };
+  }
+
+  const objectData = data as PagedResponse<T>;
+
+  const totalCount = objectData.totalCount ?? items.length;
+  const totalPages =
+    objectData.totalPages ?? Math.max(1, Math.ceil(totalCount / pageSize));
+
+  return {
+    items,
+    page: objectData.page ?? page,
+    pageSize: objectData.pageSize ?? pageSize,
+    totalPages,
+    totalCount,
+  };
 };
 
 const normalizeRoles = (
@@ -134,22 +196,28 @@ export const getErrorMessage = (error: unknown, fallback: string) => {
   return fallback;
 };
 
-export const getUsers = async (): Promise<AdminUser[]> => {
+export const getUsers = async (
+  page = 1,
+  pageSize = 10,
+): Promise<PagedResult<AdminUser>> => {
   const response = await adminClient.get("/api/v1/Admin/get-all-users", {
     params: {
-      page: 1,
-      pageSize: 100,
+      page,
+      pageSize,
     },
   });
 
-  const users = unwrapValues<AdminUserResponse>(response.data);
+  const paged = unwrapPaged<AdminUserResponse>(response.data, page, pageSize);
 
-  return users.map((user) => ({
-    id: user.id,
-    userName: user.userName,
-    email: user.email,
-    roles: normalizeRoles(user.roles),
-  }));
+  return {
+    ...paged,
+    items: paged.items.map((user) => ({
+      id: user.id,
+      userName: user.userName,
+      email: user.email,
+      roles: normalizeRoles(user.roles),
+    })),
+  };
 };
 
 export const deleteUser = async (user: AdminUser) => {
@@ -178,10 +246,18 @@ export const removeAdminByName = async (userName: string) => {
   );
 };
 
-export const getOrders = async (): Promise<AdminOrder[]> => {
-  const response = await adminClient.get("/api/Order/get-all-orders");
+export const getOrders = async (
+  page = 1,
+  pageSize = 10,
+): Promise<PagedResult<AdminOrder>> => {
+  const response = await adminClient.get("/api/Order/get-all-orders", {
+    params: {
+      page,
+      pageSize,
+    },
+  });
 
-  return unwrapValues<AdminOrder>(response.data);
+  return unwrapPaged<AdminOrder>(response.data, page, pageSize);
 };
 
 export const updateOrderStatus = async (orderId: string, status: number) => {
