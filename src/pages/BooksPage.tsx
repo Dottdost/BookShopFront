@@ -276,6 +276,25 @@ const BooksPage: React.FC = () => {
   return (
     <main className={styles.page}>
       <div className={styles.searchBar}>
+        <div className={styles.searchCat} aria-hidden="true">
+          <div className={styles.searchCatTail} />
+          <div className={styles.searchCatBody}>
+            <span className={styles.searchCatStripeOne} />
+            <span className={styles.searchCatStripeTwo} />
+          </div>
+          <div className={styles.searchCatHead}>
+            <span className={styles.searchCatEarLeft} />
+            <span className={styles.searchCatEarRight} />
+            <span className={styles.searchCatEyeLeft} />
+            <span className={styles.searchCatEyeRight} />
+            <span className={styles.searchCatSmile} />
+          </div>
+          <span className={styles.searchCatPawOne} />
+          <span className={styles.searchCatPawTwo} />
+          <span className={styles.searchCatPawThree} />
+          <span className={styles.searchCatPawFour} />
+        </div>
+
         <input
           type="text"
           placeholder={t("books.searchPlaceholder")}

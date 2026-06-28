@@ -26,6 +26,7 @@
 }
 
 .searchBar {
+  position: relative;
   width: min(820px, 100%);
   margin: 0 auto 1.6rem;
   display: flex;
@@ -37,8 +38,278 @@
   background: var(--glass);
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+.searchBar::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 999px;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 18% 50%,
+      rgba(167, 139, 250, 0.12),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 78% 50%,
+      rgba(240, 171, 252, 0.1),
+      transparent 22%
+    );
 }
 
+.searchInput,
+.searchBtn {
+  position: relative;
+  z-index: 2;
+}
+
+.searchCat {
+  position: absolute;
+  left: 22px;
+  bottom: 8px;
+  z-index: 1;
+  width: 58px;
+  height: 34px;
+  pointer-events: none;
+  opacity: 0.92;
+  transform-origin: center bottom;
+  animation:
+    searchCatWalk 8.5s ease-in-out infinite,
+    searchCatBob 0.75s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.85))
+    drop-shadow(0 8px 10px rgba(0, 0, 0, 0.25));
+}
+
+.searchCatBody {
+  position: absolute;
+  left: 11px;
+  bottom: 7px;
+  width: 34px;
+  height: 19px;
+  border-radius: 999px 999px 12px 12px;
+  background: linear-gradient(135deg, #b88cff, #6d28d9 68%, #4c1d95);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  overflow: hidden;
+}
+
+.searchCatBody::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 20px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  filter: blur(0.5px);
+}
+
+.searchCatStripeOne,
+.searchCatStripeTwo {
+  position: absolute;
+  top: 2px;
+  width: 5px;
+  height: 15px;
+  border-radius: 999px;
+  background: rgba(255, 141, 244, 0.48);
+  transform: rotate(18deg);
+}
+
+.searchCatStripeOne {
+  left: 12px;
+}
+
+.searchCatStripeTwo {
+  left: 21px;
+}
+
+.searchCatHead {
+  position: absolute;
+  right: 4px;
+  bottom: 13px;
+  width: 22px;
+  height: 21px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d8b4fe, #8b5cf6 68%, #5b21b6);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  animation: searchCatLook 2.4s ease-in-out infinite;
+}
+
+.searchCatEarLeft,
+.searchCatEarRight {
+  position: absolute;
+  top: -6px;
+  width: 9px;
+  height: 10px;
+  background: #a78bfa;
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+}
+
+.searchCatEarLeft {
+  left: 2px;
+  transform: rotate(-18deg);
+}
+
+.searchCatEarRight {
+  right: 2px;
+  transform: rotate(18deg);
+}
+
+.searchCatEyeLeft,
+.searchCatEyeRight {
+  position: absolute;
+  top: 8px;
+  width: 3px;
+  height: 5px;
+  border-radius: 999px;
+  background: #160329;
+  animation: searchCatBlink 4.8s ease-in-out infinite;
+}
+
+.searchCatEyeLeft {
+  left: 7px;
+}
+
+.searchCatEyeRight {
+  right: 6px;
+}
+
+.searchCatSmile {
+  position: absolute;
+  left: 8px;
+  bottom: 4px;
+  width: 8px;
+  height: 4px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 0 0 999px 999px;
+}
+
+.searchCatTail {
+  position: absolute;
+  left: 0;
+  bottom: 17px;
+  width: 22px;
+  height: 22px;
+  border: 5px solid #8b5cf6;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-22deg);
+  transform-origin: 90% 90%;
+  animation: searchCatTail 1.1s ease-in-out infinite;
+}
+
+.searchCatPawOne,
+.searchCatPawTwo,
+.searchCatPawThree,
+.searchCatPawFour {
+  position: absolute;
+  bottom: 3px;
+  width: 6px;
+  height: 9px;
+  border-radius: 999px;
+  background: #5b21b6;
+  animation: searchCatPaws 0.75s ease-in-out infinite;
+}
+
+.searchCatPawOne {
+  left: 17px;
+}
+
+.searchCatPawTwo {
+  left: 27px;
+  animation-delay: 0.36s;
+}
+
+.searchCatPawThree {
+  left: 37px;
+  animation-delay: 0.18s;
+}
+
+.searchCatPawFour {
+  left: 46px;
+  animation-delay: 0.54s;
+}
+
+@keyframes searchCatWalk {
+  0% {
+    transform: translateX(-78px) scaleX(1);
+  }
+
+  46% {
+    transform: translateX(650px) scaleX(1);
+  }
+
+  50% {
+    transform: translateX(650px) scaleX(-1);
+  }
+
+  96% {
+    transform: translateX(-78px) scaleX(-1);
+  }
+
+  100% {
+    transform: translateX(-78px) scaleX(1);
+  }
+}
+
+@keyframes searchCatBob {
+  0%,
+  100% {
+    margin-bottom: 0;
+  }
+
+  50% {
+    margin-bottom: 3px;
+  }
+}
+
+@keyframes searchCatTail {
+  0%,
+  100% {
+    transform: rotate(-26deg);
+  }
+
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes searchCatPaws {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes searchCatLook {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-1px) rotate(6deg);
+  }
+}
+
+@keyframes searchCatBlink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  95% {
+    transform: scaleY(0.12);
+  }
+}
 .searchInput {
   flex: 1;
   min-width: 0;
@@ -238,7 +509,9 @@
   .page {
     padding: 1rem;
   }
-
+  .searchCat {
+    display: none;
+  }
   .searchBar {
     margin-bottom: 1.15rem;
   }
