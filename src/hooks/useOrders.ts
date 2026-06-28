@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { DispatchType, RootState } from "../store";
+import type { AppDispatch, RootState } from "../store";
 import { addOrder, fetchOrders } from "../store/slices/ordersSlice";
 import { Order } from "../types/order";
 
 export const useOrders = (userId: string) => {
-  const dispatch: DispatchType = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   const orders = useSelector((state: RootState) => state.orders.items);
   const reduxLoading = useSelector((state: RootState) => state.orders.loading);
