@@ -170,7 +170,7 @@ const SupportChatWidget = () => {
 
     const interval = window.setInterval(() => {
       void loadMessages(chatId);
-    }, 3000);
+    }, 1000);
 
     return () => window.clearInterval(interval);
   }, [open, chatId, isAdmin, loadMessages]);

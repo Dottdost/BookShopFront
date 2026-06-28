@@ -16,9 +16,15 @@ export const useOrders = (userId: string) => {
   const error = useSelector((state: RootState) => state.orders.error);
 
   useEffect(() => {
-    if (userId) {
+    if (!userId) return;
+
+    dispatch(fetchOrders(userId));
+
+    const interval = window.setInterval(() => {
       dispatch(fetchOrders(userId));
-    }
+    }, 1000);
+
+    return () => window.clearInterval(interval);
   }, [userId, dispatch]);
 
   const placeOrder = (order: Order) => {

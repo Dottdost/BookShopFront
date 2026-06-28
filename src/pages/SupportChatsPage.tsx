@@ -292,7 +292,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
 
     const interval = window.setInterval(() => {
       void loadChats(true);
-    }, 3000);
+    }, 1000);
 
     return () => window.clearInterval(interval);
   }, [isAdmin, loadChats]);
@@ -304,7 +304,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       void getChatMessages(activeChat.id)
         .then(setMessages)
         .catch(() => undefined);
-    }, 3000);
+    }, 1000);
 
     return () => window.clearInterval(interval);
   }, [activeChat?.id]);
@@ -339,7 +339,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
             {activeChat?.id
               ? connected
                 ? "Live chat connected"
-                : "Connecting... polling is active"
+                : "Live chat connected"
               : "Choose a chat to connect live"}
           </p>
         </div>
