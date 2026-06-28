@@ -17,7 +17,7 @@ const OrdersPage = () => {
   }, [userId]);
 
   if (!isUserReady) return <p>{t("orders.loadingUser")}</p>;
-  if (loading) return <p>{t("orders.loadingOrders")}</p>;
+  if (loading && orders.length === 0) return <p>{t("orders.loadingOrders")}</p>;
   if (error) return <p>{error}</p>;
 
   return (
@@ -58,10 +58,16 @@ const OrdersPage = () => {
                         <div className={styles.bookImageWrapper}></div>
                         <div className={styles.bookInfo}>
                           <p>
-                            <strong>{item.title || t("orders.unknownBook")}</strong>
+                            <strong>
+                              {item.title || t("orders.unknownBook")}
+                            </strong>
                           </p>
-                          <p>{t("common.quantity")}: {quantity}</p>
-                          <p>{t("common.price")}: ${price.toFixed(2)}</p>
+                          <p>
+                            {t("common.quantity")}: {quantity}
+                          </p>
+                          <p>
+                            {t("common.price")}: ${price.toFixed(2)}
+                          </p>
                         </div>
                       </div>
                     );

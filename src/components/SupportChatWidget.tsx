@@ -251,7 +251,7 @@ const SupportChatWidget = () => {
             {chatId
               ? connected
                 ? "Live chat connected"
-                : "Connecting... messages still update"
+                : "CLive chat connected"
               : "New chat will be created after your first message"}
           </div>
 

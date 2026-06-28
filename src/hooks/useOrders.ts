@@ -22,7 +22,7 @@ export const useOrders = (userId: string) => {
 
     const interval = window.setInterval(() => {
       dispatch(fetchOrders(userId));
-    }, 1000);
+    }, 2000);
 
     return () => window.clearInterval(interval);
   }, [userId, dispatch]);
