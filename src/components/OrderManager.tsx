@@ -63,9 +63,11 @@ const OrderManager = () => {
 
       const result = await getOrders(currentPage, PAGE_SIZE);
 
+      console.log("ORDERS PAGED RESULT:", result);
+
       setOrders(result.items);
       setPage(result.page);
-      setTotalPages(result.totalPages);
+      setTotalPages(Math.max(1, result.totalPages));
       setTotalCount(result.totalCount);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -126,7 +128,7 @@ const OrderManager = () => {
           key={i}
           type="button"
           onClick={() => setPage(i)}
-          disabled={i === page}
+          disabled={i === page || loading}
           className={i === page ? styles.activePage : ""}
         >
           {i}
@@ -146,7 +148,7 @@ const OrderManager = () => {
       <h2>{t("admin.orderManagement")}</h2>
 
       <p className={styles.managerSubtitle}>
-        Total orders: {totalCount}
+        Total orders: {totalCount} • Page {page} of {totalPages}
         {loading ? ` • ${t("common.loading")}` : ""}
       </p>
 
@@ -224,29 +226,27 @@ const OrderManager = () => {
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button
-            type="button"
-            onClick={() => setPage((current) => Math.max(1, current - 1))}
-            disabled={page === 1 || loading}
-          >
-            {t("common.prev")}
-          </button>
+      <div className={styles.pagination}>
+        <button
+          type="button"
+          onClick={() => setPage((current) => Math.max(1, current - 1))}
+          disabled={page === 1 || loading}
+        >
+          {t("common.prev")}
+        </button>
 
-          {renderPageButtons()}
+        {renderPageButtons()}
 
-          <button
-            type="button"
-            onClick={() =>
-              setPage((current) => Math.min(totalPages, current + 1))
-            }
-            disabled={page === totalPages || loading}
-          >
-            {t("common.next")}
-          </button>
-        </div>
-      )}
+        <button
+          type="button"
+          onClick={() =>
+            setPage((current) => Math.min(totalPages, current + 1))
+          }
+          disabled={page === totalPages || loading}
+        >
+          {t("common.next")}
+        </button>
+      </div>
     </div>
   );
 };

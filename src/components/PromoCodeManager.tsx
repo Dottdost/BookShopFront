@@ -144,7 +144,7 @@ const PromoCodeManager = () => {
           key={i}
           type="button"
           onClick={() => setPage(i)}
-          disabled={i === page}
+          disabled={i === page || loading}
           className={i === page ? styles.activePage : ""}
         >
           {i}
@@ -194,7 +194,7 @@ const PromoCodeManager = () => {
       </div>
 
       <p className={styles.managerSubtitle}>
-        Total promo codes: {totalCount}
+        Total promo codes: {totalCount} • Page {page} of {totalPages}
         {loading ? ` • ${t("common.loading")}` : ""}
       </p>
 
@@ -258,29 +258,27 @@ const PromoCodeManager = () => {
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button
-            type="button"
-            onClick={() => setPage((current) => Math.max(1, current - 1))}
-            disabled={page === 1 || loading}
-          >
-            {t("common.prev")}
-          </button>
+      <div className={styles.pagination}>
+        <button
+          type="button"
+          onClick={() => setPage((current) => Math.max(1, current - 1))}
+          disabled={page === 1 || loading}
+        >
+          {t("common.prev")}
+        </button>
 
-          {renderPageButtons()}
+        {renderPageButtons()}
 
-          <button
-            type="button"
-            onClick={() =>
-              setPage((current) => Math.min(totalPages, current + 1))
-            }
-            disabled={page === totalPages || loading}
-          >
-            {t("common.next")}
-          </button>
-        </div>
-      )}
+        <button
+          type="button"
+          onClick={() =>
+            setPage((current) => Math.min(totalPages, current + 1))
+          }
+          disabled={page === totalPages || loading}
+        >
+          {t("common.next")}
+        </button>
+      </div>
 
       <ToastContainer />
     </div>

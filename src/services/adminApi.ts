@@ -5,14 +5,18 @@ const API_BASE_URL =
   "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com";
 
 type ValuesResponse<T> = {
+  $id?: string;
   $values?: T[];
 };
 
 type PagedResponse<T> = {
+  $id?: string;
   page?: number;
   pageSize?: number;
   totalPages?: number;
   totalCount?: number;
+  hasPrevious?: boolean;
+  hasNext?: boolean;
   data?: ValuesResponse<T> | T[];
   items?: ValuesResponse<T> | T[];
   $values?: T[];
@@ -24,6 +28,8 @@ export type PagedResult<T> = {
   pageSize: number;
   totalPages: number;
   totalCount: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
 };
 
 export type AdminUser = {
@@ -37,6 +43,7 @@ type AdminUserResponse = {
   id: string;
   userName: string;
   email: string;
+  isEmailConfirmed?: boolean;
   roles?: ValuesResponse<string> | string[] | null;
 };
 
@@ -96,7 +103,6 @@ const unwrapValues = <T>(data: unknown): T[] => {
   if (
     objectData.data &&
     typeof objectData.data === "object" &&
-    "$values" in objectData.data &&
     Array.isArray((objectData.data as ValuesResponse<T>).$values)
   ) {
     return (objectData.data as ValuesResponse<T>).$values ?? [];
@@ -109,7 +115,6 @@ const unwrapValues = <T>(data: unknown): T[] => {
   if (
     objectData.items &&
     typeof objectData.items === "object" &&
-    "$values" in objectData.items &&
     Array.isArray((objectData.items as ValuesResponse<T>).$values)
   ) {
     return (objectData.items as ValuesResponse<T>).$values ?? [];
@@ -120,33 +125,42 @@ const unwrapValues = <T>(data: unknown): T[] => {
 
 const unwrapPaged = <T>(
   data: unknown,
-  page: number,
-  pageSize: number,
+  fallbackPage: number,
+  fallbackPageSize: number,
 ): PagedResult<T> => {
   const items = unwrapValues<T>(data);
 
   if (!data || typeof data !== "object") {
+    const totalCount = items.length;
+    const totalPages = Math.max(1, Math.ceil(totalCount / fallbackPageSize));
+
     return {
       items,
-      page,
-      pageSize,
-      totalPages: Math.max(1, Math.ceil(items.length / pageSize)),
-      totalCount: items.length,
+      page: fallbackPage,
+      pageSize: fallbackPageSize,
+      totalPages,
+      totalCount,
+      hasPrevious: fallbackPage > 1,
+      hasNext: fallbackPage < totalPages,
     };
   }
 
   const objectData = data as PagedResponse<T>;
 
+  const page = objectData.page ?? fallbackPage;
+  const pageSize = objectData.pageSize ?? fallbackPageSize;
   const totalCount = objectData.totalCount ?? items.length;
   const totalPages =
     objectData.totalPages ?? Math.max(1, Math.ceil(totalCount / pageSize));
 
   return {
     items,
-    page: objectData.page ?? page,
-    pageSize: objectData.pageSize ?? pageSize,
-    totalPages,
+    page,
+    pageSize,
+    totalPages: Math.max(1, totalPages),
     totalCount,
+    hasPrevious: objectData.hasPrevious ?? page > 1,
+    hasNext: objectData.hasNext ?? page < totalPages,
   };
 };
 
@@ -177,7 +191,7 @@ export const getErrorMessage = (error: unknown, fallback: string) => {
     }
 
     if (error.response?.status === 500) {
-      return "Server error. User probably has related data.";
+      return "Server error. This item probably has related data.";
     }
 
     if (error.response?.status === 400) {
