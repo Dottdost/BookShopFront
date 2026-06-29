@@ -692,16 +692,18 @@ const CartPage = () => {
               onChange={handleAddressInputChange}
             />
 
-            <button className={styles.button} onClick={handlePlaceOrder}>
-              {t("common.submit")}
-            </button>
+            <div className={styles.modalActions}>
+              <button className={styles.button} onClick={handlePlaceOrder}>
+                {t("common.submit")}
+              </button>
 
-            <button
-              className={styles.clearButton}
-              onClick={() => setShowCardModal(false)}
-            >
-              {t("common.cancel")}
-            </button>
+              <button
+                className={styles.clearButton}
+                onClick={() => setShowCardModal(false)}
+              >
+                {t("common.cancel")}
+              </button>
+            </div>
           </div>
         </div>
       )}

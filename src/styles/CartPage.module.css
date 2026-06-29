@@ -159,8 +159,8 @@
 }
 
 .promoInput {
-  min-height: 44px;
-  padding: 0.75rem 1rem;
+  min-height: 46px;
+  padding: 0.78rem 1.15rem;
   border-radius: 999px;
   background: var(--card-strong);
   border: 1px solid var(--border);
@@ -170,13 +170,18 @@
 
 .clearButton,
 .button {
-  min-height: 44px;
-  padding: 0.75rem 1rem;
+  min-height: 46px;
+  padding: 0.78rem 1.35rem;
   border-radius: 999px;
   border: 0;
   cursor: pointer;
   font-weight: 1000;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  letter-spacing: 0.01em;
 }
 
 .clearButton {
@@ -189,8 +194,26 @@
   color: white;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   box-shadow: var(--shadow-purple);
+  position: relative;
+  overflow: hidden;
+}
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.22) 45%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
 }
 
+.button:hover::after {
+  transform: translateX(120%);
+}
 .cardModal {
   position: fixed;
   inset: 0;
@@ -206,7 +229,7 @@
   width: min(680px, 100%);
   max-height: min(86vh, 820px);
   overflow-y: auto;
-  padding: clamp(1rem, 3vw, 1.6rem);
+  padding: clamp(1.2rem, 3vw, 1.8rem);
   border-radius: 34px;
   background: var(--card-strong);
   border: 1px solid var(--border);
@@ -214,13 +237,13 @@
 }
 
 .cardModalContent h2 {
-  margin: 0 0 1rem;
+  margin: 0 0 1.15rem;
   color: var(--text);
   font-size: clamp(1.8rem, 4vw, 2.8rem);
 }
 
 .cardModalContent h3 {
-  margin: 1rem 0 0.65rem;
+  margin: 1.15rem 0 0.7rem;
   color: var(--accent);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -230,20 +253,37 @@
 
 .cardModalContent label {
   display: block;
-  margin: 0.65rem 0 0.3rem;
+  margin: 0.75rem 0 0.35rem;
   color: var(--text2);
   font-weight: 900;
 }
 
 .cardModalContent input {
-  min-height: 44px;
-  padding: 0.75rem 1rem;
-  border-radius: 16px;
+  width: 100%;
+  min-height: 46px;
+  padding: 0.78rem 1.05rem;
+  border-radius: 17px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-weight: 850;
+  outline: none;
+}
+
+.cardModalContent input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-bg);
 }
 
 .cardModalContent .button {
-  margin-top: 1rem;
-  margin-right: 0.5rem;
+  margin-top: 1.15rem;
+  margin-right: 0.65rem;
+  padding-inline: 1.55rem;
+}
+
+.cardModalContent .clearButton {
+  margin-top: 1.15rem;
+  padding-inline: 1.45rem;
 }
 
 @keyframes fadeInCart {
@@ -383,7 +423,19 @@
   transform-origin: 128px 154px;
   animation: sadTailMove 3.8s ease-in-out infinite;
 }
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+  flex-wrap: wrap;
+}
 
+.modalActions .button,
+.modalActions .clearButton {
+  margin: 0;
+}
 @keyframes sadTailMove {
   0%,
   100% {
@@ -678,5 +730,14 @@
 
   .sadCatHint {
     display: none;
+  }
+  .modalActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modalActions .button,
+  .modalActions .clearButton {
+    width: 100%;
   }
 }
