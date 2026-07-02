@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FiBookOpen,
+  FiBookmark,
+  FiBriefcase,
   FiMessageCircle,
   FiShoppingCart,
   FiTag,
@@ -12,9 +14,18 @@ import BookManager from "./BookManager";
 import UserManager from "./UserManager";
 import OrderManager from "./OrderManager";
 import PromoCodeManager from "./PromoCodeManager";
+import GenreManager from "./GenreManager";
+import PublisherManager from "./PublisherManager";
 import SupportChatsPage from "../pages/SupportChatsPage";
 
-type AdminTab = "books" | "users" | "orders" | "promos" | "supportChats";
+type AdminTab =
+  | "books"
+  | "users"
+  | "orders"
+  | "promos"
+  | "genres"
+  | "publishers"
+  | "supportChats";
 
 const AdminPanel = () => {
   const { t } = useTranslation();
@@ -42,6 +53,16 @@ const AdminPanel = () => {
       icon: <FiTag />,
     },
     {
+      id: "genres" as const,
+      label: "Genres",
+      icon: <FiBookmark />,
+    },
+    {
+      id: "publishers" as const,
+      label: "Publishers",
+      icon: <FiBriefcase />,
+    },
+    {
       id: "supportChats" as const,
       label: t("admin.supportChats"),
       icon: <FiMessageCircle />,
@@ -58,6 +79,10 @@ const AdminPanel = () => {
         return <OrderManager />;
       case "promos":
         return <PromoCodeManager />;
+      case "genres":
+        return <GenreManager />;
+      case "publishers":
+        return <PublisherManager />;
       case "supportChats":
         return <SupportChatsPage embedded />;
       default:
@@ -71,7 +96,8 @@ const AdminPanel = () => {
         <div className={styles.sidebarHeader}>
           <h3>{t("admin.title")}</h3>
           <p className={styles.sidebarSubtitle}>
-            Manage books, users, orders and support in one place.
+            Manage books, users, orders, publishers, genres and support in one
+            place.
           </p>
         </div>
 
