@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import PrettyConfirm from "./ui/PrettyConfirm";
 import styles from "../styles/Manager.module.css";
 
 type Genre = {
@@ -15,6 +16,14 @@ type GenreForm = {
   name: string;
   isSub: boolean;
   parentGenreId: number | null;
+};
+
+type ConfirmState = {
+  open: boolean;
+  title: string;
+  message: string;
+  confirmText: string;
+  action: (() => Promise<void>) | null;
 };
 
 type ApiArrayResponse<T> = {
@@ -157,11 +166,53 @@ export default function GenreManager() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  const [confirm, setConfirm] = useState<ConfirmState>({
+    open: false,
+    title: "",
+    message: "",
+    confirmText: "Delete",
+    action: null,
+  });
+
   const parentGenres = useMemo(() => genres, [genres]);
 
   const selectedParent = parentGenres.find(
     (genre) => genre.id === form.parentGenreId,
   );
+
+  const closeConfirm = () => {
+    setConfirm({
+      open: false,
+      title: "",
+      message: "",
+      confirmText: "Delete",
+      action: null,
+    });
+  };
+
+  const runConfirm = async () => {
+    const action = confirm.action;
+
+    closeConfirm();
+
+    if (action) {
+      await action();
+    }
+  };
+
+  const askDelete = (
+    title: string,
+    message: string,
+    action: () => Promise<void>,
+  ) => {
+    setConfirm({
+      open: true,
+      title,
+      message,
+      confirmText: "Delete",
+      action,
+    });
+  };
 
   const loadGenres = async () => {
     try {
@@ -249,45 +300,47 @@ export default function GenreManager() {
     }
   };
 
-  const deleteParentGenre = async (genre: Genre) => {
-    const confirmed = window.confirm(
-      `Delete "${genre.name}"? If it has sub-genres, backend may reject it.`,
+  const deleteParentGenre = (genre: Genre) => {
+    askDelete(
+      "Delete genre?",
+      `Are you sure you want to delete "${genre.name}"? If it has sub-genres, the backend may reject this action.`,
+      async () => {
+        try {
+          await axios.delete(`${API_URL}/api/genres/delete/${genre.id}`, {
+            headers: authHeaders(),
+          });
+
+          toast.success("Genre deleted");
+          await loadGenres();
+        } catch (error: unknown) {
+          console.error("Error deleting genre:", error);
+          toast.error(extractError(error, "Failed to delete genre"));
+        }
+      },
     );
-
-    if (!confirmed) return;
-
-    try {
-      await axios.delete(`${API_URL}/api/genres/delete/${genre.id}`, {
-        headers: authHeaders(),
-      });
-
-      toast.success("Genre deleted");
-      await loadGenres();
-    } catch (error: unknown) {
-      console.error("Error deleting genre:", error);
-      toast.error(extractError(error, "Failed to delete genre"));
-    }
   };
 
-  const deleteSubGenre = async (genre: Genre) => {
-    const confirmed = window.confirm(`Delete sub-genre "${genre.name}"?`);
+  const deleteSubGenre = (genre: Genre) => {
+    askDelete(
+      "Delete sub-genre?",
+      `Are you sure you want to delete "${genre.name}"?`,
+      async () => {
+        try {
+          await axios.delete(
+            `${API_URL}/api/genres/deleteSub/${encodeURIComponent(genre.name)}`,
+            {
+              headers: authHeaders(),
+            },
+          );
 
-    if (!confirmed) return;
-
-    try {
-      await axios.delete(
-        `${API_URL}/api/genres/deleteSub/${encodeURIComponent(genre.name)}`,
-        {
-          headers: authHeaders(),
-        },
-      );
-
-      toast.success("Sub-genre deleted");
-      await loadGenres();
-    } catch (error: unknown) {
-      console.error("Error deleting sub-genre:", error);
-      toast.error(extractError(error, "Failed to delete sub-genre"));
-    }
+          toast.success("Sub-genre deleted");
+          await loadGenres();
+        } catch (error: unknown) {
+          console.error("Error deleting sub-genre:", error);
+          toast.error(extractError(error, "Failed to delete sub-genre"));
+        }
+      },
+    );
   };
 
   return (
@@ -316,11 +369,20 @@ export default function GenreManager() {
 
         <label
           style={{
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            gap: 8,
+            gap: 10,
+            width: "fit-content",
+            minHeight: 38,
+            padding: "8px 12px",
+            borderRadius: 999,
+            border: "1px solid rgba(167, 139, 250, 0.22)",
+            background: "rgba(255, 255, 255, 0.04)",
             color: "inherit",
-            fontWeight: 600,
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: "pointer",
+            userSelect: "none",
           }}
         >
           <input
@@ -333,6 +395,13 @@ export default function GenreManager() {
                 parentGenreId: event.target.checked ? prev.parentGenreId : null,
               }))
             }
+            style={{
+              width: 15,
+              height: 15,
+              margin: 0,
+              accentColor: "#8b5cf6",
+              cursor: "pointer",
+            }}
           />
           Create as sub-genre
         </label>
@@ -421,6 +490,7 @@ export default function GenreManager() {
                                   color: "#f87171",
                                   cursor: "pointer",
                                   fontWeight: 800,
+                                  lineHeight: 1,
                                 }}
                               >
                                 ×
@@ -455,6 +525,17 @@ export default function GenreManager() {
           </table>
         </div>
       )}
+
+      <PrettyConfirm
+        open={confirm.open}
+        title={confirm.title}
+        message={confirm.message}
+        type="danger"
+        confirmText={confirm.confirmText}
+        cancelText="Cancel"
+        onCancel={closeConfirm}
+        onConfirm={runConfirm}
+      />
     </div>
   );
 }

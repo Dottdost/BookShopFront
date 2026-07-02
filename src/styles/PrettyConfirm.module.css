@@ -1,0 +1,168 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(4, 4, 12, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.modal {
+  position: relative;
+  width: min(420px, 100%);
+  border: 1px solid rgba(167, 139, 250, 0.26);
+  border-radius: 28px;
+  padding: 30px 28px 26px;
+  background:
+    radial-gradient(circle at top, rgba(139, 92, 246, 0.2), transparent 42%),
+    #151020;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  text-align: center;
+  color: #f8f7ff;
+  animation: popIn 0.18s ease-out;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #b8aecb;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.closeBtn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.iconCircle {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  font-size: 34px;
+}
+
+.iconCircle.danger {
+  color: #fb7185;
+  background: rgba(251, 113, 133, 0.14);
+}
+
+.iconCircle.warning {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.iconCircle.info {
+  color: #60a5fa;
+  background: rgba(96, 165, 250, 0.14);
+}
+
+.iconCircle.success {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.14);
+}
+
+.modal h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.modal p {
+  margin: 10px 0 0;
+  color: #b8aecb;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.cancelBtn,
+.confirmBtn {
+  min-height: 48px;
+  border: none;
+  border-radius: 15px;
+  font-weight: 850;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    background 0.15s ease;
+}
+
+.cancelBtn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #d9d2e8;
+}
+
+.cancelBtn:hover,
+.confirmBtn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+.confirmBtn {
+  color: white;
+}
+
+.confirmBtn.danger {
+  background: linear-gradient(135deg, #ef4444, #fb7185);
+}
+
+.confirmBtn.warning {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+}
+
+.confirmBtn.info {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.confirmBtn.success {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .modal {
+    padding: 28px 20px 22px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
