@@ -14,27 +14,51 @@ type Option = {
   name: string;
 };
 
+type ApiArrayResponse<T> = {
+  $values?: T[];
+  data?: T[] | { $values?: T[] };
+  items?: T[] | { $values?: T[] };
+};
+
 const API_URL =
+  import.meta.env.VITE_API_URL ||
   "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com";
 
-function unwrapArray<T>(data: any): T[] {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.$values)) return data.$values;
-  if (Array.isArray(data?.data)) return data.data;
-  if (Array.isArray(data?.data?.$values)) return data.data.$values;
-  if (Array.isArray(data?.items)) return data.items;
-  if (Array.isArray(data?.items?.$values)) return data.items.$values;
-  if (Array.isArray(data?.data?.items)) return data.data.items;
-  if (Array.isArray(data?.data?.items?.$values)) return data.data.items.$values;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function unwrapArray<T>(data: unknown): T[] {
+  if (Array.isArray(data)) return data as T[];
+
+  if (!isRecord(data)) return [];
+
+  const response = data as ApiArrayResponse<T>;
+
+  if (Array.isArray(response.$values)) return response.$values;
+  if (Array.isArray(response.data)) return response.data;
+  if (Array.isArray(response.items)) return response.items;
+
+  if (isRecord(response.data) && Array.isArray(response.data.$values)) {
+    return response.data.$values as T[];
+  }
+
+  if (isRecord(response.items) && Array.isArray(response.items.$values)) {
+    return response.items.$values as T[];
+  }
 
   return [];
 }
 
-function normalizeOption(item: any): Option {
-  return {
-    id: Number(item.id ?? item.Id ?? 0),
-    name: String(item.name ?? item.Name ?? ""),
-  };
+function normalizeOption(item: unknown): Option | null {
+  if (!isRecord(item)) return null;
+
+  const id = Number(item.id ?? item.Id ?? 0);
+  const name = String(item.name ?? item.Name ?? "").trim();
+
+  if (!id || !name) return null;
+
+  return { id, name };
 }
 
 const BookForm = ({ book, onSaved }: Props) => {
@@ -56,72 +80,6 @@ const BookForm = ({ book, onSaved }: Props) => {
   const [publishers, setPublishers] = useState<Option[]>([]);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (book) {
-      setForm({
-        ...book,
-        imageFile: undefined,
-        genreId: book.genreId ? String(book.genreId) : undefined,
-        publisherId: book.publisherId ? String(book.publisherId) : undefined,
-      });
-    } else {
-      setForm({
-        id: 0,
-        title: "",
-        author: "",
-        price: 0,
-        stock: 0,
-        description: "",
-        genreId: undefined,
-        publisherId: undefined,
-        imageFile: undefined,
-      });
-    }
-
-    fetchGenres();
-    fetchPublishers();
-  }, [book]);
-
-  const fetchGenres = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/genres/all`);
-      const list = unwrapArray<any>(response.data)
-        .map(normalizeOption)
-        .filter((item) => item.id && item.name);
-
-      setGenres(list);
-    } catch (error) {
-      console.error("Error fetching genres", error);
-    }
-  };
-
-  const fetchPublishers = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/v1/publishers`);
-      const list = unwrapArray<any>(response.data)
-        .map(normalizeOption)
-        .filter((item) => item.id && item.name);
-
-      setPublishers(list);
-    } catch (error) {
-      console.error("Error fetching publishers", error);
-    }
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-
-    setForm((prev) => ({
-      ...prev,
-      [name]:
-        name === "price" || name === "stock"
-          ? Number(value)
-          : value || undefined,
-    }));
-  };
-
   const resetForm = () => {
     setForm({
       id: 0,
@@ -136,11 +94,79 @@ const BookForm = ({ book, onSaved }: Props) => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchGenres = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/genres/all`, {
+        headers: {
+          Accept: "text/plain",
+        },
+      });
 
-    if (!form.title.trim() && !form.id) return;
-    if (!form.author.trim() && !form.id) return;
+      const list = unwrapArray<unknown>(response.data)
+        .map(normalizeOption)
+        .filter((item): item is Option => item !== null);
+
+      setGenres(list);
+    } catch (error: unknown) {
+      console.error("Error fetching genres:", error);
+      setGenres([]);
+    }
+  };
+
+  const fetchPublishers = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/v1/publishers`, {
+        headers: {
+          Accept: "text/plain",
+        },
+      });
+
+      const list = unwrapArray<unknown>(response.data)
+        .map(normalizeOption)
+        .filter((item): item is Option => item !== null);
+
+      setPublishers(list);
+    } catch (error: unknown) {
+      console.error("Error fetching publishers:", error);
+      setPublishers([]);
+    }
+  };
+
+  useEffect(() => {
+    if (book) {
+      setForm({
+        ...book,
+        genreId: book.genreId ? String(book.genreId) : undefined,
+        publisherId: book.publisherId ? String(book.publisherId) : undefined,
+        imageFile: undefined,
+      });
+    } else {
+      resetForm();
+    }
+
+    void fetchGenres();
+    void fetchPublishers();
+  }, [book]);
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = event.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]:
+        name === "price" || name === "stock"
+          ? Number(value)
+          : value || undefined,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!form.id && !form.title.trim()) return;
+    if (!form.id && !form.author.trim()) return;
 
     try {
       setSaving(true);
@@ -180,7 +206,7 @@ const BookForm = ({ book, onSaved }: Props) => {
 
       onSaved();
       resetForm();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error submitting book:", error);
     } finally {
       setSaving(false);
@@ -253,7 +279,7 @@ const BookForm = ({ book, onSaved }: Props) => {
           className={styles.input}
           disabled={!!form.id}
         >
-          <option value="">{t("bookForm.selectGenre")}</option>
+          <option value="">Select Genre</option>
           {genres.map((genre) => (
             <option key={genre.id} value={genre.id}>
               {genre.name}
@@ -268,7 +294,7 @@ const BookForm = ({ book, onSaved }: Props) => {
           className={styles.input}
           disabled={!!form.id}
         >
-          <option value="">{t("bookForm.selectPublisher")}</option>
+          <option value="">Select Publisher</option>
           {publishers.map((publisher) => (
             <option key={publisher.id} value={publisher.id}>
               {publisher.name}
@@ -286,8 +312,8 @@ const BookForm = ({ book, onSaved }: Props) => {
               id="image-upload"
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
+              onChange={(event) => {
+                const file = event.target.files?.[0];
 
                 if (file) {
                   setForm((prev) => ({

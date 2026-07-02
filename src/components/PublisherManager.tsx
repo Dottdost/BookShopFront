@@ -16,18 +16,58 @@ type PublisherForm = {
   phoneNumber: string;
 };
 
+type ApiArrayResponse<T> = {
+  $values?: T[];
+  data?: T[] | { $values?: T[] };
+  items?: T[] | { $values?: T[] };
+};
+
 const API_URL =
+  import.meta.env.VITE_API_URL ||
   "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com";
 
-function unwrapArray<T>(data: any): T[] {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.$values)) return data.$values;
-  if (Array.isArray(data?.data)) return data.data;
-  if (Array.isArray(data?.data?.$values)) return data.data.$values;
-  if (Array.isArray(data?.items)) return data.items;
-  if (Array.isArray(data?.items?.$values)) return data.items.$values;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function unwrapArray<T>(data: unknown): T[] {
+  if (Array.isArray(data)) return data as T[];
+
+  if (!isRecord(data)) return [];
+
+  const response = data as ApiArrayResponse<T>;
+
+  if (Array.isArray(response.$values)) return response.$values;
+  if (Array.isArray(response.data)) return response.data;
+  if (Array.isArray(response.items)) return response.items;
+
+  if (isRecord(response.data) && Array.isArray(response.data.$values)) {
+    return response.data.$values as T[];
+  }
+
+  if (isRecord(response.items) && Array.isArray(response.items.$values)) {
+    return response.items.$values as T[];
+  }
 
   return [];
+}
+
+function normalizePublisher(item: unknown): Publisher | null {
+  if (!isRecord(item)) return null;
+
+  const id = Number(item.id ?? item.Id ?? 0);
+  const name = String(item.name ?? item.Name ?? "").trim();
+  const address = String(item.address ?? item.Address ?? "").trim();
+  const phoneNumber = String(item.phoneNumber ?? item.PhoneNumber ?? "").trim();
+
+  if (!id || !name) return null;
+
+  return {
+    id,
+    name,
+    address,
+    phoneNumber,
+  };
 }
 
 export default function PublisherManager() {
@@ -48,11 +88,18 @@ export default function PublisherManager() {
     try {
       setLoading(true);
 
-      const response = await axios.get(`${API_URL}/api/v1/publishers`);
-      const list = unwrapArray<Publisher>(response.data);
+      const response = await axios.get(`${API_URL}/api/v1/publishers`, {
+        headers: {
+          Accept: "text/plain",
+        },
+      });
+
+      const list = unwrapArray<unknown>(response.data)
+        .map(normalizePublisher)
+        .filter((item): item is Publisher => item !== null);
 
       setPublishers(list);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error loading publishers:", error);
       toast.error("Failed to load publishers");
     } finally {
@@ -61,7 +108,7 @@ export default function PublisherManager() {
   };
 
   useEffect(() => {
-    loadPublishers();
+    void loadPublishers();
   }, []);
 
   const resetForm = () => {
@@ -74,8 +121,8 @@ export default function PublisherManager() {
     setEditingPublisher(null);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
 
     setForm((prev) => ({
       ...prev,
@@ -87,14 +134,14 @@ export default function PublisherManager() {
     setEditingPublisher(publisher);
 
     setForm({
-      name: publisher.name || "",
-      address: publisher.address || "",
-      phoneNumber: publisher.phoneNumber || "",
+      name: publisher.name,
+      address: publisher.address,
+      phoneNumber: publisher.phoneNumber,
     });
   };
 
-  const savePublisher = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const savePublisher = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     const payload = {
       name: form.name.trim(),
@@ -123,7 +170,7 @@ export default function PublisherManager() {
 
       resetForm();
       await loadPublishers();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error saving publisher:", error);
       toast.error("Failed to save publisher");
     }
@@ -139,7 +186,7 @@ export default function PublisherManager() {
 
       toast.success("Publisher deleted");
       await loadPublishers();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error deleting publisher:", error);
       toast.error("Failed to delete publisher");
     }
