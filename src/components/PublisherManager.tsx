@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import styles from "../styles/Manager.module.css";
+import PrettyConfirm from "./ui/PrettyConfirm";
 
 type Publisher = {
   id: number;
@@ -177,7 +178,7 @@ export default function PublisherManager() {
   };
 
   const deletePublisher = async (id: number) => {
-    const confirmed = window.confirm("Delete this publisher?");
+    const confirmed = PrettyConfirm;
 
     if (!confirmed) return;
 

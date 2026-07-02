@@ -11,6 +11,7 @@ import {
   getUsers,
   removeAdminByName,
 } from "../services/adminApi";
+import PrettyConfirm from "./ui/PrettyConfirm";
 
 const PAGE_SIZE = 10;
 
@@ -45,7 +46,7 @@ const UserManager = () => {
   };
 
   const handleDeleteUser = async (user: AdminUser) => {
-    const confirmed = window.confirm(`Delete user "${user.userName}"?`);
+    const confirmed = PrettyConfirm;
 
     if (!confirmed) return;
 

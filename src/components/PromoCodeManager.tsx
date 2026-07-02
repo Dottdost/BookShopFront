@@ -12,6 +12,7 @@ import {
   getPromoCodes,
   PromoCode,
 } from "../services/adminApi";
+import PrettyConfirm from "./ui/PrettyConfirm";
 
 const PAGE_SIZE = 10;
 
@@ -105,7 +106,7 @@ const PromoCodeManager = () => {
   };
 
   const deletePromoCode = async (code: string) => {
-    const confirmed = window.confirm(`Delete promo code "${code}"?`);
+    const confirmed = PrettyConfirm;
 
     if (!confirmed) return;
 

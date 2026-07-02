@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styles from "../styles/BooksPage.module.css";
 import BookCard from "../components/BookCard";
 import { Book, Genre } from "../types";
-import { FiSearch } from "react-icons/fi";
+import { FiSearch, FiChevronDown } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
 type GenreTree = Genre & { subgenres: Genre[] };
 
 type ValuesResponse<T> = {
   $values?: T[];
+};
+
+type GenreOption = {
+  id: number;
+  label: string;
+  isSubgenre: boolean;
 };
 
 const API_BASE_URL =
@@ -97,11 +103,7 @@ const BooksPage: React.FC = () => {
           },
         });
 
-        console.log("BOOKS RESPONSE:", response.data);
-
         const booksData = unwrapArray<Book>(response.data);
-
-        console.log("BOOKS NORMALIZED:", booksData);
 
         setBooks(booksData);
       } catch (error) {
@@ -120,8 +122,6 @@ const BooksPage: React.FC = () => {
           },
         });
 
-        console.log("GENRES RESPONSE:", response.data);
-
         const genresData = unwrapArray<Genre>(response.data);
 
         setGenres(genresData);
@@ -135,12 +135,52 @@ const BooksPage: React.FC = () => {
     void fetchGenres();
   }, []);
 
-  const genreTree: GenreTree[] = genres
-    .filter((genre) => !genre.parentGenreId)
-    .map((root) => ({
-      ...root,
-      subgenres: genres.filter((genre) => genre.parentGenreId === root.id),
-    }));
+  const genreTree: GenreTree[] = useMemo(
+    () =>
+      genres
+        .filter((genre) => !genre.parentGenreId)
+        .map((root) => ({
+          ...root,
+          subgenres: genres.filter((genre) => genre.parentGenreId === root.id),
+        })),
+    [genres],
+  );
+
+  const genreOptions: GenreOption[] = useMemo(
+    () =>
+      genreTree.flatMap((genre) => [
+        {
+          id: genre.id,
+          label: genre.name,
+          isSubgenre: false,
+        },
+        ...genre.subgenres.map((subgenre) => ({
+          id: subgenre.id,
+          label: `${genre.name} / ${subgenre.name}`,
+          isSubgenre: true,
+        })),
+      ]),
+    [genreTree],
+  );
+
+  const selectedGenreIds = useMemo(() => {
+    if (selectedGenre === null) {
+      return null;
+    }
+
+    const selectedParent = genreTree.find(
+      (genre) => genre.id === selectedGenre,
+    );
+
+    if (selectedParent) {
+      return [
+        selectedParent.id,
+        ...selectedParent.subgenres.map((subgenre) => subgenre.id),
+      ];
+    }
+
+    return [selectedGenre];
+  }, [selectedGenre, genreTree]);
 
   const filtered = books.filter((book) => {
     const q = searchQuery.trim().toLowerCase();
@@ -150,8 +190,10 @@ const BooksPage: React.FC = () => {
 
     const matchesText = !q || title.includes(q) || author.includes(q);
 
+    const bookGenreId = Number(book.genreId);
+
     const matchesGenre =
-      selectedGenre === null || Number(book.genreId) === selectedGenre;
+      selectedGenreIds === null || selectedGenreIds.includes(bookGenreId);
 
     return matchesText && matchesGenre;
   });
@@ -165,7 +207,11 @@ const BooksPage: React.FC = () => {
       params.delete("search");
     }
 
-    navigate(`/books?${params.toString()}`, { replace: true });
+    const queryString = params.toString();
+
+    navigate(queryString ? `/books?${queryString}` : "/books", {
+      replace: true,
+    });
   };
 
   const applyGenre = (genreId: number | null) => {
@@ -177,12 +223,22 @@ const BooksPage: React.FC = () => {
       params.delete("genre");
     }
 
-    navigate(`/books?${params.toString()}`, { replace: true });
+    const queryString = params.toString();
+
+    navigate(queryString ? `/books?${queryString}` : "/books", {
+      replace: true,
+    });
   };
 
   const toggleGenreMenu = (id: number) => {
     setOpenGenreId((current) => (current === id ? null : id));
   };
+
+  const selectedGenreLabel =
+    selectedGenre === null
+      ? "All genres"
+      : genreOptions.find((genre) => genre.id === selectedGenre)?.label ||
+        "Selected genre";
 
   if (loading) {
     return <div className={styles.loading}>{t("common.loading")}</div>;
@@ -236,7 +292,11 @@ const BooksPage: React.FC = () => {
               params.delete("search");
             }
 
-            navigate(`/books?${params.toString()}`, { replace: true });
+            const queryString = params.toString();
+
+            navigate(queryString ? `/books?${queryString}` : "/books", {
+              replace: true,
+            });
           }}
           className={styles.searchInput}
         />
@@ -248,6 +308,38 @@ const BooksPage: React.FC = () => {
         >
           <FiSearch />
         </button>
+      </div>
+
+      <div className={styles.genreDropdownWrap}>
+        <div className={styles.genreDropdownLabel}>
+          <span>Genre filter</span>
+          <strong>{selectedGenreLabel}</strong>
+        </div>
+
+        <div className={styles.genreSelectBox}>
+          <select
+            value={selectedGenre ?? ""}
+            onChange={(event) => {
+              const value = event.target.value;
+
+              const genreId = value ? Number(value) : null;
+
+              applyGenre(genreId);
+              setOpenGenreId(null);
+            }}
+            className={styles.genreSelect}
+          >
+            <option value="">All genres</option>
+
+            {genreOptions.map((genre) => (
+              <option key={genre.id} value={genre.id}>
+                {genre.isSubgenre ? `— ${genre.label}` : genre.label}
+              </option>
+            ))}
+          </select>
+
+          <FiChevronDown className={styles.genreSelectIcon} />
+        </div>
       </div>
 
       <nav className={styles.genreNav}>

@@ -10,6 +10,7 @@ import {
   getOrders,
   updateOrderStatus,
 } from "../services/adminApi";
+import PrettyConfirm from "./ui/PrettyConfirm";
 
 const PAGE_SIZE = 10;
 
@@ -92,7 +93,7 @@ const OrderManager = () => {
   };
 
   const handleDelete = async (orderId: string) => {
-    const confirmed = window.confirm(`Delete order "${orderId}"?`);
+    const confirmed = PrettyConfirm;
 
     if (!confirmed) return;
 
