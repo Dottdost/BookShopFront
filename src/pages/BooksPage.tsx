@@ -4,7 +4,7 @@ import axios from "axios";
 import styles from "../styles/BooksPage.module.css";
 import BookCard from "../components/BookCard";
 import { Book, Genre } from "../types";
-import { FiSearch, FiChevronDown } from "react-icons/fi";
+import { FiBookOpen, FiChevronDown, FiSearch } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
 type GenreTree = Genre & { subgenres: Genre[] };
@@ -16,7 +16,6 @@ type ValuesResponse<T> = {
 type GenreOption = {
   id: number;
   label: string;
-  isSubgenre: boolean;
 };
 
 const API_BASE_URL =
@@ -72,7 +71,6 @@ const BooksPage: React.FC = () => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
-  const [openGenreId, setOpenGenreId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -146,22 +144,25 @@ const BooksPage: React.FC = () => {
     [genres],
   );
 
-  const genreOptions: GenreOption[] = useMemo(
-    () =>
-      genreTree.flatMap((genre) => [
-        {
-          id: genre.id,
-          label: genre.name,
-          isSubgenre: false,
-        },
-        ...genre.subgenres.map((subgenre) => ({
+  const genreOptions: GenreOption[] = useMemo(() => {
+    const options: GenreOption[] = [];
+
+    genreTree.forEach((genre) => {
+      options.push({
+        id: genre.id,
+        label: genre.name,
+      });
+
+      genre.subgenres.forEach((subgenre) => {
+        options.push({
           id: subgenre.id,
-          label: `${genre.name} / ${subgenre.name}`,
-          isSubgenre: true,
-        })),
-      ]),
-    [genreTree],
-  );
+          label: `${genre.name} — ${subgenre.name}`,
+        });
+      });
+    });
+
+    return options;
+  }, [genreTree]);
 
   const selectedGenreIds = useMemo(() => {
     if (selectedGenre === null) {
@@ -230,15 +231,14 @@ const BooksPage: React.FC = () => {
     });
   };
 
-  const toggleGenreMenu = (id: number) => {
-    setOpenGenreId((current) => (current === id ? null : id));
-  };
-
   const selectedGenreLabel =
     selectedGenre === null
       ? "All genres"
       : genreOptions.find((genre) => genre.id === selectedGenre)?.label ||
         "Selected genre";
+
+  const foundText =
+    filtered.length === 1 ? "1 book found" : `${filtered.length} books found`;
 
   if (loading) {
     return <div className={styles.loading}>{t("common.loading")}</div>;
@@ -282,6 +282,7 @@ const BooksPage: React.FC = () => {
           value={searchQuery}
           onChange={(event) => {
             const value = event.target.value;
+
             setSearchQuery(value);
 
             const params = new URLSearchParams(location.search);
@@ -310,96 +311,55 @@ const BooksPage: React.FC = () => {
         </button>
       </div>
 
-      <div className={styles.genreDropdownWrap}>
-        <div className={styles.genreDropdownLabel}>
-          <span>Genre filter</span>
-          <strong>{selectedGenreLabel}</strong>
+      <section className={styles.genreFilterCard}>
+        <div className={styles.genreFilterGlow} />
+
+        <div className={styles.genreFilterLeft}>
+          <div className={styles.genreFilterIcon}>
+            <FiBookOpen />
+          </div>
+
+          <div className={styles.genreFilterText}>
+            <span className={styles.genreFilterLabel}>Explore by genre</span>
+
+            <h3 className={styles.genreFilterTitle}>{selectedGenreLabel}</h3>
+
+            <p className={styles.genreFilterHint}>
+              Choose a category and discover books that match your mood.
+            </p>
+          </div>
         </div>
 
-        <div className={styles.genreSelectBox}>
-          <select
-            value={selectedGenre ?? ""}
-            onChange={(event) => {
-              const value = event.target.value;
+        <div className={styles.genreFilterRight}>
+          <div className={styles.genreCountPill}>{foundText}</div>
 
-              const genreId = value ? Number(value) : null;
+          <div className={styles.genreSelectWrap}>
+            <span className={styles.genreSelectLabel}>Selected category</span>
 
-              applyGenre(genreId);
-              setOpenGenreId(null);
-            }}
-            className={styles.genreSelect}
-          >
-            <option value="">All genres</option>
+            <div className={styles.genreSelectBox}>
+              <select
+                value={selectedGenre ?? ""}
+                onChange={(event) => {
+                  const value = event.target.value;
 
-            {genreOptions.map((genre) => (
-              <option key={genre.id} value={genre.id}>
-                {genre.isSubgenre ? `— ${genre.label}` : genre.label}
-              </option>
-            ))}
-          </select>
-
-          <FiChevronDown className={styles.genreSelectIcon} />
-        </div>
-      </div>
-
-      <nav className={styles.genreNav}>
-        <ul>
-          <li
-            className={`${styles.genreItem} ${
-              selectedGenre === null ? styles.active : ""
-            }`}
-            onClick={() => {
-              applyGenre(null);
-              setOpenGenreId(null);
-            }}
-          >
-            <span>{t("books.all")}</span>
-          </li>
-
-          {genreTree.map((genre) => (
-            <li
-              key={genre.id}
-              className={`${styles.genreItem} ${
-                selectedGenre === genre.id ? styles.active : ""
-              }`}
-            >
-              <div
-                className={styles.genreTitle}
-                onClick={() => {
-                  applyGenre(genre.id);
-                  toggleGenreMenu(genre.id);
+                  applyGenre(value ? Number(value) : null);
                 }}
+                className={styles.genreSelect}
               >
-                <span>{genre.name}</span>
+                <option value="">All genres</option>
 
-                {genre.subgenres.length > 0 && (
-                  <span
-                    className={`${styles.arrow} ${
-                      openGenreId === genre.id ? styles.open : ""
-                    }`}
-                  />
-                )}
-              </div>
+                {genreOptions.map((genre) => (
+                  <option key={genre.id} value={genre.id}>
+                    {genre.label}
+                  </option>
+                ))}
+              </select>
 
-              {genre.subgenres.length > 0 && openGenreId === genre.id && (
-                <ul className={styles.subMenu}>
-                  {genre.subgenres.map((subgenre) => (
-                    <li
-                      key={subgenre.id}
-                      className={`${styles.subItem} ${
-                        selectedGenre === subgenre.id ? styles.active : ""
-                      }`}
-                      onClick={() => applyGenre(subgenre.id)}
-                    >
-                      {subgenre.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
+              <FiChevronDown className={styles.genreSelectIcon} />
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className={styles.booksGrid}>
         {filtered.length === 0 ? (
