@@ -25,26 +25,27 @@ export default function MysticCat() {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
     utterance.rate = 0.95;
-    utterance.pitch = 1.1;
-    utterance.volume = 0.75;
+    utterance.pitch = 1.05;
+    utterance.volume = 0.7;
 
     window.speechSynthesis.speak(utterance);
   };
 
   const handleClick = () => {
     const next = (current + 1) % messages.length;
+
     setCurrent(next);
     setIsTalking(true);
     speak(messages[next]);
 
     window.setTimeout(() => {
       setIsTalking(false);
-    }, 650);
+    }, 620);
   };
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
-      const mascot = document.getElementById("mystic-cat-mascot");
+      const mascot = document.getElementById("cheshire-mystic-cat");
       if (!mascot) return;
 
       const rect = mascot.getBoundingClientRect();
@@ -54,8 +55,8 @@ export default function MysticCat() {
       const x = (event.clientX - centerX) / rect.width;
       const y = (event.clientY - centerY) / rect.height;
 
-      const moveX = Math.max(-2, Math.min(2, x * 6));
-      const moveY = Math.max(-2, Math.min(2, y * 6));
+      const moveX = Math.max(-1.8, Math.min(1.8, x * 5));
+      const moveY = Math.max(-1.4, Math.min(1.4, y * 4));
 
       setPupilMove({ x: moveX, y: moveY });
     };
@@ -69,7 +70,7 @@ export default function MysticCat() {
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      if (Math.random() > 0.65) {
+      if (Math.random() > 0.68) {
         setCurrent((prev) => (prev + 1) % messages.length);
       }
     }, 9000);
@@ -79,8 +80,8 @@ export default function MysticCat() {
 
   return (
     <div
-      id="mystic-cat-mascot"
-      className={`mascot-container ${isTalking ? "talking" : ""}`}
+      id="cheshire-mystic-cat"
+      className={`cheshireMysticCat ${isTalking ? "cheshireMysticCatTalking" : ""}`}
       onClick={handleClick}
       role="button"
       tabIndex={0}
@@ -91,199 +92,154 @@ export default function MysticCat() {
       }}
       aria-label="Mystic cat assistant"
     >
-      <div className="magic-dot dot-1" />
-      <div className="magic-dot dot-2" />
+      <div className="cheshireCatDot cheshireCatDotOne" />
+      <div className="cheshireCatDot cheshireCatDotTwo" />
 
-      <div className="speech-bubble show">{messages[current]}</div>
+      <div className="cheshireCatBubble">{messages[current]}</div>
 
       <svg
-        className="cat-svg"
-        viewBox="0 0 220 250"
+        className="cheshireCatSvg"
+        viewBox="0 0 180 210"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <radialGradient id="catHeadGradient" cx="50%" cy="35%" r="70%">
+          <radialGradient id="cheshireCatFur" cx="50%" cy="36%" r="70%">
             <stop offset="0%" stopColor="#d8b4fe" />
-            <stop offset="50%" stopColor="#a855f7" />
+            <stop offset="52%" stopColor="#a855f7" />
             <stop offset="100%" stopColor="#6d28d9" />
           </radialGradient>
 
-          <linearGradient
-            id="catBodyGradient"
-            x1="0%"
-            y1="0%"
-            x2="100%"
-            y2="100%"
-          >
+          <linearGradient id="cheshireCatBody" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#c084fc" />
             <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
         </defs>
 
-        {/* tail */}
         <path
-          className="tail"
-          d="M148 168 C190 170, 196 214, 170 224 C150 232, 130 214, 145 198"
+          className="cheshireCatTail"
+          d="M119 138 C151 141, 159 176, 135 184 C119 190, 103 176, 115 164"
           fill="none"
           stroke="#7c3aed"
-          strokeWidth="18"
+          strokeWidth="14"
           strokeLinecap="round"
         />
 
-        {/* body */}
-        <ellipse
-          cx="110"
-          cy="180"
-          rx="46"
-          ry="52"
-          fill="url(#catBodyGradient)"
-        />
-        <ellipse
-          cx="110"
-          cy="188"
-          rx="22"
-          ry="28"
-          fill="#c4b5fd"
-          opacity="0.4"
-        />
+        <ellipse cx="90" cy="151" rx="36" ry="42" fill="url(#cheshireCatBody)" />
+        <ellipse cx="90" cy="158" rx="18" ry="24" fill="#c4b5fd" opacity="0.38" />
 
-        {/* paws */}
-        <ellipse cx="82" cy="225" rx="16" ry="10" fill="#6d28d9" />
-        <ellipse cx="138" cy="225" rx="16" ry="10" fill="#6d28d9" />
+        <ellipse cx="68" cy="190" rx="13" ry="8" fill="#6d28d9" />
+        <ellipse cx="112" cy="190" rx="13" ry="8" fill="#6d28d9" />
 
-        {/* ears */}
-        <g className="ear-left">
+        <g className="cheshireCatEarLeft">
           <path
-            d="M67 86 L82 38 L104 88 Z"
-            fill="url(#catHeadGradient)"
+            d="M56 70 L68 31 L86 71 Z"
+            fill="url(#cheshireCatFur)"
             stroke="#3b0764"
-            strokeWidth="4"
+            strokeWidth="3"
           />
-          <path d="M77 78 L83 52 L95 78 Z" fill="#f5d0fe" />
+          <path d="M64 63 L69 43 L79 63 Z" fill="#f5d0fe" />
         </g>
 
-        <g className="ear-right">
+        <g className="cheshireCatEarRight">
           <path
-            d="M153 86 L138 38 L116 88 Z"
-            fill="url(#catHeadGradient)"
+            d="M124 70 L112 31 L94 71 Z"
+            fill="url(#cheshireCatFur)"
             stroke="#3b0764"
-            strokeWidth="4"
+            strokeWidth="3"
           />
-          <path d="M143 78 L137 52 L125 78 Z" fill="#f5d0fe" />
+          <path d="M116 63 L111 43 L101 63 Z" fill="#f5d0fe" />
         </g>
 
-        {/* head */}
         <circle
-          cx="110"
-          cy="105"
-          r="58"
-          fill="url(#catHeadGradient)"
+          cx="90"
+          cy="85"
+          r="47"
+          fill="url(#cheshireCatFur)"
           stroke="#3b0764"
-          strokeWidth="4"
+          strokeWidth="3"
         />
 
-        {/* soft tiny identical brows */}
         <path
-          d="M76 83 Q85 79 94 83"
+          d="M62 69 Q70 65 78 69"
           fill="none"
           stroke="#4c1d95"
-          strokeWidth="3"
+          strokeWidth="2.4"
           strokeLinecap="round"
           opacity="0.75"
         />
         <path
-          d="M126 83 Q135 79 144 83"
+          d="M102 69 Q110 65 118 69"
           fill="none"
           stroke="#4c1d95"
-          strokeWidth="3"
+          strokeWidth="2.4"
           strokeLinecap="round"
           opacity="0.75"
         />
 
-        {/* eyes */}
-        <g className="eye-group">
-          <ellipse cx="85" cy="105" rx="16" ry="21" fill="#ffffff" />
-          <ellipse cx="135" cy="105" rx="16" ry="21" fill="#ffffff" />
+        <g className="cheshireCatEyes">
+          <ellipse cx="70" cy="87" rx="11" ry="15" fill="#ffffff" />
+          <ellipse cx="110" cy="87" rx="11" ry="15" fill="#ffffff" />
         </g>
 
         <circle
-          cx="85"
-          cy="108"
-          r="7"
+          className="cheshireCatPupil"
+          cx="70"
+          cy="89"
+          r="5"
           fill="#140022"
-          className="pupil"
           style={{ transform: `translate(${pupilMove.x}px, ${pupilMove.y}px)` }}
         />
         <circle
-          cx="135"
-          cy="108"
-          r="7"
+          className="cheshireCatPupil"
+          cx="110"
+          cy="89"
+          r="5"
           fill="#140022"
-          className="pupil"
           style={{ transform: `translate(${pupilMove.x}px, ${pupilMove.y}px)` }}
         />
 
-        <circle cx="81" cy="103" r="2.5" fill="#ffffff" opacity="0.9" />
-        <circle cx="131" cy="103" r="2.5" fill="#ffffff" opacity="0.9" />
+        <circle cx="67" cy="84" r="2" fill="#ffffff" opacity="0.9" />
+        <circle cx="107" cy="84" r="2" fill="#ffffff" opacity="0.9" />
 
-        {/* cheeks */}
-        <ellipse
-          cx="74"
-          cy="132"
-          rx="13"
-          ry="7"
-          fill="#f9a8d4"
-          opacity="0.45"
-        />
-        <ellipse
-          cx="146"
-          cy="132"
-          rx="13"
-          ry="7"
-          fill="#f9a8d4"
-          opacity="0.45"
-        />
+        <ellipse cx="59" cy="108" rx="10" ry="5" fill="#f9a8d4" opacity="0.42" />
+        <ellipse cx="121" cy="108" rx="10" ry="5" fill="#f9a8d4" opacity="0.42" />
 
-        {/* nose */}
-        <path d="M104 122 Q110 116 116 122 Q110 127 104 122Z" fill="#f9a8d4" />
+        <path d="M85 101 Q90 96 95 101 Q90 106 85 101Z" fill="#f9a8d4" />
 
-        {/* simple mouth */}
         <path
-          className="mouth-rest"
-          d="M100 132 Q110 141 120 132"
+          className="cheshireCatMouthRest"
+          d="M81 112 Q90 118 99 112"
           fill="none"
           stroke="#fff7fb"
-          strokeWidth="4"
+          strokeWidth="3"
           strokeLinecap="round"
         />
 
-        {/* talking mouth */}
         <ellipse
-          className="mouth-talk"
-          cx="110"
-          cy="135"
-          rx="6"
-          ry="4.5"
+          className="cheshireCatMouthTalk"
+          cx="90"
+          cy="115"
+          rx="5"
+          ry="3.4"
           fill="#fff7fb"
           stroke="#f9a8d4"
-          strokeWidth="1.5"
+          strokeWidth="1.2"
         />
 
-        {/* whiskers */}
         <g
-          className="whiskers"
+          className="cheshireCatWhiskers"
           stroke="#f3e8ff"
-          strokeWidth="2.5"
+          strokeWidth="2"
           strokeLinecap="round"
         >
-          <path d="M90 126 C70 121, 51 121, 35 126" />
-          <path d="M90 136 C72 138, 55 145, 42 154" />
-          <path d="M130 126 C150 121, 169 121, 185 126" />
-          <path d="M130 136 C148 138, 165 145, 178 154" />
+          <path d="M76 104 C59 100, 44 100, 30 104" />
+          <path d="M76 112 C60 114, 46 119, 34 126" />
+          <path d="M104 104 C121 100, 136 100, 150 104" />
+          <path d="M104 112 C120 114, 134 119, 146 126" />
         </g>
       </svg>
 
-      <div className="click-hint">comfort the cat ✦</div>
+      <div className="cheshireCatHint">comfort the cat ✦</div>
     </div>
   );
 }
