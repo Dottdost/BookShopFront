@@ -43,89 +43,125 @@
 .visualCard {
   min-height: 520px;
   position: relative;
+  display: grid;
+  place-items: center;
   border-radius: 36px;
   background:
     radial-gradient(circle at 24% 16%, var(--accent-bg), transparent 42%),
+    radial-gradient(circle at 82% 88%, rgba(167, 139, 250, 0.18), transparent 38%),
     var(--glass);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-strong);
   backdrop-filter: blur(18px);
   overflow: hidden;
+  isolation: isolate;
 }
 
 .visualCard::before {
   content: "";
   position: absolute;
-  width: 26rem;
-  height: 26rem;
+  width: 28rem;
+  height: 28rem;
   border-radius: 999px;
   background: rgba(139, 92, 246, 0.18);
-  right: -9rem;
-  top: -10rem;
-  filter: blur(8px);
+  right: -10rem;
+  top: -11rem;
+  filter: blur(9px);
+  z-index: -2;
 }
 
-.bookShape {
-  position: absolute;
-  border-radius: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: var(--shadow-strong);
-  overflow: hidden;
-}
-
-.bookShape::before {
+.visualCard::after {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 38px;
-  background: rgba(255, 255, 255, 0.18);
-  border-right: 1px solid rgba(255, 255, 255, 0.22);
-}
-
-.bookOne {
-  width: 220px;
-  height: 310px;
-  left: 50%;
-  top: 42%;
-  transform: translate(-50%, -50%) rotate(5deg);
-  background: linear-gradient(145deg, #f8e8ff, var(--accent), #3a244e);
+  inset: 18px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
   z-index: 3;
-  animation: floatMain 5s ease-in-out infinite;
 }
 
-.bookTwo {
-  width: 190px;
-  height: 280px;
-  left: 18%;
-  top: 44%;
-  transform: translateY(-50%) rotate(-12deg);
-  background: linear-gradient(145deg, #fff8ed, #d8c4ff, #6a4533);
-  z-index: 2;
-  animation: floatSide 6s ease-in-out infinite;
-}
-
-.bookThree {
-  width: 170px;
-  height: 255px;
-  right: 14%;
-  top: 50%;
-  transform: translateY(-50%) rotate(13deg);
-  background: linear-gradient(145deg, #f5f0e8, #b79cff, #251b15);
-  z-index: 1;
-  animation: floatSide 6.4s ease-in-out infinite reverse;
-}
-
-.visualTitle {
+.imageGlow {
   position: absolute;
-  left: 4rem;
-  right: 1.5rem;
+  width: 340px;
+  height: 340px;
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 0.26);
+  filter: blur(44px);
+  z-index: -1;
+  animation: imageGlowPulse 5s ease-in-out infinite;
+}
+
+.imageFrame {
+  position: relative;
+  width: min(380px, 82%);
+  aspect-ratio: 0.78;
+  padding: 12px;
+  border-radius: 34px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04)),
+    rgba(18, 13, 30, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.32),
+    0 0 42px rgba(139, 92, 246, 0.18);
+  transform: rotate(-2.6deg);
+  animation: imageFloat 5.4s ease-in-out infinite;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.imageFrame::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 26px;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 42%,
+    transparent 64%
+  );
+  transform: translateX(-120%);
+  animation: imageShine 6s ease-in-out infinite;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.aboutImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 26px;
+  filter: saturate(1.05) contrast(1.02);
+}
+
+.floatingNote {
+  position: absolute;
   top: 2rem;
-  color: white;
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  line-height: 1.05;
-  letter-spacing: 0.04em;
-  z-index: 4;
+  left: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(20, 16, 30, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fffaf2;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.floatingNote span {
+  color: #c4b5fd;
+  text-shadow: 0 0 14px rgba(196, 181, 253, 0.9);
+}
+
+.floatingNote strong {
+  font-size: 0.9rem;
+  font-weight: 950;
 }
 
 .visualBadge {
@@ -256,31 +292,45 @@
   }
 }
 
-@keyframes floatMain {
-  0% {
-    transform: translate(-50%, -50%) translateY(0) rotate(5deg);
+@keyframes imageFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2.6deg);
   }
 
   50% {
-    transform: translate(-50%, -50%) translateY(-12px) rotate(3deg);
-  }
-
-  100% {
-    transform: translate(-50%, -50%) translateY(0) rotate(5deg);
+    transform: translateY(-12px) rotate(-1.2deg);
   }
 }
 
-@keyframes floatSide {
-  0% {
-    translate: 0 0;
+@keyframes imageGlowPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
   }
 
   50% {
-    translate: 0 12px;
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes imageShine {
+  0%,
+  48%,
+  100% {
+    transform: translateX(-120%);
+    opacity: 0;
   }
 
-  100% {
-    translate: 0 0;
+  55% {
+    opacity: 1;
+  }
+
+  72% {
+    transform: translateX(120%);
+    opacity: 0;
   }
 }
 
@@ -290,7 +340,11 @@
   }
 
   .visualCard {
-    min-height: 420px;
+    min-height: 440px;
+  }
+
+  .imageFrame {
+    width: min(330px, 78%);
   }
 }
 
@@ -304,28 +358,30 @@
   }
 
   .visualCard {
-    min-height: 340px;
+    min-height: 360px;
     border-radius: 28px;
   }
 
-  .bookOne {
-    width: 170px;
-    height: 240px;
+  .imageFrame {
+    width: min(250px, 78%);
+    border-radius: 28px;
+    padding: 9px;
   }
 
-  .bookTwo {
-    width: 145px;
-    height: 220px;
+  .aboutImage {
+    border-radius: 21px;
   }
 
-  .bookThree {
-    width: 135px;
-    height: 205px;
+  .floatingNote {
+    top: 1rem;
+    left: 1rem;
   }
 
-  .visualTitle {
-    font-size: 1.45rem;
-    left: 3.2rem;
+  .visualBadge {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    border-radius: 20px;
   }
 
   .stats {
