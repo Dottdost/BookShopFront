@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { FiBookOpen, FiHeart, FiStar } from "react-icons/fi";
+import aboutImage from "../assets/ab.jpg";
 import styles from "../styles/AboutUs.module.css";
 
 const AboutUs = () => {
@@ -9,11 +10,18 @@ const AboutUs = () => {
     <main className={styles.aboutUs}>
       <section className={styles.container}>
         <div className={styles.visualCard} aria-hidden="true">
-          <div className={`${styles.bookShape} ${styles.bookTwo}`} />
-          <div className={`${styles.bookShape} ${styles.bookThree}`} />
+          <div className={styles.imageGlow} />
+          <div className={styles.imageFrame}>
+            <img
+              src={aboutImage}
+              alt="Cheshire Shelf visual"
+              className={styles.aboutImage}
+            />
+          </div>
 
-          <div className={`${styles.bookShape} ${styles.bookOne}`}>
-            <div className={styles.visualTitle}>Cheshire Shelf</div>
+          <div className={styles.floatingNote}>
+            <span>✦</span>
+            <strong>Cheshire Shelf</strong>
           </div>
 
           <div className={styles.visualBadge}>
