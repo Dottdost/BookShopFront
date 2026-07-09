@@ -1,15 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  FiCheckCircle,
-  FiClock,
-  FiLogOut,
-  FiMessageCircle,
-  FiRefreshCw,
-  FiSend,
-  FiUser,
-  FiX,
-} from "react-icons/fi";
 import type { RootState } from "../store";
 import {
   closeChat,
@@ -87,23 +77,6 @@ const isAdminMessage = (
   return Boolean(chat.userId && senderId !== chat.userId);
 };
 
-function formatChatId(id: string) {
-  if (id.length <= 12) return id;
-
-  return `${id.slice(0, 8)}...${id.slice(-6)}`;
-}
-
-function getMessageTime(message: ChatMessage) {
-  const value = message.createdAt ?? message.sentAt;
-
-  if (!value) return "";
-
-  return new Date(value).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
   const { user, roles = [] } = useSelector((state: RootState) => state.auth);
 
@@ -126,11 +99,22 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
   const [error, setError] = useState("");
 
   const activeChatIdRef = useRef("");
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messageListRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     activeChatIdRef.current = activeChat?.id ?? "";
   }, [activeChat?.id]);
+
+  const scrollMessagesToBottom = () => {
+    const container = messageListRef.current;
+
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "smooth",
+    });
+  };
 
   const loadChats = useCallback(
     async (silent = false) => {
@@ -200,6 +184,10 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
     try {
       const loadedMessages = await getChatMessages(chat.id);
       setMessages(loadedMessages);
+
+      window.setTimeout(() => {
+        scrollMessagesToBottom();
+      }, 50);
     } catch (err) {
       console.error(err);
       setError("Failed to load messages.");
@@ -293,6 +281,10 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       appendMessage(optimisticMessage);
       setText("");
 
+      window.setTimeout(() => {
+        scrollMessagesToBottom();
+      }, 50);
+
       await sendChatMessage({
         chatId: activeChat.id,
         text: trimmedText,
@@ -329,7 +321,9 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
 
     const interval = window.setInterval(() => {
       void getChatMessages(activeChat.id)
-        .then(setMessages)
+        .then((loadedMessages) => {
+          setMessages(loadedMessages);
+        })
         .catch(() => undefined);
     }, 1500);
 
@@ -337,8 +331,10 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
   }, [activeChat?.id]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (messages.length === 0) return;
+
+    scrollMessagesToBottom();
+  }, [messages.length]);
 
   const sortedMessages = useMemo(
     () =>
@@ -351,273 +347,164 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
     [messages],
   );
 
-  const totalChats = waitingChats.length + myChats.length;
-
   if (!isAdmin) {
     return (
-      <main className={styles.page}>
-        <div className={styles.notAllowedCard}>
-          Only admins can open support chats.
-        </div>
-      </main>
+      <main className={styles.page}>Only admins can open support chats.</main>
     );
   }
 
   return (
     <main className={`${styles.page} ${embedded ? styles.embeddedPage : ""}`}>
-      <div className={styles.pageShell}>
-        <div className={styles.pageHeader}>
-          <div>
-            <span className={styles.eyebrow}>Admin support center</span>
+      <div className={styles.pageHeader}>
+        <div>
+          <h1>Support Chats</h1>
 
-            <h1>Support Chats</h1>
-
-            <p>
-              {activeChat?.id
-                ? connected
-                  ? "Live chat connected"
-                  : "Connecting to live chat..."
-                : "Choose a chat to start helping customers"}
-            </p>
-          </div>
-
-          <div className={styles.headerRight}>
-            <div className={styles.statCard}>
-              <span>{totalChats}</span>
-              <small>Active chats</small>
-            </div>
-
-            <button
-              type="button"
-              className={styles.refreshButton}
-              onClick={() => void loadChats()}
-              disabled={loading}
-            >
-              <FiRefreshCw />
-              {loading ? "Refreshing..." : "Refresh"}
-            </button>
-          </div>
+          <p>
+            {activeChat?.id
+              ? connected
+                ? "Live chat connected"
+                : "Connecting to live chat..."
+              : "Choose a chat to connect live"}
+          </p>
         </div>
 
-        {error && <p className={styles.errorText}>{error}</p>}
+        <button type="button" onClick={() => void loadChats()}>
+          Refresh
+        </button>
+      </div>
 
-        <div className={styles.adminLayout}>
-          <aside className={styles.chatSidebar}>
-            <section className={styles.sidebarSection}>
-              <div className={styles.sectionHeader}>
-                <div>
-                  <h3>Waiting Chats</h3>
-                  <p>New customer requests</p>
-                </div>
+      {error && <p className={styles.errorText}>{error}</p>}
 
-                <span className={styles.countBadge}>{waitingChats.length}</span>
-              </div>
+      <div className={styles.adminLayout}>
+        <aside className={styles.chatSidebar}>
+          <section>
+            <h3>Waiting Chats</h3>
 
-              {loading && <p className={styles.emptyState}>Loading...</p>}
+            {loading && <p className={styles.emptyState}>Loading...</p>}
 
-              {!loading && waitingChats.length === 0 && (
-                <div className={styles.emptyMiniCard}>
-                  <FiCheckCircle />
-                  <span>No waiting chats</span>
-                </div>
-              )}
-
-              <div className={styles.chatList}>
-                {waitingChats.map((chat) => (
-                  <button
-                    className={styles.chatListItem}
-                    type="button"
-                    key={chat.id}
-                    onClick={() => void handleTakeChat(chat)}
-                  >
-                    <div className={styles.chatAvatar}>
-                      <FiUser />
-                    </div>
-
-                    <div className={styles.chatListText}>
-                      <strong>{getCustomerName(chat)}</strong>
-                      <span>{chat.lastMessage ?? "Take this chat"}</span>
-                    </div>
-
-                    <span className={styles.takeBadge}>Take</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className={styles.sidebarSection}>
-              <div className={styles.sectionHeader}>
-                <div>
-                  <h3>My Chats</h3>
-                  <p>Chats assigned to you</p>
-                </div>
-
-                <span className={styles.countBadge}>{myChats.length}</span>
-              </div>
-
-              {!loading && myChats.length === 0 && (
-                <div className={styles.emptyMiniCard}>
-                  <FiMessageCircle />
-                  <span>No active chats</span>
-                </div>
-              )}
-
-              <div className={styles.chatList}>
-                {myChats.map((chat) => (
-                  <button
-                    className={`${styles.chatListItem} ${
-                      activeChat?.id === chat.id ? styles.activeChat : ""
-                    }`}
-                    type="button"
-                    key={chat.id}
-                    onClick={() => void openChat(chat)}
-                  >
-                    <div className={styles.chatAvatar}>
-                      <FiUser />
-                    </div>
-
-                    <div className={styles.chatListText}>
-                      <strong>{getCustomerName(chat)}</strong>
-                      <span>
-                        {chat.lastMessage ?? chat.status ?? "Open chat"}
-                      </span>
-                    </div>
-
-                    <span className={styles.openBadge}>Open</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-          </aside>
-
-          <section className={styles.adminChatPanel}>
-            {!activeChat ? (
-              <div className={styles.emptyChat}>
-                <div className={styles.emptyChatIcon}>
-                  <FiMessageCircle />
-                </div>
-
-                <h3>Choose a chat</h3>
-
-                <p>
-                  Select a waiting chat or one of your active chats to see the
-                  conversation here.
-                </p>
-              </div>
-            ) : (
-              <>
-                <header className={styles.chatHeader}>
-                  <div className={styles.chatTitleBlock}>
-                    <div className={styles.chatHeaderAvatar}>
-                      <FiUser />
-                    </div>
-
-                    <div>
-                      <h3>{getCustomerName(activeChat)}</h3>
-
-                      <div className={styles.chatMeta}>
-                        <span className={styles.statusPill}>
-                          {activeChat.status ?? "Active"}
-                        </span>
-
-                        <p title={activeChat.id}>
-                          ID: {formatChatId(activeChat.id)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={styles.headerActions}>
-                    <button
-                      type="button"
-                      className={styles.exitButton}
-                      onClick={handleExitChat}
-                    >
-                      <FiLogOut />
-                      Exit
-                    </button>
-
-                    <button
-                      type="button"
-                      className={styles.closeButton}
-                      onClick={handleCloseChat}
-                    >
-                      <FiX />
-                      Close
-                    </button>
-                  </div>
-                </header>
-
-                <div className={styles.messageList}>
-                  {sortedMessages.length === 0 && (
-                    <div className={styles.emptyMessages}>
-                      <FiClock />
-                      <span>No messages yet.</span>
-                    </div>
-                  )}
-
-                  {sortedMessages.map((message, index) => {
-                    const isMine = isAdminMessage(
-                      message,
-                      activeChat,
-                      user?.id,
-                    );
-
-                    return (
-                      <article
-                        key={message.id ?? `${message.chatId}-${index}`}
-                        className={`${styles.messageBubble} ${
-                          isMine ? styles.mine : styles.theirs
-                        }`}
-                      >
-                        <span>{normalizeMessageText(message)}</span>
-
-                        <small>
-                          <strong>
-                            {message.senderName ??
-                              message.userName ??
-                              (isMine ? "You" : "Customer")}
-                          </strong>
-
-                          {getMessageTime(message) && (
-                            <>
-                              <span>•</span>
-                              {getMessageTime(message)}
-                            </>
-                          )}
-                        </small>
-                      </article>
-                    );
-                  })}
-
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <div className={styles.inputRow}>
-                  <input
-                    value={text}
-                    onChange={(event) => setText(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        void handleSend();
-                      }
-                    }}
-                    placeholder="Type your reply..."
-                  />
-
-                  <button
-                    type="button"
-                    onClick={handleSend}
-                    disabled={sending || !text.trim()}
-                  >
-                    <FiSend />
-                    {sending ? "Sending..." : "Send"}
-                  </button>
-                </div>
-              </>
+            {!loading && waitingChats.length === 0 && (
+              <p className={styles.emptyState}>No waiting chats</p>
             )}
+
+            {waitingChats.map((chat) => (
+              <button
+                className={styles.chatListItem}
+                type="button"
+                key={chat.id}
+                onClick={() => void handleTakeChat(chat)}
+              >
+                <strong>{getCustomerName(chat)}</strong>
+                <span>{chat.lastMessage ?? "Take this chat"}</span>
+              </button>
+            ))}
           </section>
-        </div>
+
+          <section>
+            <h3>My Chats</h3>
+
+            {!loading && myChats.length === 0 && (
+              <p className={styles.emptyState}>No active chats</p>
+            )}
+
+            {myChats.map((chat) => (
+              <button
+                className={`${styles.chatListItem} ${
+                  activeChat?.id === chat.id ? styles.activeChat : ""
+                }`}
+                type="button"
+                key={chat.id}
+                onClick={() => void openChat(chat)}
+              >
+                <strong>{getCustomerName(chat)}</strong>
+                <span>{chat.lastMessage ?? chat.status ?? "Open chat"}</span>
+              </button>
+            ))}
+          </section>
+        </aside>
+
+        <section className={styles.adminChatPanel}>
+          {!activeChat ? (
+            <div className={styles.emptyChat}>Choose a chat on the left.</div>
+          ) : (
+            <>
+              <header className={styles.chatHeader}>
+                <div>
+                  <h3>{getCustomerName(activeChat)}</h3>
+
+                  <div className={styles.chatMeta}>
+                    <span className={styles.statusPill}>
+                      {activeChat.status ?? "Active"}
+                    </span>
+
+                    <p>Chat ID: {activeChat.id}</p>
+                  </div>
+                </div>
+
+                <div className={styles.headerActions}>
+                  <button type="button" onClick={handleExitChat}>
+                    Exit
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.dangerButton}
+                    onClick={handleCloseChat}
+                  >
+                    Close
+                  </button>
+                </div>
+              </header>
+
+              <div className={styles.messageList} ref={messageListRef}>
+                {sortedMessages.length === 0 && (
+                  <p className={styles.emptyState}>No messages yet.</p>
+                )}
+
+                {sortedMessages.map((message, index) => {
+                  const isMine = isAdminMessage(message, activeChat, user?.id);
+
+                  return (
+                    <article
+                      key={message.id ?? `${message.chatId}-${index}`}
+                      className={`${styles.messageBubble} ${
+                        isMine ? styles.mine : styles.theirs
+                      }`}
+                    >
+                      <span>{normalizeMessageText(message)}</span>
+
+                      <small>
+                        {message.senderName ??
+                          message.userName ??
+                          (isMine ? "You" : "Customer")}
+                      </small>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <div className={styles.inputRow}>
+                <input
+                  value={text}
+                  onChange={(event) => setText(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      void handleSend();
+                    }
+                  }}
+                  placeholder="Type your reply..."
+                />
+
+                <button
+                  type="button"
+                  onClick={handleSend}
+                  disabled={sending || !text.trim()}
+                >
+                  {sending ? "..." : "Send"}
+                </button>
+              </div>
+            </>
+          )}
+        </section>
       </div>
     </main>
   );
