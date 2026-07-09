@@ -44,7 +44,6 @@ const CartPage = () => {
   const [promoCode, setPromoCode] = useState("");
 
   const [sadCatMessageIndex, setSadCatMessageIndex] = useState(0);
-  const [sadCatTalking, setSadCatTalking] = useState(false);
   const [pupilMove, setPupilMove] = useState({ x: 0, y: 0 });
 
   const [cardDetails, setCardDetails] = useState({
@@ -80,8 +79,8 @@ const CartPage = () => {
       const x = (event.clientX - centerX) / rect.width;
       const y = (event.clientY - centerY) / rect.height;
 
-      const moveX = Math.max(-3, Math.min(3, x * 8));
-      const moveY = Math.max(-3, Math.min(3, y * 8));
+      const moveX = Math.max(-2.2, Math.min(2.2, x * 6));
+      const moveY = Math.max(-1.8, Math.min(1.8, y * 5));
 
       setPupilMove({ x: moveX, y: moveY });
     };
@@ -148,12 +147,7 @@ const CartPage = () => {
       (sadCatMessageIndex + 1) % sadCartCatMessages.length;
 
     setSadCatMessageIndex(nextMessageIndex);
-    setSadCatTalking(true);
     speak(sadCartCatMessages[nextMessageIndex]);
-
-    window.setTimeout(() => {
-      setSadCatTalking(false);
-    }, 700);
   };
 
   const handlePlaceOrder = async () => {
@@ -364,9 +358,7 @@ const CartPage = () => {
 
       <div
         id="sad-cart-cat"
-        className={`${styles.sadCartCatContainer} ${
-          sadCatTalking ? styles.sadCatTalking : ""
-        }`}
+        className={styles.sadCartCatContainer}
         onClick={handleSadCatClick}
       >
         <div className={`${styles.sadCatTearOrb} ${styles.sadCatOrbOne}`} />
@@ -398,14 +390,6 @@ const CartPage = () => {
               <stop offset="0%" stopColor="#ffd8f6" />
               <stop offset="100%" stopColor="#8f6bea" />
             </linearGradient>
-
-            <filter id="sadSoftGlow">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
           </defs>
 
           <g className={styles.sadCatTail}>
@@ -527,40 +511,30 @@ const CartPage = () => {
           <circle cx="132" cy="84" r="3" fill="#ffffff" opacity="0.85" />
 
           <path
-            d="M69 74 C80 68, 91 68, 99 77"
+            d="M69 74 Q84 62 99 74"
             fill="none"
-            stroke="#180d2c"
-            strokeWidth="5"
+            stroke="#7e57d6"
+            strokeWidth="4"
             strokeLinecap="round"
-            opacity="0.75"
+            opacity="0.72"
           />
           <path
-            d="M121 77 C130 68, 141 68, 151 74"
+            d="M121 74 Q136 62 151 74"
             fill="none"
-            stroke="#180d2c"
-            strokeWidth="5"
+            stroke="#7e57d6"
+            strokeWidth="4"
             strokeLinecap="round"
-            opacity="0.75"
+            opacity="0.72"
           />
 
           <path d="M105 104 Q110 99 115 104 Q110 111 105 104Z" fill="#f0a7df" />
 
           <path
             className={styles.sadCatMouth}
-            d="M89 128 C99 116, 121 116, 131 128"
+            d="M96 124 Q110 132 124 124"
             fill="none"
             stroke="#ffd7f8"
-            strokeWidth="6"
-            strokeLinecap="round"
-            filter="url(#sadSoftGlow)"
-          />
-
-          <path
-            className={styles.sadCatTalkMouth}
-            d="M100 130 C106 136, 116 136, 122 130"
-            fill="none"
-            stroke="#ffffff"
-            strokeWidth="4"
+            strokeWidth="5"
             strokeLinecap="round"
           />
 
