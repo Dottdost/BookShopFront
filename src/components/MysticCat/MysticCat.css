@@ -1,50 +1,42 @@
 .mascot-container {
   position: fixed;
-  right: 34px;
-  bottom: 72px;
-  width: 170px;
-  height: 210px;
-  cursor: pointer;
+  right: 26px;
+  bottom: 58px;
+  width: 150px;
+  height: 190px;
   z-index: 9999;
+  cursor: pointer;
+  user-select: none;
   outline: none;
-  filter: drop-shadow(0 0 14px rgba(168, 85, 247, 0.35))
-    drop-shadow(0 14px 28px rgba(0, 0, 0, 0.35));
-  animation: floatMascot 5.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.28))
+    drop-shadow(0 12px 20px rgba(0, 0, 0, 0.28));
+  animation: catFloat 5.5s ease-in-out infinite;
 }
 
-@keyframes floatMascot {
+@keyframes catFloat {
   0%,
   100% {
     transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
-}
-
-.mascot-container:hover {
-  filter: drop-shadow(0 0 18px rgba(192, 132, 252, 0.55))
-    drop-shadow(0 16px 30px rgba(0, 0, 0, 0.38));
 }
 
 .cat-svg {
   width: 100%;
   height: 100%;
+  display: block;
   overflow: visible;
-  transition: transform 0.25s ease;
-}
-
-.mascot-container:hover .cat-svg {
-  transform: scale(1.03);
 }
 
 .tail {
-  transform-origin: 145px 155px;
-  animation: tailMove 2.8s ease-in-out infinite;
+  transform-origin: 148px 168px;
+  animation: tailSwing 2.8s ease-in-out infinite;
 }
 
-@keyframes tailMove {
+@keyframes tailSwing {
   0%,
   100% {
     transform: rotate(-5deg);
@@ -55,17 +47,17 @@
   }
 }
 
-.left-ear {
-  transform-origin: 80px 55px;
-  animation: earMoveLeft 4.8s ease-in-out infinite;
+.ear-left {
+  transform-origin: 84px 64px;
+  animation: earLeft 4.2s ease-in-out infinite;
 }
 
-.right-ear {
-  transform-origin: 140px 55px;
-  animation: earMoveRight 4.8s ease-in-out infinite;
+.ear-right {
+  transform-origin: 136px 64px;
+  animation: earRight 4.2s ease-in-out infinite;
 }
 
-@keyframes earMoveLeft {
+@keyframes earLeft {
   0%,
   92%,
   100% {
@@ -73,11 +65,11 @@
   }
 
   96% {
-    transform: rotate(-4deg);
+    transform: rotate(-3deg);
   }
 }
 
-@keyframes earMoveRight {
+@keyframes earRight {
   0%,
   92%,
   100% {
@@ -85,11 +77,11 @@
   }
 
   96% {
-    transform: rotate(4deg);
+    transform: rotate(3deg);
   }
 }
 
-.eye {
+.eye-group {
   transform-origin: center;
   animation: blink 5.6s infinite;
 }
@@ -108,10 +100,12 @@
 
 .pupil {
   transition: transform 0.08s linear;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .whiskers {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .mouth-rest {
@@ -130,14 +124,14 @@
 }
 
 .mascot-container.talking .mouth-talk {
-  animation: mouthTalk 0.7s ease;
+  animation: mouthTalk 0.65s ease;
 }
 
 @keyframes mouthTalk {
   0%,
   100% {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.85);
   }
 
   30%,
@@ -147,29 +141,32 @@
   }
 }
 
-.magic-orb {
+.magic-dot {
   position: absolute;
-  width: 8px;
-  height: 8px;
   border-radius: 50%;
   background: #e9d5ff;
-  box-shadow: 0 0 12px #d8b4fe;
+  box-shadow: 0 0 10px rgba(216, 180, 254, 0.8);
   opacity: 0.75;
-  animation: orbFloat 4.8s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.orb-1 {
-  top: 56px;
-  left: 20px;
+.dot-1 {
+  width: 8px;
+  height: 8px;
+  top: 48px;
+  left: 18px;
+  animation: dotFloat 4s ease-in-out infinite;
 }
 
-.orb-2 {
-  top: 120px;
+.dot-2 {
+  width: 6px;
+  height: 6px;
+  top: 112px;
   right: 10px;
-  animation-delay: 1.2s;
+  animation: dotFloat 4s ease-in-out infinite 1.2s;
 }
 
-@keyframes orbFloat {
+@keyframes dotFloat {
   0%,
   100% {
     transform: translateY(0);
@@ -177,42 +174,42 @@
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
     opacity: 1;
   }
 }
 
 .speech-bubble {
   position: absolute;
-  right: 82px;
-  top: -68px;
-  min-width: 180px;
-  max-width: 220px;
-  padding: 12px 15px;
+  right: 74px;
+  top: -54px;
+  min-width: 168px;
+  max-width: 210px;
+  padding: 11px 14px;
   border-radius: 18px 18px 8px 18px;
   background: rgba(255, 255, 255, 0.96);
-  color: #2e1065;
-  font-size: 13px;
-  line-height: 1.35;
+  color: #3b0764;
+  font-size: 12.5px;
   font-weight: 700;
+  line-height: 1.35;
   box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.22),
-    0 0 16px rgba(192, 132, 252, 0.2);
+    0 10px 22px rgba(0, 0, 0, 0.2),
+    0 0 16px rgba(192, 132, 252, 0.18);
   opacity: 0;
   transform: translateY(8px) scale(0.97);
   transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    opacity 0.28s ease,
+    transform 0.28s ease;
   pointer-events: none;
 }
 
 .speech-bubble::after {
   content: "";
   position: absolute;
-  bottom: -8px;
-  right: 24px;
-  width: 16px;
-  height: 16px;
+  bottom: -7px;
+  right: 22px;
+  width: 14px;
+  height: 14px;
   background: rgba(255, 255, 255, 0.96);
   transform: rotate(45deg);
   border-radius: 3px;
@@ -226,26 +223,26 @@
 .click-hint {
   position: absolute;
   right: 4px;
-  bottom: -18px;
+  bottom: -16px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.78);
-  letter-spacing: 0.3px;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.2px;
   animation: hintPulse 2s ease-in-out infinite;
 }
 
 @keyframes hintPulse {
   0%,
   100% {
-    opacity: 0.5;
+    opacity: 0.45;
   }
 
   50% {
-    opacity: 1;
+    opacity: 0.95;
   }
 }
 
 .mascot-container.talking .cat-svg {
-  animation: talkBounce 0.7s ease;
+  animation: talkBounce 0.65s ease;
 }
 
 @keyframes talkBounce {
@@ -254,7 +251,7 @@
   }
 
   35% {
-    transform: scale(1.04);
+    transform: scale(1.03);
   }
 
   70% {
@@ -266,21 +263,21 @@
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .mascot-container {
-    width: 120px;
-    height: 145px;
-    right: 18px;
-    bottom: 56px;
+    width: 112px;
+    height: 142px;
+    right: 16px;
+    bottom: 48px;
   }
 
   .speech-bubble {
-    right: 42px;
-    top: -82px;
-    min-width: 150px;
+    right: 40px;
+    top: -72px;
+    min-width: 148px;
     max-width: 180px;
     padding: 10px 12px;
-    font-size: 12px;
+    font-size: 11.5px;
   }
 
   .click-hint {

@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import "./MysticCat.css";
 
 const messages = [
-  "Welcome to Cheshire Shelf...",
-  "What story shall we open today?",
-  "Looking for your next favorite book?",
-  "Need help finding a book?",
-  "Careful... good books have claws.",
-  "Purr. Let me help you choose.",
-  "Some books choose their readers first.",
-  "Every shelf has a secret.",
+  "Your cart believes in you.",
+  "A good book is already waiting.",
+  "Maybe add just one more book?",
+  "Cheshire Shelf approves this choice.",
+  "Books look better in pairs.",
+  "I can already hear the pages calling.",
+  "Your next favorite story might be here.",
+  "A little magic for your cart.",
 ];
 
 export default function MysticCat() {
@@ -24,9 +24,9 @@ export default function MysticCat() {
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
-    utterance.rate = 0.94;
-    utterance.pitch = 1.08;
-    utterance.volume = 0.72;
+    utterance.rate = 0.95;
+    utterance.pitch = 1.1;
+    utterance.volume = 0.75;
 
     window.speechSynthesis.speak(utterance);
   };
@@ -39,7 +39,7 @@ export default function MysticCat() {
 
     window.setTimeout(() => {
       setIsTalking(false);
-    }, 700);
+    }, 650);
   };
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function MysticCat() {
       const x = (event.clientX - centerX) / rect.width;
       const y = (event.clientY - centerY) / rect.height;
 
-      const moveX = Math.max(-2.5, Math.min(2.5, x * 7));
+      const moveX = Math.max(-2, Math.min(2, x * 6));
       const moveY = Math.max(-2, Math.min(2, y * 6));
 
       setPupilMove({ x: moveX, y: moveY });
@@ -69,7 +69,7 @@ export default function MysticCat() {
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      if (Math.random() > 0.6) {
+      if (Math.random() > 0.65) {
         setCurrent((prev) => (prev + 1) % messages.length);
       }
     }, 9000);
@@ -79,8 +79,8 @@ export default function MysticCat() {
 
   return (
     <div
-      className={`mascot-container ${isTalking ? "talking" : ""}`}
       id="mystic-cat-mascot"
+      className={`mascot-container ${isTalking ? "talking" : ""}`}
       onClick={handleClick}
       role="button"
       tabIndex={0}
@@ -91,170 +91,199 @@ export default function MysticCat() {
       }}
       aria-label="Mystic cat assistant"
     >
-      <div className="magic-orb orb-1" />
-      <div className="magic-orb orb-2" />
+      <div className="magic-dot dot-1" />
+      <div className="magic-dot dot-2" />
 
       <div className="speech-bubble show">{messages[current]}</div>
 
       <svg
         className="cat-svg"
-        viewBox="0 0 220 240"
+        viewBox="0 0 220 250"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <radialGradient id="furGradient" cx="50%" cy="35%" r="70%">
+          <radialGradient id="catHeadGradient" cx="50%" cy="35%" r="70%">
             <stop offset="0%" stopColor="#d8b4fe" />
-            <stop offset="48%" stopColor="#9b5cff" />
-            <stop offset="100%" stopColor="#5b21b6" />
+            <stop offset="50%" stopColor="#a855f7" />
+            <stop offset="100%" stopColor="#6d28d9" />
           </radialGradient>
 
-          <linearGradient id="innerEar" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f9d5ff" />
-            <stop offset="100%" stopColor="#c084fc" />
-          </linearGradient>
-
           <linearGradient
-            id="bellyGradient"
+            id="catBodyGradient"
             x1="0%"
             y1="0%"
             x2="100%"
             y2="100%"
           >
-            <stop offset="0%" stopColor="#c4b5fd" />
-            <stop offset="100%" stopColor="#8b5cf6" />
+            <stop offset="0%" stopColor="#c084fc" />
+            <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
         </defs>
 
-        <g className="tail">
-          <path
-            d="M145 154 C185 160, 196 199, 170 210 C150 218, 132 204, 145 190"
-            fill="none"
-            stroke="#7c3aed"
-            strokeWidth="22"
-            strokeLinecap="round"
-          />
-        </g>
+        {/* tail */}
+        <path
+          className="tail"
+          d="M148 168 C190 170, 196 214, 170 224 C150 232, 130 214, 145 198"
+          fill="none"
+          stroke="#7c3aed"
+          strokeWidth="18"
+          strokeLinecap="round"
+        />
 
-        <ellipse cx="110" cy="165" rx="46" ry="55" fill="url(#furGradient)" />
+        {/* body */}
         <ellipse
           cx="110"
-          cy="173"
-          rx="24"
-          ry="32"
-          fill="url(#bellyGradient)"
+          cy="180"
+          rx="46"
+          ry="52"
+          fill="url(#catBodyGradient)"
+        />
+        <ellipse
+          cx="110"
+          cy="188"
+          rx="22"
+          ry="28"
+          fill="#c4b5fd"
+          opacity="0.4"
+        />
+
+        {/* paws */}
+        <ellipse cx="82" cy="225" rx="16" ry="10" fill="#6d28d9" />
+        <ellipse cx="138" cy="225" rx="16" ry="10" fill="#6d28d9" />
+
+        {/* ears */}
+        <g className="ear-left">
+          <path
+            d="M67 86 L82 38 L104 88 Z"
+            fill="url(#catHeadGradient)"
+            stroke="#3b0764"
+            strokeWidth="4"
+          />
+          <path d="M77 78 L83 52 L95 78 Z" fill="#f5d0fe" />
+        </g>
+
+        <g className="ear-right">
+          <path
+            d="M153 86 L138 38 L116 88 Z"
+            fill="url(#catHeadGradient)"
+            stroke="#3b0764"
+            strokeWidth="4"
+          />
+          <path d="M143 78 L137 52 L125 78 Z" fill="#f5d0fe" />
+        </g>
+
+        {/* head */}
+        <circle
+          cx="110"
+          cy="105"
+          r="58"
+          fill="url(#catHeadGradient)"
+          stroke="#3b0764"
+          strokeWidth="4"
+        />
+
+        {/* soft tiny identical brows */}
+        <path
+          d="M76 83 Q85 79 94 83"
+          fill="none"
+          stroke="#4c1d95"
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity="0.75"
+        />
+        <path
+          d="M126 83 Q135 79 144 83"
+          fill="none"
+          stroke="#4c1d95"
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity="0.75"
+        />
+
+        {/* eyes */}
+        <g className="eye-group">
+          <ellipse cx="85" cy="105" rx="16" ry="21" fill="#ffffff" />
+          <ellipse cx="135" cy="105" rx="16" ry="21" fill="#ffffff" />
+        </g>
+
+        <circle
+          cx="85"
+          cy="108"
+          r="7"
+          fill="#140022"
+          className="pupil"
+          style={{ transform: `translate(${pupilMove.x}px, ${pupilMove.y}px)` }}
+        />
+        <circle
+          cx="135"
+          cy="108"
+          r="7"
+          fill="#140022"
+          className="pupil"
+          style={{ transform: `translate(${pupilMove.x}px, ${pupilMove.y}px)` }}
+        />
+
+        <circle cx="81" cy="103" r="2.5" fill="#ffffff" opacity="0.9" />
+        <circle cx="131" cy="103" r="2.5" fill="#ffffff" opacity="0.9" />
+
+        {/* cheeks */}
+        <ellipse
+          cx="74"
+          cy="132"
+          rx="13"
+          ry="7"
+          fill="#f9a8d4"
+          opacity="0.45"
+        />
+        <ellipse
+          cx="146"
+          cy="132"
+          rx="13"
+          ry="7"
+          fill="#f9a8d4"
           opacity="0.45"
         />
 
-        <ellipse cx="80" cy="212" rx="18" ry="12" fill="#6d28d9" />
-        <ellipse cx="140" cy="212" rx="18" ry="12" fill="#6d28d9" />
+        {/* nose */}
+        <path d="M104 122 Q110 116 116 122 Q110 127 104 122Z" fill="#f9a8d4" />
 
-        <g className="left-ear">
-          <path
-            d="M63 76 L79 26 L102 76 Z"
-            fill="url(#furGradient)"
-            stroke="#3b0764"
-            strokeWidth="4"
-          />
-          <path d="M73 66 L80 40 L93 66 Z" fill="url(#innerEar)" />
-        </g>
-
-        <g className="right-ear">
-          <path
-            d="M157 76 L141 26 L118 76 Z"
-            fill="url(#furGradient)"
-            stroke="#3b0764"
-            strokeWidth="4"
-          />
-          <path d="M147 66 L140 40 L127 66 Z" fill="url(#innerEar)" />
-        </g>
-
-        <ellipse
-          cx="110"
-          cy="95"
-          rx="62"
-          ry="57"
-          fill="url(#furGradient)"
-          stroke="#3b0764"
-          strokeWidth="4"
-        />
-
-        {/* normal symmetric eyebrows */}
-        <path
-          d="M74 72 Q84 66 94 72"
-          fill="none"
-          stroke="#3b0764"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M126 72 Q136 66 146 72"
-          fill="none"
-          stroke="#3b0764"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
-
-        <g className="eye">
-          <ellipse cx="84" cy="92" rx="14" ry="18" fill="#ffffff" />
-          <ellipse cx="136" cy="92" rx="14" ry="18" fill="#ffffff" />
-        </g>
-
-        <circle
-          className="pupil"
-          cx="84"
-          cy="94"
-          r="6.5"
-          fill="#1f1130"
-          style={{ transform: `translate(${pupilMove.x}px, ${pupilMove.y}px)` }}
-        />
-        <circle
-          className="pupil"
-          cx="136"
-          cy="94"
-          r="6.5"
-          fill="#1f1130"
-          style={{ transform: `translate(${pupilMove.x}px, ${pupilMove.y}px)` }}
-        />
-
-        <circle cx="80" cy="89" r="2.5" fill="#ffffff" opacity="0.9" />
-        <circle cx="132" cy="89" r="2.5" fill="#ffffff" opacity="0.9" />
-
-        <path d="M104 106 Q110 100 116 106 Q110 112 104 106Z" fill="#f9a8d4" />
-
+        {/* simple mouth */}
         <path
           className="mouth-rest"
-          d="M99 118 Q110 128 121 118"
+          d="M100 132 Q110 141 120 132"
           fill="none"
-          stroke="#fdf2f8"
+          stroke="#fff7fb"
           strokeWidth="4"
           strokeLinecap="round"
         />
 
+        {/* talking mouth */}
         <ellipse
           className="mouth-talk"
           cx="110"
-          cy="121"
-          rx="7"
-          ry="5"
+          cy="135"
+          rx="6"
+          ry="4.5"
           fill="#fff7fb"
           stroke="#f9a8d4"
-          strokeWidth="1.8"
+          strokeWidth="1.5"
         />
 
+        {/* whiskers */}
         <g
           className="whiskers"
-          stroke="#f5d0fe"
+          stroke="#f3e8ff"
           strokeWidth="2.5"
           strokeLinecap="round"
         >
-          <path d="M92 109 C72 103, 52 104, 34 109" />
-          <path d="M92 117 C72 118, 54 126, 38 136" />
-          <path d="M128 109 C148 103, 168 104, 186 109" />
-          <path d="M128 117 C148 118, 166 126, 182 136" />
+          <path d="M90 126 C70 121, 51 121, 35 126" />
+          <path d="M90 136 C72 138, 55 145, 42 154" />
+          <path d="M130 126 C150 121, 169 121, 185 126" />
+          <path d="M130 136 C148 138, 165 145, 178 154" />
         </g>
       </svg>
 
-      <div className="click-hint">click the cat ✦</div>
+      <div className="click-hint">comfort the cat ✦</div>
     </div>
   );
 }
