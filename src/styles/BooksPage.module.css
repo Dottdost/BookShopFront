@@ -134,7 +134,7 @@
   filter: brightness(1.05);
 }
 
-/* Animated search cat */
+/* Interactive search cat */
 
 .searchCat {
   position: absolute;
@@ -144,19 +144,26 @@
   width: 66px;
   height: 40px;
   pointer-events: none;
-  opacity: 1;
+  opacity: 0;
+  transform: translateX(-92px) scaleX(1);
   transform-origin: center bottom;
-  animation:
-    searchCatWalk 9.2s ease-in-out infinite,
-    searchCatBob 0.75s ease-in-out infinite;
   filter: drop-shadow(0 0 12px rgba(167, 139, 250, 1))
     drop-shadow(0 8px 12px rgba(0, 0, 0, 0.38));
+  transition: opacity 0.2s ease;
 }
 
-.searchBar:focus-within .searchCat {
+.searchCatActive {
+  opacity: 1;
   animation:
-    searchCatGuard 0.45s ease both,
-    searchCatBob 0.9s ease-in-out infinite;
+    searchCatEnterAndWatch 1.25s cubic-bezier(0.22, 0.9, 0.22, 1) forwards,
+    searchCatBob 0.85s ease-in-out infinite 1.25s;
+}
+
+.searchCatWatching {
+  opacity: 1;
+  animation:
+    searchCatWatchingText 0.9s ease-in-out infinite,
+    searchCatBob 0.95s ease-in-out infinite;
 }
 
 .searchCatTrail {
@@ -167,6 +174,11 @@
   height: 14px;
   opacity: 0.8;
   animation: searchTrailFade 1.4s ease-in-out infinite;
+}
+
+.searchCatWatching .searchCatTrail {
+  opacity: 0;
+  animation: none;
 }
 
 .searchCatTrail span {
@@ -255,6 +267,10 @@
   background: linear-gradient(135deg, #f0abfc, #a78bfa 55%, #6d28d9);
   border: 1px solid rgba(255, 255, 255, 0.34);
   animation: searchCatLook 2.4s ease-in-out infinite;
+}
+
+.searchCatWatching .searchCatHead {
+  animation: searchCatCurious 1.4s ease-in-out infinite;
 }
 
 .searchCatEarLeft,
@@ -353,19 +369,11 @@
   animation-delay: 0.54s;
 }
 
-.searchBar:focus-within .searchCatPawOne,
-.searchBar:focus-within .searchCatPawTwo,
-.searchBar:focus-within .searchCatPawThree,
-.searchBar:focus-within .searchCatPawFour {
+.searchCatWatching .searchCatPawOne,
+.searchCatWatching .searchCatPawTwo,
+.searchCatWatching .searchCatPawThree,
+.searchCatWatching .searchCatPawFour {
   animation: none;
-}
-
-.searchBar:focus-within .searchCatHead {
-  animation: searchCatCurious 1.4s ease-in-out infinite;
-}
-
-.searchBar:focus-within .searchCatTrail {
-  opacity: 0;
 }
 
 /* Premium genre filter */
@@ -668,35 +676,34 @@
   }
 }
 
-@keyframes searchCatWalk {
+@keyframes searchCatEnterAndWatch {
   0% {
-    transform: translateX(-86px) scaleX(1);
+    opacity: 0;
+    transform: translateX(-92px) scaleX(1);
   }
 
-  44% {
-    transform: translateX(555px) scaleX(1);
+  15% {
+    opacity: 1;
   }
 
-  50% {
-    transform: translateX(555px) scaleX(-1);
-  }
-
-  94% {
-    transform: translateX(-86px) scaleX(-1);
+  72% {
+    transform: translateX(245px) scaleX(1);
   }
 
   100% {
-    transform: translateX(-86px) scaleX(1);
+    opacity: 1;
+    transform: translateX(245px) scaleX(1);
   }
 }
 
-@keyframes searchCatGuard {
-  from {
-    transform: translateX(var(--cat-current-x, 0)) scaleX(1);
+@keyframes searchCatWatchingText {
+  0%,
+  100% {
+    transform: translateX(245px) scaleX(1) rotate(0deg);
   }
 
-  to {
-    transform: translateX(4px) scaleX(1);
+  50% {
+    transform: translateX(245px) scaleX(1) rotate(-2deg);
   }
 }
 

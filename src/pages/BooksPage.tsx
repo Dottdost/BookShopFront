@@ -71,6 +71,7 @@ const BooksPage: React.FC = () => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+  const [searchFocused, setSearchFocused] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -240,6 +241,8 @@ const BooksPage: React.FC = () => {
   const foundText =
     filtered.length === 1 ? "1 book found" : `${filtered.length} books found`;
 
+  const searchIsActive = searchFocused || searchQuery.trim().length > 0;
+
   if (loading) {
     return <div className={styles.loading}>{t("common.loading")}</div>;
   }
@@ -247,7 +250,12 @@ const BooksPage: React.FC = () => {
   return (
     <main className={styles.page}>
       <div className={styles.searchBar}>
-        <div className={styles.searchCat} aria-hidden="true">
+        <div
+          className={`${styles.searchCat} ${
+            searchIsActive ? styles.searchCatActive : ""
+          } ${searchQuery.trim() ? styles.searchCatWatching : ""}`}
+          aria-hidden="true"
+        >
           <div className={styles.searchCatTrail}>
             <span />
             <span />
@@ -280,6 +288,12 @@ const BooksPage: React.FC = () => {
           type="text"
           placeholder={t("books.searchPlaceholder")}
           value={searchQuery}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => {
+            if (!searchQuery.trim()) {
+              setSearchFocused(false);
+            }
+          }}
           onChange={(event) => {
             const value = event.target.value;
 
