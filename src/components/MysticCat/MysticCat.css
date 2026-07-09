@@ -119,35 +119,6 @@
 
 .cheshireCatMouthRest {
   opacity: 1;
-  transition: opacity 0.18s ease;
-}
-
-.cheshireCatMouthTalk {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.cheshireMysticCatTalking .cheshireCatMouthRest {
-  opacity: 0;
-}
-
-.cheshireMysticCatTalking .cheshireCatMouthTalk {
-  animation: cheshireMouthTalk 0.62s ease;
-}
-
-@keyframes cheshireMouthTalk {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0.82);
-  }
-
-  30%,
-  70% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .cheshireCatDot {
@@ -237,28 +208,6 @@
 
   50% {
     opacity: 0.95;
-  }
-}
-
-.cheshireMysticCatTalking .cheshireCatSvg {
-  animation: cheshireTalkBounce 0.62s ease;
-}
-
-@keyframes cheshireTalkBounce {
-  0% {
-    transform: scale(1);
-  }
-
-  35% {
-    transform: scale(1.025);
-  }
-
-  70% {
-    transform: scale(0.99);
-  }
-
-  100% {
-    transform: scale(1);
   }
 }
 

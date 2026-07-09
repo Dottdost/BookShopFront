@@ -14,7 +14,6 @@ const messages = [
 
 export default function MysticCat() {
   const [current, setCurrent] = useState(0);
-  const [isTalking, setIsTalking] = useState(false);
   const [pupilMove, setPupilMove] = useState({ x: 0, y: 0 });
 
   const speak = (text: string) => {
@@ -33,14 +32,8 @@ export default function MysticCat() {
 
   const handleClick = () => {
     const next = (current + 1) % messages.length;
-
     setCurrent(next);
-    setIsTalking(true);
     speak(messages[next]);
-
-    window.setTimeout(() => {
-      setIsTalking(false);
-    }, 620);
   };
 
   useEffect(() => {
@@ -81,7 +74,7 @@ export default function MysticCat() {
   return (
     <div
       id="cheshire-mystic-cat"
-      className={`cheshireMysticCat ${isTalking ? "cheshireMysticCatTalking" : ""}`}
+      className="cheshireMysticCat"
       onClick={handleClick}
       role="button"
       tabIndex={0}
@@ -109,7 +102,13 @@ export default function MysticCat() {
             <stop offset="100%" stopColor="#6d28d9" />
           </radialGradient>
 
-          <linearGradient id="cheshireCatBody" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient
+            id="cheshireCatBody"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="#c084fc" />
             <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
@@ -124,8 +123,21 @@ export default function MysticCat() {
           strokeLinecap="round"
         />
 
-        <ellipse cx="90" cy="151" rx="36" ry="42" fill="url(#cheshireCatBody)" />
-        <ellipse cx="90" cy="158" rx="18" ry="24" fill="#c4b5fd" opacity="0.38" />
+        <ellipse
+          cx="90"
+          cy="151"
+          rx="36"
+          ry="42"
+          fill="url(#cheshireCatBody)"
+        />
+        <ellipse
+          cx="90"
+          cy="158"
+          rx="18"
+          ry="24"
+          fill="#c4b5fd"
+          opacity="0.38"
+        />
 
         <ellipse cx="68" cy="190" rx="13" ry="8" fill="#6d28d9" />
         <ellipse cx="112" cy="190" rx="13" ry="8" fill="#6d28d9" />
@@ -159,21 +171,22 @@ export default function MysticCat() {
           strokeWidth="3"
         />
 
+        {/* ОДИНАКОВЫЕ мягкие брови */}
         <path
-          d="M62 69 Q70 65 78 69"
+          d="M60 70 Q70 63 80 70"
           fill="none"
-          stroke="#4c1d95"
-          strokeWidth="2.4"
+          stroke="#7e22ce"
+          strokeWidth="2.8"
           strokeLinecap="round"
-          opacity="0.75"
+          opacity="0.9"
         />
         <path
-          d="M102 69 Q110 65 118 69"
+          d="M100 70 Q110 63 120 70"
           fill="none"
-          stroke="#4c1d95"
-          strokeWidth="2.4"
+          stroke="#7e22ce"
+          strokeWidth="2.8"
           strokeLinecap="round"
-          opacity="0.75"
+          opacity="0.9"
         />
 
         <g className="cheshireCatEyes">
@@ -201,29 +214,33 @@ export default function MysticCat() {
         <circle cx="67" cy="84" r="2" fill="#ffffff" opacity="0.9" />
         <circle cx="107" cy="84" r="2" fill="#ffffff" opacity="0.9" />
 
-        <ellipse cx="59" cy="108" rx="10" ry="5" fill="#f9a8d4" opacity="0.42" />
-        <ellipse cx="121" cy="108" rx="10" ry="5" fill="#f9a8d4" opacity="0.42" />
+        <ellipse
+          cx="59"
+          cy="108"
+          rx="10"
+          ry="5"
+          fill="#f9a8d4"
+          opacity="0.42"
+        />
+        <ellipse
+          cx="121"
+          cy="108"
+          rx="10"
+          ry="5"
+          fill="#f9a8d4"
+          opacity="0.42"
+        />
 
         <path d="M85 101 Q90 96 95 101 Q90 106 85 101Z" fill="#f9a8d4" />
 
+        {/* ОДИН статичный рот, без падающей улыбки */}
         <path
           className="cheshireCatMouthRest"
-          d="M81 112 Q90 118 99 112"
+          d="M82 113 Q90 118 98 113"
           fill="none"
           stroke="#fff7fb"
           strokeWidth="3"
           strokeLinecap="round"
-        />
-
-        <ellipse
-          className="cheshireCatMouthTalk"
-          cx="90"
-          cy="115"
-          rx="5"
-          ry="3.4"
-          fill="#fff7fb"
-          stroke="#f9a8d4"
-          strokeWidth="1.2"
         />
 
         <g
