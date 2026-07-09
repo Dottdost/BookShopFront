@@ -14,20 +14,41 @@
   box-shadow: 0 14px 40px rgba(0, 0, 0, calc(0.08 + var(--dark) * 0.14));
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.logo a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 50%;
+}
+
 .logo img {
-  width: 90px;
-  height: 90px;
-  border-radius: 24px;
-  object-fit: cover;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
   cursor: pointer;
-  transition: all 0.25s ease;
+  filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.22))
+    drop-shadow(0 10px 20px rgba(0, 0, 0, 0.22));
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
 }
 
 .logo img:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 18px 40px rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px) scale(1.06);
+  filter: drop-shadow(0 0 18px rgba(167, 139, 250, 0.46))
+    drop-shadow(0 14px 26px rgba(0, 0, 0, 0.28));
 }
 
 .navLinks {
@@ -90,9 +111,15 @@
   font-weight: 800;
   cursor: pointer;
   box-shadow: var(--shadow);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .auth button:hover {
+  transform: translateY(-1px);
   border-color: var(--accent);
   color: var(--accent2);
   box-shadow: 0 16px 35px rgba(139, 92, 246, 0.2);
@@ -161,6 +188,11 @@
     padding: 0 20px;
   }
 
+  .logo img {
+    width: 92px;
+    height: 92px;
+  }
+
   .navLinks {
     position: fixed;
     top: 86px;
@@ -203,12 +235,12 @@
 @media (max-width: 560px) {
   .navbar {
     height: 78px;
+    padding: 0 16px;
   }
 
   .logo img {
-    width: 48px;
-    height: 48px;
-    border-radius: 18px;
+    width: 64px;
+    height: 64px;
   }
 
   .navLinks {
