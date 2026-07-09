@@ -19,7 +19,7 @@ type OrderRequest = {
   promoCode?: string;
 };
 
-const cartCatMessages = [
+const sadCartCatMessages = [
   "Are you... not planning to buy anything?",
   "I guarded these books all day for you...",
   "This cart feels a little lonely.",
@@ -31,7 +31,7 @@ const cartCatMessages = [
   "Your cart believes in you.",
   "I am not begging. I am just dramatically concerned.",
   "A checkout button was made to be clicked...",
-  "If you buy a book, I might purr again.",
+  "If you buy a book, I might smile again.",
 ];
 
 const CartPage = () => {
@@ -43,8 +43,8 @@ const CartPage = () => {
   const [showCardModal, setShowCardModal] = useState(false);
   const [promoCode, setPromoCode] = useState("");
 
-  const [cartCatMessageIndex, setCartCatMessageIndex] = useState(0);
-  const [cartCatTalking, setCartCatTalking] = useState(false);
+  const [sadCatMessageIndex, setSadCatMessageIndex] = useState(0);
+  const [sadCatTalking, setSadCatTalking] = useState(false);
   const [pupilMove, setPupilMove] = useState({ x: 0, y: 0 });
 
   const [cardDetails, setCardDetails] = useState({
@@ -69,7 +69,7 @@ const CartPage = () => {
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
-      const mascot = document.getElementById("cart-cat");
+      const mascot = document.getElementById("sad-cart-cat");
       if (!mascot) return;
 
       const rect = mascot.getBoundingClientRect();
@@ -81,7 +81,7 @@ const CartPage = () => {
       const y = (event.clientY - centerY) / rect.height;
 
       const moveX = Math.max(-3, Math.min(3, x * 8));
-      const moveY = Math.max(-2, Math.min(2, y * 6));
+      const moveY = Math.max(-3, Math.min(3, y * 8));
 
       setPupilMove({ x: moveX, y: moveY });
     };
@@ -96,8 +96,8 @@ const CartPage = () => {
   useEffect(() => {
     const interval = window.setInterval(() => {
       if (Math.random() > 0.55) {
-        setCartCatMessageIndex((current) => {
-          return (current + 1) % cartCatMessages.length;
+        setSadCatMessageIndex((current) => {
+          return (current + 1) % sadCartCatMessages.length;
         });
       }
     }, 9000);
@@ -137,22 +137,23 @@ const CartPage = () => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
     utterance.rate = 0.88;
-    utterance.pitch = 0.98;
+    utterance.pitch = 0.92;
     utterance.volume = 0.75;
 
     window.speechSynthesis.speak(utterance);
   };
 
-  const handleCartCatClick = () => {
-    const nextMessageIndex = (cartCatMessageIndex + 1) % cartCatMessages.length;
+  const handleSadCatClick = () => {
+    const nextMessageIndex =
+      (sadCatMessageIndex + 1) % sadCartCatMessages.length;
 
-    setCartCatMessageIndex(nextMessageIndex);
-    setCartCatTalking(true);
-    speak(cartCatMessages[nextMessageIndex]);
+    setSadCatMessageIndex(nextMessageIndex);
+    setSadCatTalking(true);
+    speak(sadCartCatMessages[nextMessageIndex]);
 
     window.setTimeout(() => {
-      setCartCatTalking(false);
-    }, 850);
+      setSadCatTalking(false);
+    }, 700);
   };
 
   const handlePlaceOrder = async () => {
@@ -362,43 +363,43 @@ const CartPage = () => {
       )}
 
       <div
-        id="cart-cat"
-        className={`${styles.cartCatContainer} ${
-          cartCatTalking ? styles.cartCatTalking : ""
+        id="sad-cart-cat"
+        className={`${styles.sadCartCatContainer} ${
+          sadCatTalking ? styles.sadCatTalking : ""
         }`}
-        onClick={handleCartCatClick}
+        onClick={handleSadCatClick}
       >
-        <div className={`${styles.cartCatOrb} ${styles.cartCatOrbOne}`} />
-        <div className={`${styles.cartCatOrb} ${styles.cartCatOrbTwo}`} />
+        <div className={`${styles.sadCatTearOrb} ${styles.sadCatOrbOne}`} />
+        <div className={`${styles.sadCatTearOrb} ${styles.sadCatOrbTwo}`} />
 
-        <div className={styles.cartCatBubble}>
-          {cartCatMessages[cartCatMessageIndex]}
+        <div className={styles.sadCatBubble}>
+          {sadCartCatMessages[sadCatMessageIndex]}
         </div>
 
         <svg
-          className={styles.cartCatSvg}
+          className={styles.sadCatSvg}
           viewBox="0 0 220 240"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <radialGradient id="cartFurGradient" cx="50%" cy="35%" r="70%">
-              <stop offset="0%" stopColor="#d9ccff" />
-              <stop offset="46%" stopColor="#9b7cf0" />
+            <radialGradient id="sadFurGradient" cx="50%" cy="35%" r="70%">
+              <stop offset="0%" stopColor="#cbb8ff" />
+              <stop offset="45%" stopColor="#8f6bea" />
               <stop offset="100%" stopColor="#3c2b6d" />
             </radialGradient>
 
             <linearGradient
-              id="cartInnerEar"
+              id="sadInnerEar"
               x1="0%"
               y1="0%"
               x2="100%"
               y2="100%"
             >
               <stop offset="0%" stopColor="#ffd8f6" />
-              <stop offset="100%" stopColor="#9b7cf0" />
+              <stop offset="100%" stopColor="#8f6bea" />
             </linearGradient>
 
-            <filter id="cartSoftGlow">
+            <filter id="sadSoftGlow">
               <feGaussianBlur stdDeviation="2.5" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
@@ -407,7 +408,7 @@ const CartPage = () => {
             </filter>
           </defs>
 
-          <g className={styles.cartCatTail}>
+          <g className={styles.sadCatTail}>
             <path
               d="M142 155 C185 162, 197 204, 168 215 C143 224, 125 205, 143 188 C157 175, 178 190, 162 202"
               fill="none"
@@ -419,7 +420,7 @@ const CartPage = () => {
             <path
               d="M143 156 C177 165, 190 197, 168 213"
               fill="none"
-              stroke="#d7c9ff"
+              stroke="#bda9ff"
               strokeWidth="6"
               strokeLinecap="round"
               opacity="0.5"
@@ -431,44 +432,43 @@ const CartPage = () => {
             cy="162"
             rx="48"
             ry="56"
-            fill="url(#cartFurGradient)"
+            fill="url(#sadFurGradient)"
             opacity="0.96"
           />
-
           <ellipse
             cx="110"
-            cy="174"
+            cy="172"
             rx="27"
             ry="35"
             fill="#d7c9ff"
             opacity="0.28"
           />
 
-          <g className={styles.cartLeftEar}>
+          <g className={styles.sadLeftEar}>
             <path
               d="M60 74 L76 26 L101 76 Z"
-              fill="url(#cartFurGradient)"
+              fill="url(#sadFurGradient)"
               stroke="#26164e"
               strokeWidth="5"
             />
             <path
               d="M70 66 L78 40 L92 67 Z"
-              fill="url(#cartInnerEar)"
-              opacity="0.82"
+              fill="url(#sadInnerEar)"
+              opacity="0.8"
             />
           </g>
 
-          <g className={styles.cartRightEar}>
+          <g className={styles.sadRightEar}>
             <path
               d="M160 74 L144 26 L119 76 Z"
-              fill="url(#cartFurGradient)"
+              fill="url(#sadFurGradient)"
               stroke="#26164e"
               strokeWidth="5"
             />
             <path
               d="M150 66 L142 40 L128 67 Z"
-              fill="url(#cartInnerEar)"
-              opacity="0.82"
+              fill="url(#sadInnerEar)"
+              opacity="0.8"
             />
           </g>
 
@@ -477,34 +477,33 @@ const CartPage = () => {
             cy="94"
             rx="65"
             ry="60"
-            fill="url(#cartFurGradient)"
+            fill="url(#sadFurGradient)"
             stroke="#26164e"
             strokeWidth="5"
           />
 
           <path
-            d="M74 56 C87 48, 99 48, 111 58"
+            d="M72 58 C86 48, 100 49, 112 59"
             fill="none"
-            stroke="#d7c9ff"
+            stroke="#c9b8ff"
+            strokeWidth="4"
+            opacity="0.35"
+          />
+          <path
+            d="M100 44 C111 55, 119 55, 131 45"
+            fill="none"
+            stroke="#c9b8ff"
             strokeWidth="4"
             opacity="0.28"
           />
 
-          <path
-            d="M109 45 C116 54, 124 55, 133 47"
-            fill="none"
-            stroke="#d7c9ff"
-            strokeWidth="4"
-            opacity="0.22"
-          />
-
-          <g className={styles.cartCatEyes}>
-            <ellipse cx="84" cy="90" rx="15" ry="20" fill="#f8f3ff" />
-            <ellipse cx="136" cy="90" rx="15" ry="20" fill="#f8f3ff" />
+          <g className={styles.sadCatEyes}>
+            <ellipse cx="84" cy="88" rx="15" ry="21" fill="#f6f0ff" />
+            <ellipse cx="136" cy="88" rx="15" ry="21" fill="#f6f0ff" />
           </g>
 
           <circle
-            className={styles.cartCatPupil}
+            className={styles.sadCatPupil}
             cx="84"
             cy="92"
             r="7"
@@ -513,9 +512,8 @@ const CartPage = () => {
               transform: `translate(${pupilMove.x}px, ${pupilMove.y}px)`,
             }}
           />
-
           <circle
-            className={styles.cartCatPupil}
+            className={styles.sadCatPupil}
             cx="136"
             cy="92"
             r="7"
@@ -525,57 +523,56 @@ const CartPage = () => {
             }}
           />
 
-          <circle cx="80" cy="84" r="3" fill="#ffffff" opacity="0.88" />
-          <circle cx="132" cy="84" r="3" fill="#ffffff" opacity="0.88" />
+          <circle cx="80" cy="84" r="3" fill="#ffffff" opacity="0.85" />
+          <circle cx="132" cy="84" r="3" fill="#ffffff" opacity="0.85" />
 
           <path
-            d="M105 105 Q110 100 115 105 Q110 112 105 105Z"
-            fill="#f0a7df"
-          />
-
-          <path
-            className={styles.cartCatMouth}
-            d="M96 124 Q110 134 124 124"
+            d="M69 74 C80 68, 91 68, 99 77"
             fill="none"
-            stroke="#ffd7f8"
+            stroke="#180d2c"
             strokeWidth="5"
             strokeLinecap="round"
-            filter="url(#cartSoftGlow)"
+            opacity="0.75"
+          />
+          <path
+            d="M121 77 C130 68, 141 68, 151 74"
+            fill="none"
+            stroke="#180d2c"
+            strokeWidth="5"
+            strokeLinecap="round"
+            opacity="0.75"
           />
 
-          <ellipse
-            className={styles.cartCatTalkMouth}
-            cx="110"
-            cy="126"
-            rx="9"
-            ry="6"
-            fill="#fff0fb"
+          <path d="M105 104 Q110 99 115 104 Q110 111 105 104Z" fill="#f0a7df" />
+
+          <path
+            className={styles.sadCatMouth}
+            d="M89 128 C99 116, 121 116, 131 128"
+            fill="none"
             stroke="#ffd7f8"
-            strokeWidth="2"
+            strokeWidth="6"
+            strokeLinecap="round"
+            filter="url(#sadSoftGlow)"
           />
 
           <path
-            className={styles.cartCatBlushLeft}
-            d="M63 108 C70 104, 79 104, 86 108"
+            className={styles.sadCatTalkMouth}
+            d="M100 130 C106 136, 116 136, 122 130"
             fill="none"
-            stroke="#ffb7e8"
+            stroke="#ffffff"
             strokeWidth="4"
             strokeLinecap="round"
-            opacity="0.55"
           />
 
           <path
-            className={styles.cartCatBlushRight}
-            d="M134 108 C141 104, 150 104, 157 108"
-            fill="none"
-            stroke="#ffb7e8"
-            strokeWidth="4"
-            strokeLinecap="round"
-            opacity="0.55"
+            className={styles.sadCatTear}
+            d="M75 105 C70 115, 67 122, 75 128 C83 122, 80 115, 75 105Z"
+            fill="#9ee8ff"
+            opacity="0.86"
           />
 
           <g
-            className={styles.cartCatWhiskers}
+            className={styles.sadCatWhiskers}
             stroke="#e8dcff"
             strokeWidth="3"
             strokeLinecap="round"
@@ -611,7 +608,7 @@ const CartPage = () => {
           </ellipse>
         </svg>
 
-        <div className={styles.cartCatHint}>comfort the cat ✦</div>
+        <div className={styles.sadCatHint}>comfort the cat ✦</div>
       </div>
 
       {showCardModal && (
