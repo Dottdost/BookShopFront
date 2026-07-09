@@ -145,25 +145,62 @@
   height: 40px;
   pointer-events: none;
   opacity: 0;
-  transform: translateX(-92px) scaleX(1);
+  transform: translateX(-98px) scaleX(1);
   transform-origin: center bottom;
   filter: drop-shadow(0 0 12px rgba(167, 139, 250, 1))
     drop-shadow(0 8px 12px rgba(0, 0, 0, 0.38));
-  transition: opacity 0.2s ease;
 }
 
 .searchCatActive {
   opacity: 1;
-  animation:
-    searchCatEnterAndWatch 1.25s cubic-bezier(0.22, 0.9, 0.22, 1) forwards,
-    searchCatBob 0.85s ease-in-out infinite 1.25s;
+  animation: searchCatEnterSlow 2.2s cubic-bezier(0.22, 0.85, 0.24, 1) forwards;
+}
+
+.searchCatActive .searchCatPawOne,
+.searchCatActive .searchCatPawTwo,
+.searchCatActive .searchCatPawThree,
+.searchCatActive .searchCatPawFour {
+  animation: searchCatPaws 0.8s ease-in-out infinite;
+}
+
+.searchCatActive .searchCatTail {
+  animation: searchCatTail 1.05s ease-in-out infinite;
 }
 
 .searchCatWatching {
   opacity: 1;
-  animation:
-    searchCatWatchingText 0.9s ease-in-out infinite,
-    searchCatBob 0.95s ease-in-out infinite;
+  animation: searchCatStopAndWatch 1.4s ease-in-out forwards;
+}
+
+.searchCatWatching .searchCatPawOne,
+.searchCatWatching .searchCatPawTwo,
+.searchCatWatching .searchCatPawThree,
+.searchCatWatching .searchCatPawFour {
+  animation: none;
+}
+
+.searchCatWatching .searchCatTail {
+  animation: searchCatTailSoft 2s ease-in-out infinite;
+}
+
+.searchCatWatching .searchCatHead {
+  animation: searchCatLookAtText 1.8s ease-in-out infinite;
+}
+
+.searchCatLeaving {
+  opacity: 1;
+  animation: searchCatLeaveSlow 1.65s cubic-bezier(0.45, 0, 0.2, 1) forwards;
+}
+
+.searchCatLeaving .searchCatPawOne,
+.searchCatLeaving .searchCatPawTwo,
+.searchCatLeaving .searchCatPawThree,
+.searchCatLeaving .searchCatPawFour {
+  animation: searchCatPaws 0.8s ease-in-out infinite;
+}
+
+.searchCatLeaving .searchCatTail {
+  animation: searchCatTail 1.05s ease-in-out infinite;
 }
 
 .searchCatTrail {
@@ -266,11 +303,7 @@
   border-radius: 50%;
   background: linear-gradient(135deg, #f0abfc, #a78bfa 55%, #6d28d9);
   border: 1px solid rgba(255, 255, 255, 0.34);
-  animation: searchCatLook 2.4s ease-in-out infinite;
-}
-
-.searchCatWatching .searchCatHead {
-  animation: searchCatCurious 1.4s ease-in-out infinite;
+  transform-origin: center bottom;
 }
 
 .searchCatEarLeft,
@@ -334,7 +367,6 @@
   border-radius: 50%;
   transform: rotate(-22deg);
   transform-origin: 90% 90%;
-  animation: searchCatTail 1.1s ease-in-out infinite;
 }
 
 .searchCatPawOne,
@@ -347,7 +379,6 @@
   height: 9px;
   border-radius: 999px;
   background: #5b21b6;
-  animation: searchCatPaws 0.75s ease-in-out infinite;
 }
 
 .searchCatPawOne {
@@ -367,13 +398,6 @@
 .searchCatPawFour {
   left: 48px;
   animation-delay: 0.54s;
-}
-
-.searchCatWatching .searchCatPawOne,
-.searchCatWatching .searchCatPawTwo,
-.searchCatWatching .searchCatPawThree,
-.searchCatWatching .searchCatPawFour {
-  animation: none;
 }
 
 /* Premium genre filter */
@@ -676,34 +700,68 @@
   }
 }
 
-@keyframes searchCatEnterAndWatch {
+@keyframes searchCatEnterSlow {
   0% {
     opacity: 0;
-    transform: translateX(-92px) scaleX(1);
+    transform: translateX(-98px) scaleX(1);
   }
 
-  15% {
+  12% {
     opacity: 1;
   }
 
   72% {
-    transform: translateX(245px) scaleX(1);
+    opacity: 1;
+    transform: translateX(220px) scaleX(1);
+  }
+
+  86% {
+    opacity: 1;
+    transform: translateX(220px) scaleX(1);
   }
 
   100% {
     opacity: 1;
-    transform: translateX(245px) scaleX(1);
+    transform: translateX(220px) scaleX(1);
   }
 }
 
-@keyframes searchCatWatchingText {
-  0%,
-  100% {
-    transform: translateX(245px) scaleX(1) rotate(0deg);
+@keyframes searchCatStopAndWatch {
+  0% {
+    opacity: 1;
+    transform: translateX(220px) scaleX(1);
   }
 
-  50% {
-    transform: translateX(245px) scaleX(1) rotate(-2deg);
+  45% {
+    opacity: 1;
+    transform: translateX(220px) scaleX(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(220px) scaleX(1);
+  }
+}
+
+@keyframes searchCatLeaveSlow {
+  0% {
+    opacity: 1;
+    transform: translateX(220px) scaleX(-1);
+  }
+
+  18% {
+    opacity: 1;
+    transform: translateX(220px) scaleX(-1);
+  }
+
+  82% {
+    opacity: 1;
+    transform: translateX(-88px) scaleX(-1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-98px) scaleX(-1);
   }
 }
 
@@ -729,6 +787,17 @@
   }
 }
 
+@keyframes searchCatTailSoft {
+  0%,
+  100% {
+    transform: rotate(-18deg);
+  }
+
+  50% {
+    transform: rotate(-6deg);
+  }
+}
+
 @keyframes searchCatPaws {
   0%,
   100% {
@@ -740,25 +809,18 @@
   }
 }
 
-@keyframes searchCatLook {
+@keyframes searchCatLookAtText {
   0%,
   100% {
-    transform: translateY(0) rotate(0deg);
+    transform: rotate(0deg) translateY(0);
   }
 
-  50% {
-    transform: translateY(-1px) rotate(6deg);
-  }
-}
-
-@keyframes searchCatCurious {
-  0%,
-  100% {
-    transform: rotate(0deg);
+  35% {
+    transform: rotate(-7deg) translateY(-1px);
   }
 
-  50% {
-    transform: rotate(-9deg) translateY(-1px);
+  70% {
+    transform: rotate(-3deg) translateY(0);
   }
 }
 

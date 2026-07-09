@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styles from "../styles/BooksPage.module.css";
@@ -72,7 +72,10 @@ const BooksPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [catLeaving, setCatLeaving] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const leaveTimer = useRef<number | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -86,6 +89,14 @@ const BooksPage: React.FC = () => {
     setSearchQuery(q);
     setSelectedGenre(g ? Number(g) : null);
   }, [location.search]);
+
+  useEffect(() => {
+    return () => {
+      if (leaveTimer.current) {
+        window.clearTimeout(leaveTimer.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -232,6 +243,28 @@ const BooksPage: React.FC = () => {
     });
   };
 
+  const handleSearchFocus = () => {
+    if (leaveTimer.current) {
+      window.clearTimeout(leaveTimer.current);
+      leaveTimer.current = null;
+    }
+
+    setCatLeaving(false);
+    setSearchFocused(true);
+  };
+
+  const handleSearchBlur = () => {
+    setSearchFocused(false);
+
+    if (!searchQuery.trim()) {
+      setCatLeaving(true);
+
+      leaveTimer.current = window.setTimeout(() => {
+        setCatLeaving(false);
+      }, 1700);
+    }
+  };
+
   const selectedGenreLabel =
     selectedGenre === null
       ? "All genres"
@@ -241,7 +274,8 @@ const BooksPage: React.FC = () => {
   const foundText =
     filtered.length === 1 ? "1 book found" : `${filtered.length} books found`;
 
-  const searchIsActive = searchFocused || searchQuery.trim().length > 0;
+  const searchHasText = searchQuery.trim().length > 0;
+  const catIsActive = searchFocused || searchHasText;
 
   if (loading) {
     return <div className={styles.loading}>{t("common.loading")}</div>;
@@ -252,8 +286,10 @@ const BooksPage: React.FC = () => {
       <div className={styles.searchBar}>
         <div
           className={`${styles.searchCat} ${
-            searchIsActive ? styles.searchCatActive : ""
-          } ${searchQuery.trim() ? styles.searchCatWatching : ""}`}
+            catIsActive ? styles.searchCatActive : ""
+          } ${searchHasText ? styles.searchCatWatching : ""} ${
+            catLeaving ? styles.searchCatLeaving : ""
+          }`}
           aria-hidden="true"
         >
           <div className={styles.searchCatTrail}>
@@ -288,12 +324,8 @@ const BooksPage: React.FC = () => {
           type="text"
           placeholder={t("books.searchPlaceholder")}
           value={searchQuery}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => {
-            if (!searchQuery.trim()) {
-              setSearchFocused(false);
-            }
-          }}
+          onFocus={handleSearchFocus}
+          onBlur={handleSearchBlur}
           onChange={(event) => {
             const value = event.target.value;
 
