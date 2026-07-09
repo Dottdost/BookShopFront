@@ -145,7 +145,7 @@
   height: 40px;
   pointer-events: none;
   opacity: 0;
-  transform: translateX(-98px) scaleX(1);
+  transform: translateX(-105px) scaleX(1);
   transform-origin: center bottom;
   filter: drop-shadow(0 0 12px rgba(167, 139, 250, 1))
     drop-shadow(0 8px 12px rgba(0, 0, 0, 0.38));
@@ -153,23 +153,23 @@
 
 .searchCatActive {
   opacity: 1;
-  animation: searchCatEnterSlow 2.2s cubic-bezier(0.22, 0.85, 0.24, 1) forwards;
+  animation: searchCatEnterSlow 3.6s cubic-bezier(0.22, 0.75, 0.18, 1) forwards;
 }
 
 .searchCatActive .searchCatPawOne,
 .searchCatActive .searchCatPawTwo,
 .searchCatActive .searchCatPawThree,
 .searchCatActive .searchCatPawFour {
-  animation: searchCatPaws 0.8s ease-in-out infinite;
+  animation: searchCatPaws 1.05s ease-in-out infinite;
 }
 
 .searchCatActive .searchCatTail {
-  animation: searchCatTail 1.05s ease-in-out infinite;
+  animation: searchCatTail 1.45s ease-in-out infinite;
 }
 
 .searchCatWatching {
   opacity: 1;
-  animation: searchCatStopAndWatch 1.4s ease-in-out forwards;
+  animation: searchCatWatchText 2.2s ease-in-out infinite;
 }
 
 .searchCatWatching .searchCatPawOne,
@@ -180,27 +180,27 @@
 }
 
 .searchCatWatching .searchCatTail {
-  animation: searchCatTailSoft 2s ease-in-out infinite;
+  animation: searchCatTailSoft 2.4s ease-in-out infinite;
 }
 
 .searchCatWatching .searchCatHead {
-  animation: searchCatLookAtText 1.8s ease-in-out infinite;
+  animation: searchCatLookAtText 1.9s ease-in-out infinite;
 }
 
 .searchCatLeaving {
   opacity: 1;
-  animation: searchCatLeaveSlow 1.65s cubic-bezier(0.45, 0, 0.2, 1) forwards;
+  animation: searchCatLeaveSlow 2.4s cubic-bezier(0.45, 0, 0.2, 1) forwards;
 }
 
 .searchCatLeaving .searchCatPawOne,
 .searchCatLeaving .searchCatPawTwo,
 .searchCatLeaving .searchCatPawThree,
 .searchCatLeaving .searchCatPawFour {
-  animation: searchCatPaws 0.8s ease-in-out infinite;
+  animation: searchCatPaws 1.05s ease-in-out infinite;
 }
 
 .searchCatLeaving .searchCatTail {
-  animation: searchCatTail 1.05s ease-in-out infinite;
+  animation: searchCatTail 1.45s ease-in-out infinite;
 }
 
 .searchCatTrail {
@@ -703,65 +703,74 @@
 @keyframes searchCatEnterSlow {
   0% {
     opacity: 0;
-    transform: translateX(-98px) scaleX(1);
+    transform: translateX(-105px) scaleX(1);
   }
 
-  12% {
+  8% {
     opacity: 1;
   }
 
-  72% {
+  68% {
     opacity: 1;
-    transform: translateX(220px) scaleX(1);
+    transform: translateX(330px) scaleX(1);
   }
 
-  86% {
+  76% {
     opacity: 1;
-    transform: translateX(220px) scaleX(1);
+    transform: translateX(330px) scaleX(1);
+  }
+
+  82% {
+    opacity: 1;
+    transform: translateX(330px) scaleX(-1);
   }
 
   100% {
     opacity: 1;
-    transform: translateX(220px) scaleX(1);
+    transform: translateX(330px) scaleX(-1);
   }
 }
 
-@keyframes searchCatStopAndWatch {
-  0% {
-    opacity: 1;
-    transform: translateX(220px) scaleX(1);
-  }
-
-  45% {
-    opacity: 1;
-    transform: translateX(220px) scaleX(1);
-  }
-
+@keyframes searchCatWatchText {
+  0%,
   100% {
     opacity: 1;
-    transform: translateX(220px) scaleX(1);
+    transform: translateX(330px) scaleX(-1) rotate(0deg);
+  }
+
+  35% {
+    transform: translateX(330px) scaleX(-1) rotate(1.5deg);
+  }
+
+  70% {
+    transform: translateX(330px) scaleX(-1) rotate(-1deg);
   }
 }
 
 @keyframes searchCatLeaveSlow {
   0% {
     opacity: 1;
-    transform: translateX(220px) scaleX(-1);
+    transform: translateX(330px) scaleX(-1);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translateX(330px) scaleX(-1);
   }
 
   18% {
     opacity: 1;
-    transform: translateX(220px) scaleX(-1);
+    transform: translateX(330px) scaleX(1);
   }
 
   82% {
     opacity: 1;
-    transform: translateX(-88px) scaleX(-1);
+    transform: translateX(-95px) scaleX(1);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(-98px) scaleX(-1);
+    transform: translateX(-105px) scaleX(1);
   }
 }
 
@@ -779,22 +788,22 @@
 @keyframes searchCatTail {
   0%,
   100% {
-    transform: rotate(-26deg);
+    transform: rotate(-24deg);
   }
 
   50% {
-    transform: rotate(12deg);
+    transform: rotate(10deg);
   }
 }
 
 @keyframes searchCatTailSoft {
   0%,
   100% {
-    transform: rotate(-18deg);
+    transform: rotate(-16deg);
   }
 
   50% {
-    transform: rotate(-6deg);
+    transform: rotate(-5deg);
   }
 }
 
@@ -805,7 +814,7 @@
   }
 
   50% {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
   }
 }
 
@@ -815,12 +824,12 @@
     transform: rotate(0deg) translateY(0);
   }
 
-  35% {
-    transform: rotate(-7deg) translateY(-1px);
+  40% {
+    transform: rotate(-6deg) translateY(-1px);
   }
 
-  70% {
-    transform: rotate(-3deg) translateY(0);
+  75% {
+    transform: rotate(-2deg) translateY(0);
   }
 }
 
