@@ -1,47 +1,47 @@
 .mascot-container {
   position: fixed;
-  right: 48px;
-  bottom: 80px;
-  width: 300px;
-  height: 345px;
+  right: 34px;
+  bottom: 72px;
+  width: 170px;
+  height: 210px;
   cursor: pointer;
   z-index: 9999;
   outline: none;
-  filter: drop-shadow(0 0 18px rgba(185, 92, 255, 0.5))
-    drop-shadow(0 20px 34px rgba(0, 0, 0, 0.52));
-  animation: floatMascot 6.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px rgba(168, 85, 247, 0.35))
+    drop-shadow(0 14px 28px rgba(0, 0, 0, 0.35));
+  animation: floatMascot 5.8s ease-in-out infinite;
 }
 
 @keyframes floatMascot {
   0%,
   100% {
-    transform: translateY(0) rotate(-1.4deg);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-18px) rotate(1.4deg);
+    transform: translateY(-10px);
   }
 }
 
 .mascot-container:hover {
-  filter: drop-shadow(0 0 26px rgba(255, 120, 255, 0.74))
-    drop-shadow(0 24px 40px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 0 18px rgba(192, 132, 252, 0.55))
+    drop-shadow(0 16px 30px rgba(0, 0, 0, 0.38));
 }
 
 .cat-svg {
   width: 100%;
   height: 100%;
   overflow: visible;
-  transition: transform 0.35s ease;
+  transition: transform 0.25s ease;
 }
 
 .mascot-container:hover .cat-svg {
-  transform: scale(1.035);
+  transform: scale(1.03);
 }
 
 .tail {
-  transform-origin: 128px 145px;
-  animation: tailMove 3.2s ease-in-out infinite;
+  transform-origin: 145px 155px;
+  animation: tailMove 2.8s ease-in-out infinite;
 }
 
 @keyframes tailMove {
@@ -51,55 +51,47 @@
   }
 
   50% {
-    transform: rotate(9deg);
+    transform: rotate(8deg);
   }
 }
 
 .left-ear {
-  transform-origin: 72px 55px;
-  animation: leftEar 5.2s ease-in-out infinite;
+  transform-origin: 80px 55px;
+  animation: earMoveLeft 4.8s ease-in-out infinite;
 }
 
 .right-ear {
-  transform-origin: 128px 55px;
-  animation: rightEar 5.7s ease-in-out infinite;
+  transform-origin: 140px 55px;
+  animation: earMoveRight 4.8s ease-in-out infinite;
 }
 
-@keyframes leftEar {
+@keyframes earMoveLeft {
   0%,
-  88%,
+  92%,
   100% {
     transform: rotate(0deg);
-  }
-
-  92% {
-    transform: rotate(-4deg);
   }
 
   96% {
-    transform: rotate(2deg);
+    transform: rotate(-4deg);
   }
 }
 
-@keyframes rightEar {
+@keyframes earMoveRight {
   0%,
-  84%,
+  92%,
   100% {
     transform: rotate(0deg);
   }
 
-  88% {
+  96% {
     transform: rotate(4deg);
-  }
-
-  94% {
-    transform: rotate(-2deg);
   }
 }
 
 .eye {
   transform-origin: center;
-  animation: blink 5.8s infinite;
+  animation: blink 5.6s infinite;
 }
 
 @keyframes blink {
@@ -118,36 +110,13 @@
   transition: transform 0.08s linear;
 }
 
-.cat-cheek-left,
-.cat-cheek-right {
-  animation: cheekPulse 3.8s ease-in-out infinite;
-}
-
-@keyframes cheekPulse {
-  0%,
-  100% {
-    opacity: 0.34;
-  }
-
-  50% {
-    opacity: 0.65;
-  }
+.whiskers {
+  opacity: 0.85;
 }
 
 .mouth-rest {
   opacity: 1;
-  animation: mouthGlow 3.4s ease-in-out infinite;
-}
-
-@keyframes mouthGlow {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 3px rgba(255, 105, 245, 0.45));
-  }
-
-  50% {
-    filter: drop-shadow(0 0 10px rgba(255, 105, 245, 0.85));
-  }
+  transition: opacity 0.2s ease;
 }
 
 .mouth-talk {
@@ -161,113 +130,92 @@
 }
 
 .mascot-container.talking .mouth-talk {
-  animation: mouthMeow 0.78s ease;
+  animation: mouthTalk 0.7s ease;
 }
 
-@keyframes mouthMeow {
+@keyframes mouthTalk {
   0%,
   100% {
     opacity: 0;
-    transform: scale(0.72);
+    transform: scale(0.8);
   }
 
-  28%,
-  72% {
-    opacity: 0.95;
+  30%,
+  70% {
+    opacity: 1;
     transform: scale(1);
-  }
-}
-
-.whiskers {
-  animation: whiskerGlow 3.4s ease-in-out infinite;
-}
-
-@keyframes whiskerGlow {
-  0%,
-  100% {
-    opacity: 0.48;
-  }
-
-  50% {
-    opacity: 0.9;
   }
 }
 
 .magic-orb {
   position: absolute;
-  width: 11px;
-  height: 11px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #d8b4fe;
-  box-shadow: 0 0 16px #c084fc;
-  opacity: 0.68;
-  animation: orbFloat 5.5s ease-in-out infinite;
+  background: #e9d5ff;
+  box-shadow: 0 0 12px #d8b4fe;
+  opacity: 0.75;
+  animation: orbFloat 4.8s ease-in-out infinite;
 }
 
 .orb-1 {
-  top: 62px;
-  left: 42px;
+  top: 56px;
+  left: 20px;
 }
 
 .orb-2 {
-  top: 148px;
-  right: 22px;
+  top: 120px;
+  right: 10px;
   animation-delay: 1.2s;
-}
-
-.orb-3 {
-  bottom: 82px;
-  left: 76px;
-  animation-delay: 2s;
 }
 
 @keyframes orbFloat {
   0%,
   100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.34;
+    transform: translateY(0);
+    opacity: 0.45;
   }
 
   50% {
-    transform: translateY(-18px) scale(1.18);
-    opacity: 0.9;
+    transform: translateY(-10px);
+    opacity: 1;
   }
 }
 
 .speech-bubble {
   position: absolute;
-  top: -78px;
-  right: 118px;
-  min-width: 230px;
-  max-width: 280px;
-  padding: 15px 19px;
-  border-radius: 24px 24px 7px 24px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #1a0033;
-  font-size: 15px;
+  right: 82px;
+  top: -68px;
+  min-width: 180px;
+  max-width: 220px;
+  padding: 12px 15px;
+  border-radius: 18px 18px 8px 18px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #2e1065;
+  font-size: 13px;
   line-height: 1.35;
-  font-weight: 800;
+  font-weight: 700;
   box-shadow:
-    0 16px 30px rgba(0, 0, 0, 0.32),
-    0 0 24px rgba(205, 126, 255, 0.34);
+    0 10px 22px rgba(0, 0, 0, 0.22),
+    0 0 16px rgba(192, 132, 252, 0.2);
   opacity: 0;
-  transform: translateY(10px) scale(0.96);
+  transform: translateY(8px) scale(0.97);
   transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
+    opacity 0.3s ease,
+    transform 0.3s ease;
   pointer-events: none;
 }
 
 .speech-bubble::after {
   content: "";
   position: absolute;
-  bottom: -12px;
-  right: 34px;
-  width: 23px;
-  height: 23px;
-  background: rgba(255, 255, 255, 0.95);
+  bottom: -8px;
+  right: 24px;
+  width: 16px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.96);
   transform: rotate(45deg);
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .speech-bubble.show {
@@ -277,29 +225,27 @@
 
 .click-hint {
   position: absolute;
+  right: 4px;
   bottom: -18px;
-  right: 16px;
-  font-size: 12px;
-  opacity: 0.72;
-  letter-spacing: 0.4px;
-  color: white;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.75);
-  animation: hintPulse 2.2s ease-in-out infinite;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 0.3px;
+  animation: hintPulse 2s ease-in-out infinite;
 }
 
 @keyframes hintPulse {
   0%,
   100% {
-    opacity: 0.42;
+    opacity: 0.5;
   }
 
   50% {
-    opacity: 0.92;
+    opacity: 1;
   }
 }
 
 .mascot-container.talking .cat-svg {
-  animation: talkBounce 0.78s ease;
+  animation: talkBounce 0.7s ease;
 }
 
 @keyframes talkBounce {
@@ -307,12 +253,12 @@
     transform: scale(1);
   }
 
-  32% {
-    transform: scale(1.045) rotate(-1.2deg);
+  35% {
+    transform: scale(1.04);
   }
 
-  68% {
-    transform: scale(0.99) rotate(1.2deg);
+  70% {
+    transform: scale(0.99);
   }
 
   100% {
@@ -322,19 +268,19 @@
 
 @media (max-width: 700px) {
   .mascot-container {
-    width: 130px;
-    height: 155px;
+    width: 120px;
+    height: 145px;
     right: 18px;
-    bottom: 55px;
+    bottom: 56px;
   }
 
   .speech-bubble {
-    right: 44px;
-    top: -104px;
-    min-width: 190px;
-    max-width: 210px;
-    font-size: 13px;
-    padding: 12px 14px;
+    right: 42px;
+    top: -82px;
+    min-width: 150px;
+    max-width: 180px;
+    padding: 10px 12px;
+    font-size: 12px;
   }
 
   .click-hint {
