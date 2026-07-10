@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store";
 import {
@@ -48,6 +49,7 @@ function pickWaitingUserChat(chats: ChatSummary[]) {
 }
 
 const SupportChatWidget = () => {
+  const { t } = useTranslation();
   const {
     user,
     roles = [],
@@ -69,7 +71,7 @@ const SupportChatWidget = () => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messageListRef = useRef<HTMLDivElement | null>(null);
 
   const appendMessage = useCallback((message: ChatMessage) => {
     setMessages((currentMessages) => {
@@ -98,9 +100,9 @@ const SupportChatWidget = () => {
       setMessages(loadedMessages);
     } catch (err) {
       console.error(err);
-      setError("Failed to load messages.");
+      setError(t("supportChat.failedLoadMessages"));
     }
-  }, []);
+  }, [t]);
 
   const resetChatState = useCallback(() => {
     setChatId("");
@@ -127,11 +129,11 @@ const SupportChatWidget = () => {
       }
     } catch (err) {
       console.error(err);
-      setError("Failed to load chat.");
+      setError(t("supportChat.failedLoadChat"));
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated, isAdmin, loadMessages, resetChatState]);
+  }, [isAuthenticated, isAdmin, loadMessages, resetChatState, t]);
 
   async function createFreshChat() {
     const createdChat = await createChat();
@@ -176,7 +178,14 @@ const SupportChatWidget = () => {
   }, [open, chatId, isAdmin, loadMessages]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messageListRef.current;
+
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "smooth",
+    });
   }, [messages]);
 
   const sortedMessages = useMemo(
@@ -222,7 +231,7 @@ const SupportChatWidget = () => {
       await loadMessages(currentChatId);
     } catch (err) {
       console.error(err);
-      setError("Send failed.");
+      setError(t("supportChat.sendFailed"));
     } finally {
       setSending(false);
     }
@@ -238,8 +247,8 @@ const SupportChatWidget = () => {
         <section className={styles.widgetPanel}>
           <header className={styles.chatHeader}>
             <div>
-              <h3>Cheshire Support</h3>
-              <p>Ask anything about your order or books.</p>
+              <h3>{t("supportChat.widgetTitle")}</h3>
+              <p>{t("supportChat.widgetSubtitle")}</p>
             </div>
 
             <button type="button" onClick={() => setOpen(false)}>
@@ -250,16 +259,16 @@ const SupportChatWidget = () => {
           <div className={styles.connectionStatus}>
             {chatId
               ? connected
-                ? "Live chat connected"
-                : "CLive chat connected"
-              : "New chat will be created after your first message"}
+                ? t("supportChat.liveConnected")
+                : t("supportChat.connecting")
+              : t("supportChat.newChatAfterFirstMessage")}
           </div>
 
-          <div className={styles.messageList}>
-            {loading && <p className={styles.emptyState}>Loading chat...</p>}
+          <div className={styles.messageList} ref={messageListRef}>
+            {loading && <p className={styles.emptyState}>{t("supportChat.loadingChat")}</p>}
 
             {!loading && sortedMessages.length === 0 && (
-              <p className={styles.emptyState}>Write your first message 👋</p>
+              <p className={styles.emptyState}>{t("supportChat.firstMessage")}</p>
             )}
 
             {sortedMessages.map((message, index) => {
@@ -278,13 +287,11 @@ const SupportChatWidget = () => {
                   <small>
                     {message.senderName ??
                       message.userName ??
-                      (isMine ? "You" : "Support")}
+                      (isMine ? t("supportChat.you") : t("supportChat.supportName"))}
                   </small>
                 </article>
               );
             })}
-
-            <div ref={messagesEndRef} />
           </div>
 
           {error && <p className={styles.errorText}>{error}</p>}
@@ -298,7 +305,7 @@ const SupportChatWidget = () => {
                   void handleSend();
                 }
               }}
-              placeholder="Type your message..."
+              placeholder={t("supportChat.typeMessage")}
             />
 
             <button
@@ -306,7 +313,7 @@ const SupportChatWidget = () => {
               onClick={handleSend}
               disabled={sending || !text.trim()}
             >
-              {sending ? "..." : "Send"}
+              {sending ? "..." : t("supportChat.send")}
             </button>
           </div>
         </section>
@@ -316,6 +323,7 @@ const SupportChatWidget = () => {
         className={styles.floatingButton}
         type="button"
         onClick={() => setOpen(true)}
+        aria-label={t("supportChat.widgetTitle")}
       >
         💬
       </button>
