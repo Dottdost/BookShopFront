@@ -11,6 +11,14 @@ interface WelcomeAnimationProps {
 
 type AssetMap = Record<string, string>;
 
+type CelebrationCopy = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  subtext: string;
+  button: string;
+};
+
 const assetModules = import.meta.glob("../assets/*", {
   eager: true,
   import: "default",
@@ -20,6 +28,30 @@ const mediaHints: Record<WelcomeVariant, string[]> = {
   register: ["video", "welcome", "register"],
   login: ["login"],
   order: ["orders", "order"],
+};
+
+const fallbackCopy: Record<WelcomeVariant, CelebrationCopy> = {
+  register: {
+    eyebrow: "You’ve Found Me…",
+    title: "Welcome to Cheshire Shelf",
+    text: "Every great story begins with a single page.",
+    subtext: "I’ve been waiting for someone curious.",
+    button: "Begin the Adventure",
+  },
+  login: {
+    eyebrow: "Welcome back, reader",
+    title: "The shelf missed you",
+    text: "Your books, favorites and cart are ready to continue the story.",
+    subtext: "Come back in — Cheshire Shelf kept your place.",
+    button: "Return to the Shelf",
+  },
+  order: {
+    eyebrow: "Order confirmed",
+    title: "Your books are on their way",
+    text: "The shelf has packed your next adventure with a little magic.",
+    subtext: "You can track everything from your orders page.",
+    button: "Keep Reading",
+  },
 };
 
 function findMedia(variant: WelcomeVariant) {
@@ -53,6 +85,7 @@ const WelcomeAnimation = ({ onClose, variant = "register" }: WelcomeAnimationPro
   const { t } = useTranslation();
   const mediaSrc = findMedia(variant);
   const isVideo = isVideoFile(mediaSrc);
+  const copy = fallbackCopy[variant];
 
   return createPortal(
     <div className={styles.overlay}>
@@ -75,22 +108,30 @@ const WelcomeAnimation = ({ onClose, variant = "register" }: WelcomeAnimationPro
             <img
               className={styles.video}
               src={mediaSrc}
-              alt={t(`celebration.${variant}.title`)}
+              alt={t(`celebration.${variant}.title`, copy.title)}
             />
           )}
         </div>
 
         <div className={styles.content}>
-          <p className={styles.eyebrow}>{t(`celebration.${variant}.eyebrow`)}</p>
+          <p className={styles.eyebrow}>
+            {t(`celebration.${variant}.eyebrow`, copy.eyebrow)}
+          </p>
 
-          <h2 className={styles.title}>{t(`celebration.${variant}.title`)}</h2>
+          <h2 className={styles.title}>
+            {t(`celebration.${variant}.title`, copy.title)}
+          </h2>
 
-          <p className={styles.text}>{t(`celebration.${variant}.text`)}</p>
+          <p className={styles.text}>
+            {t(`celebration.${variant}.text`, copy.text)}
+          </p>
 
-          <p className={styles.subtext}>{t(`celebration.${variant}.subtext`)}</p>
+          <p className={styles.subtext}>
+            {t(`celebration.${variant}.subtext`, copy.subtext)}
+          </p>
 
           <button className={styles.button} type="button" onClick={onClose}>
-            {t(`celebration.${variant}.button`)}
+            {t(`celebration.${variant}.button`, copy.button)}
           </button>
         </div>
       </div>
