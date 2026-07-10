@@ -14,24 +14,24 @@ const AboutUs = () => {
           <div className={styles.imageFrame}>
             <img
               src={aboutImage}
-              alt="Cheshire Shelf visual"
+              alt={t("about.imageAlt")}
               className={styles.aboutImage}
             />
           </div>
 
           <div className={styles.floatingNote}>
             <span>✦</span>
-            <strong>Cheshire Shelf</strong>
+            <strong>{t("about.visualTitle")}</strong>
           </div>
 
           <div className={styles.visualBadge}>
-            <strong>Designed for readers</strong>
-            <span>A soft digital shelf for stories, orders and support.</span>
+            <strong>{t("about.visualBadgeTitle")}</strong>
+            <span>{t("about.visualBadgeText")}</span>
           </div>
         </div>
 
         <div className={styles.contentCard}>
-          <p className={styles.eyebrow}>About the project</p>
+          <p className={styles.eyebrow}>{t("about.eyebrow")}</p>
 
           <h1 className={styles.title}>{t("about.title")}</h1>
 
@@ -47,24 +47,24 @@ const AboutUs = () => {
               <div className={styles.statIcon}>
                 <FiBookOpen />
               </div>
-              <strong>Catalog</strong>
-              <span>Books and genres</span>
+              <strong>{t("about.statCatalog")}</strong>
+              <span>{t("about.statCatalogText")}</span>
             </div>
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
                 <FiHeart />
               </div>
-              <strong>Favorites</strong>
-              <span>Personal shelf</span>
+              <strong>{t("about.statFavorites")}</strong>
+              <span>{t("about.statFavoritesText")}</span>
             </div>
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
                 <FiStar />
               </div>
-              <strong>Support</strong>
-              <span>Live chat flow</span>
+              <strong>{t("about.statSupport")}</strong>
+              <span>{t("about.statSupportText")}</span>
             </div>
           </div>
         </div>
