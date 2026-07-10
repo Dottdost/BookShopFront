@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { toast } from "react-toastify";
 import styles from "../styles/Manager.module.css";
@@ -15,6 +16,13 @@ type PublisherForm = {
   name: string;
   address: string;
   phoneNumber: string;
+};
+
+type ConfirmState = {
+  open: boolean;
+  title: string;
+  message: string;
+  action: (() => Promise<void>) | null;
 };
 
 type ApiArrayResponse<T> = {
@@ -71,7 +79,24 @@ function normalizePublisher(item: unknown): Publisher | null {
   };
 }
 
+function extractError(error: unknown, fallback: string) {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data;
+
+    if (typeof data === "string" && data.trim()) return data;
+    if (isRecord(data) && typeof data.message === "string") return data.message;
+    if (isRecord(data) && typeof data.title === "string") return data.title;
+
+    return error.message || fallback;
+  }
+
+  if (error instanceof Error) return error.message;
+
+  return fallback;
+}
+
 export default function PublisherManager() {
+  const { t } = useTranslation();
   const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(
     null,
@@ -84,6 +109,31 @@ export default function PublisherManager() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [confirm, setConfirm] = useState<ConfirmState>({
+    open: false,
+    title: "",
+    message: "",
+    action: null,
+  });
+
+  const closeConfirm = () => {
+    setConfirm({
+      open: false,
+      title: "",
+      message: "",
+      action: null,
+    });
+  };
+
+  const runConfirm = async () => {
+    const action = confirm.action;
+
+    closeConfirm();
+
+    if (action) {
+      await action();
+    }
+  };
 
   const loadPublishers = async () => {
     try {
@@ -102,7 +152,7 @@ export default function PublisherManager() {
       setPublishers(list);
     } catch (error: unknown) {
       console.error("Error loading publishers:", error);
-      toast.error("Failed to load publishers");
+      toast.error(extractError(error, t("publisherManager.failedLoad")));
     } finally {
       setLoading(false);
     }
@@ -151,7 +201,7 @@ export default function PublisherManager() {
     };
 
     if (!payload.name || !payload.address || !payload.phoneNumber) {
-      toast.error("Fill publisher name, address and phone number");
+      toast.error(t("publisherManager.fillRequired"));
       return;
     }
 
@@ -162,45 +212,46 @@ export default function PublisherManager() {
           payload,
         );
 
-        toast.success("Publisher updated");
+        toast.success(t("publisherManager.updated"));
       } else {
         await axios.post(`${API_URL}/api/v1/publishers`, payload);
 
-        toast.success("Publisher created");
+        toast.success(t("publisherManager.created"));
       }
 
       resetForm();
       await loadPublishers();
     } catch (error: unknown) {
       console.error("Error saving publisher:", error);
-      toast.error("Failed to save publisher");
+      toast.error(extractError(error, t("publisherManager.failedSave")));
     }
   };
 
-  const deletePublisher = async (id: number) => {
-    const confirmed = PrettyConfirm;
+  const deletePublisher = (publisher: Publisher) => {
+    setConfirm({
+      open: true,
+      title: t("publisherManager.deleteTitle"),
+      message: t("publisherManager.deleteMessage", { name: publisher.name }),
+      action: async () => {
+        try {
+          await axios.delete(`${API_URL}/api/v1/publishers/${publisher.id}`);
 
-    if (!confirmed) return;
-
-    try {
-      await axios.delete(`${API_URL}/api/v1/publishers/${id}`);
-
-      toast.success("Publisher deleted");
-      await loadPublishers();
-    } catch (error: unknown) {
-      console.error("Error deleting publisher:", error);
-      toast.error("Failed to delete publisher");
-    }
+          toast.success(t("publisherManager.deleted"));
+          await loadPublishers();
+        } catch (error: unknown) {
+          console.error("Error deleting publisher:", error);
+          toast.error(extractError(error, t("publisherManager.failedDelete")));
+        }
+      },
+    });
   };
 
   return (
     <div className={styles.manager}>
       <div className={styles.managerHeader}>
         <div>
-          <h2>Publishers</h2>
-          <p className={styles.managerSubtitle}>
-            Create and manage publishers used when adding books.
-          </p>
+          <h2>{t("publisherManager.title")}</h2>
+          <p className={styles.managerSubtitle}>{t("publisherManager.subtitle")}</p>
         </div>
       </div>
 
@@ -209,25 +260,25 @@ export default function PublisherManager() {
           name="name"
           value={form.name}
           onChange={handleChange}
-          placeholder="Publisher name"
+          placeholder={t("publisherManager.publisherName")}
         />
 
         <input
           name="address"
           value={form.address}
           onChange={handleChange}
-          placeholder="Address"
+          placeholder={t("publisherManager.address")}
         />
 
         <input
           name="phoneNumber"
           value={form.phoneNumber}
           onChange={handleChange}
-          placeholder="Phone number"
+          placeholder={t("publisherManager.phoneNumber")}
         />
 
         <button type="submit" className={styles.submitBtn}>
-          {editingPublisher ? "Update Publisher" : "Add Publisher"}
+          {editingPublisher ? t("publisherManager.update") : t("publisherManager.add")}
         </button>
 
         {editingPublisher && (
@@ -236,22 +287,22 @@ export default function PublisherManager() {
             className={styles.pageButton}
             onClick={resetForm}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
         )}
       </form>
 
       {loading ? (
-        <p className={styles.emptyState}>Loading publishers...</p>
+        <p className={styles.emptyState}>{t("publisherManager.loading")}</p>
       ) : (
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Phone Number</th>
-                <th>Actions</th>
+                <th>{t("publisherManager.name")}</th>
+                <th>{t("publisherManager.address")}</th>
+                <th>{t("publisherManager.phoneNumber")}</th>
+                <th>{t("common.actions")}</th>
               </tr>
             </thead>
 
@@ -268,15 +319,15 @@ export default function PublisherManager() {
                         className={styles.editBtn}
                         onClick={() => openEdit(publisher)}
                       >
-                        Edit
+                        {t("common.edit")}
                       </button>
 
                       <button
                         type="button"
                         className={styles.deleteBtn}
-                        onClick={() => deletePublisher(publisher.id)}
+                        onClick={() => deletePublisher(publisher)}
                       >
-                        Delete
+                        {t("common.delete")}
                       </button>
                     </td>
                   </tr>
@@ -284,7 +335,7 @@ export default function PublisherManager() {
               ) : (
                 <tr>
                   <td colSpan={4} className={styles.emptyState}>
-                    No publishers found
+                    {t("publisherManager.noPublishers")}
                   </td>
                 </tr>
               )}
@@ -292,6 +343,17 @@ export default function PublisherManager() {
           </table>
         </div>
       )}
+
+      <PrettyConfirm
+        open={confirm.open}
+        title={confirm.title}
+        message={confirm.message}
+        type="danger"
+        confirmText={t("common.delete")}
+        cancelText={t("common.cancel")}
+        onCancel={closeConfirm}
+        onConfirm={runConfirm}
+      />
     </div>
   );
 }
