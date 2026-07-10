@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store";
 import {
@@ -21,9 +22,6 @@ interface SupportChatsPageProps {
 
 const getMessageSenderId = (message: ChatMessage) =>
   message.senderId ?? message.senderUserId ?? "";
-
-const getCustomerName = (chat: ChatSummary) =>
-  chat.customerName ?? chat.userName ?? chat.userId ?? "Customer";
 
 const getAdminId = (chat: ChatSummary) =>
   chat.adminId ?? chat.supportUserId ?? "";
@@ -78,7 +76,11 @@ const isAdminMessage = (
 };
 
 const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
+  const { t } = useTranslation();
   const { user, roles = [] } = useSelector((state: RootState) => state.auth);
+
+  const getCustomerName = (chat: ChatSummary) =>
+    chat.customerName ?? chat.userName ?? chat.userId ?? t("supportChat.customerName");
 
   const isAdmin = roles.some(
     (role) =>
@@ -136,13 +138,13 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
         console.error(err);
 
         if (!silent) {
-          setError("Failed to load chats.");
+          setError(t("supportChat.failedLoadChats"));
         }
       } finally {
         if (!silent) setLoading(false);
       }
     },
-    [isAdmin],
+    [isAdmin, t],
   );
 
   const appendMessage = useCallback(
@@ -190,9 +192,9 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       }, 50);
     } catch (err) {
       console.error(err);
-      setError("Failed to load messages.");
+      setError(t("supportChat.failedLoadMessages"));
     }
-  }, []);
+  }, [t]);
 
   const handleTakeChat = async (chat: ChatSummary) => {
     setError("");
@@ -211,7 +213,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       await loadChats(true);
     } catch (err) {
       console.error(err);
-      setError("Failed to take chat.");
+      setError(t("supportChat.failedTakeChat"));
     }
   };
 
@@ -230,7 +232,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       await loadChats(true);
     } catch (err) {
       console.error(err);
-      setError("Failed to exit chat.");
+      setError(t("supportChat.failedExitChat"));
     }
   };
 
@@ -249,7 +251,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       await loadChats(true);
     } catch (err) {
       console.error(err);
-      setError("Failed to close chat.");
+      setError(t("supportChat.failedCloseChat"));
     }
   };
 
@@ -271,7 +273,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
           user?.id ??
           user?.userName ??
           "admin",
-        senderName: user?.userName ?? activeChat.supportName ?? "Admin",
+        senderName: user?.userName ?? activeChat.supportName ?? t("supportChat.adminName"),
         senderRole: "Admin",
         text: trimmedText,
         createdAt: new Date().toISOString(),
@@ -296,7 +298,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       await loadChats(true);
     } catch (err) {
       console.error(err);
-      setError("Send failed.");
+      setError(t("supportChat.sendFailed"));
     } finally {
       setSending(false);
     }
@@ -348,28 +350,26 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
   );
 
   if (!isAdmin) {
-    return (
-      <main className={styles.page}>Only admins can open support chats.</main>
-    );
+    return <main className={styles.page}>{t("supportChat.onlyAdmins")}</main>;
   }
 
   return (
     <main className={`${styles.page} ${embedded ? styles.embeddedPage : ""}`}>
       <div className={styles.pageHeader}>
         <div>
-          <h1>Support Chats</h1>
+          <h1>{t("supportChat.title")}</h1>
 
           <p>
             {activeChat?.id
               ? connected
-                ? "Live chat connected"
-                : "Connecting to live chat..."
-              : "Choose a chat to connect live"}
+                ? t("supportChat.liveConnected")
+                : t("supportChat.connecting")
+              : t("supportChat.chooseChatStatus")}
           </p>
         </div>
 
         <button type="button" onClick={() => void loadChats()}>
-          Refresh
+          {t("common.refresh")}
         </button>
       </div>
 
@@ -378,12 +378,12 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
       <div className={styles.adminLayout}>
         <aside className={styles.chatSidebar}>
           <section>
-            <h3>Waiting Chats</h3>
+            <h3>{t("supportChat.waitingChats")}</h3>
 
-            {loading && <p className={styles.emptyState}>Loading...</p>}
+            {loading && <p className={styles.emptyState}>{t("common.loading")}</p>}
 
             {!loading && waitingChats.length === 0 && (
-              <p className={styles.emptyState}>No waiting chats</p>
+              <p className={styles.emptyState}>{t("supportChat.noWaiting")}</p>
             )}
 
             {waitingChats.map((chat) => (
@@ -394,16 +394,16 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
                 onClick={() => void handleTakeChat(chat)}
               >
                 <strong>{getCustomerName(chat)}</strong>
-                <span>{chat.lastMessage ?? "Take this chat"}</span>
+                <span>{chat.lastMessage ?? t("supportChat.takeThisChat")}</span>
               </button>
             ))}
           </section>
 
           <section>
-            <h3>My Chats</h3>
+            <h3>{t("supportChat.myChats")}</h3>
 
             {!loading && myChats.length === 0 && (
-              <p className={styles.emptyState}>No active chats</p>
+              <p className={styles.emptyState}>{t("supportChat.noActive")}</p>
             )}
 
             {myChats.map((chat) => (
@@ -416,7 +416,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
                 onClick={() => void openChat(chat)}
               >
                 <strong>{getCustomerName(chat)}</strong>
-                <span>{chat.lastMessage ?? chat.status ?? "Open chat"}</span>
+                <span>{chat.lastMessage ?? chat.status ?? t("supportChat.openChat")}</span>
               </button>
             ))}
           </section>
@@ -424,7 +424,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
 
         <section className={styles.adminChatPanel}>
           {!activeChat ? (
-            <div className={styles.emptyChat}>Choose a chat on the left.</div>
+            <div className={styles.emptyChat}>{t("supportChat.chooseLeft")}</div>
           ) : (
             <>
               <header className={styles.chatHeader}>
@@ -433,16 +433,16 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
 
                   <div className={styles.chatMeta}>
                     <span className={styles.statusPill}>
-                      {activeChat.status ?? "Active"}
+                      {activeChat.status ?? t("supportChat.active")}
                     </span>
 
-                    <p>Chat ID: {activeChat.id}</p>
+                    <p>{t("supportChat.chatId", { id: activeChat.id })}</p>
                   </div>
                 </div>
 
                 <div className={styles.headerActions}>
                   <button type="button" onClick={handleExitChat}>
-                    Exit
+                    {t("supportChat.exit")}
                   </button>
 
                   <button
@@ -450,14 +450,14 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
                     className={styles.dangerButton}
                     onClick={handleCloseChat}
                   >
-                    Close
+                    {t("supportChat.close")}
                   </button>
                 </div>
               </header>
 
               <div className={styles.messageList} ref={messageListRef}>
                 {sortedMessages.length === 0 && (
-                  <p className={styles.emptyState}>No messages yet.</p>
+                  <p className={styles.emptyState}>{t("supportChat.noMessages")}</p>
                 )}
 
                 {sortedMessages.map((message, index) => {
@@ -475,7 +475,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
                       <small>
                         {message.senderName ??
                           message.userName ??
-                          (isMine ? "You" : "Customer")}
+                          (isMine ? t("supportChat.you") : t("supportChat.customerName"))}
                       </small>
                     </article>
                   );
@@ -491,7 +491,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
                       void handleSend();
                     }
                   }}
-                  placeholder="Type your reply..."
+                  placeholder={t("supportChat.typeReply")}
                 />
 
                 <button
@@ -499,7 +499,7 @@ const SupportChatsPage = ({ embedded = false }: SupportChatsPageProps) => {
                   onClick={handleSend}
                   disabled={sending || !text.trim()}
                 >
-                  {sending ? "..." : "Send"}
+                  {sending ? "..." : t("supportChat.send")}
                 </button>
               </div>
             </>
