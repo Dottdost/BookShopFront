@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
-import WelcomeAnimation from "./WelcomeAnimation";
+import WelcomeAnimation, { type WelcomeVariant } from "./WelcomeAnimation";
 
 interface Props {
   onClose: () => void;
@@ -16,7 +16,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
   const { t } = useTranslation();
 
   const [isRegistering, setIsRegistering] = useState(true);
-  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeVariant, setWelcomeVariant] = useState<WelcomeVariant | null>(null);
 
   const [formData, setFormData] = useState({
     userName: "",
@@ -126,7 +126,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
       );
 
       if (success) {
-        setShowWelcome(true);
+        setWelcomeVariant("register");
 
         setFormData((prev) => ({
           ...prev,
@@ -150,8 +150,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
     );
 
     if (success) {
-      toast.success(t("auth.loginSuccess"));
-      onClose();
+      setWelcomeVariant("login");
     } else {
       setError(loginError || t("auth.loginFailed"));
       toast.error(loginError || t("auth.loginFailed"));
@@ -161,12 +160,19 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
   const isUsernameValid = validateUsername(formData.userName);
   const isPasswordValid = validatePassword(formData.password);
 
-  if (showWelcome) {
+  if (welcomeVariant) {
     return (
       <WelcomeAnimation
+        variant={welcomeVariant}
         onClose={() => {
-          setShowWelcome(false);
-          setIsRegistering(false);
+          if (welcomeVariant === "register") {
+            setWelcomeVariant(null);
+            setIsRegistering(false);
+            return;
+          }
+
+          setWelcomeVariant(null);
+          onClose();
         }}
       />
     );
@@ -286,7 +292,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
 
         {!isRegistering && (
           <p className={styles.forgotPassword}>
-            {t("auth.forgotPassword")}{" "}
+            {t("auth.forgotPassword")} {" "}
             <span
               className={styles.switchLink}
               onClick={() => {
@@ -300,7 +306,7 @@ const AuthModal: React.FC<Props> = ({ onClose, onResetPasswordClick }) => {
         )}
 
         <p className={styles.switchText}>
-          {isRegistering ? t("auth.alreadyHaveAccount") : t("auth.noAccount")}{" "}
+          {isRegistering ? t("auth.alreadyHaveAccount") : t("auth.noAccount")} {" "}
           <span className={styles.switchLink} onClick={resetForm}>
             {isRegistering ? t("auth.login") : t("auth.register")}
           </span>
