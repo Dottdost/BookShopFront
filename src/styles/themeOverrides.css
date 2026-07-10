@@ -1,0 +1,107 @@
+/* Final light/dark polish overrides.
+   CSS Modules generate hashed class names, so these selectors target the readable class fragment. */
+
+:root [class*="genreFilterCard"] {
+  border-color: var(--border) !important;
+  background:
+    radial-gradient(circle at 8% 12%, var(--accent-bg), transparent 34%),
+    radial-gradient(circle at 92% 20%, color-mix(in srgb, var(--accent2), transparent 82%), transparent 32%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-strong), transparent 4%),
+      color-mix(in srgb, var(--card), transparent 8%)
+    ) !important;
+  box-shadow: var(--shadow-strong) !important;
+}
+
+:root [class*="genreFilterCard"]::before {
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.18),
+    transparent 28%,
+    transparent 72%,
+    color-mix(in srgb, var(--accent), transparent 88%)
+  ) !important;
+}
+
+:root [class*="genreFilterCard"]::after {
+  background: linear-gradient(
+    100deg,
+    transparent,
+    color-mix(in srgb, var(--accent2), transparent 84%),
+    transparent
+  ) !important;
+}
+
+:root [class*="genreFilterTitle"] {
+  color: var(--text) !important;
+}
+
+:root [class*="genreFilterHint"],
+:root [class*="genreSelectLabel"] {
+  color: var(--text2) !important;
+}
+
+:root [class*="genreFilterLabel"],
+:root [class*="genreSelectIcon"] {
+  color: var(--accent) !important;
+}
+
+:root [class*="genreCountPill"] {
+  color: var(--text) !important;
+  background: var(--accent-bg) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+
+:root [class*="genreSelect"] {
+  border-color: var(--border) !important;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-strong), transparent 0%),
+      color-mix(in srgb, var(--card), transparent 6%)
+    ) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+:root [class*="genreSelect"]:hover,
+:root [class*="genreSelect"]:focus {
+  border-color: var(--accent) !important;
+  background: var(--card-strong) !important;
+  box-shadow: 0 0 0 4px var(--accent-bg), var(--shadow) !important;
+}
+
+:root [class*="genreSelect"] option {
+  background: var(--card-strong) !important;
+  color: var(--text) !important;
+}
+
+:root[data-theme="dark"] [class*="genreFilterCard"] {
+  background:
+    radial-gradient(circle at 8% 12%, rgba(167, 139, 250, 0.22), transparent 32%),
+    radial-gradient(circle at 92% 20%, rgba(216, 180, 254, 0.14), transparent 30%),
+    linear-gradient(135deg, rgba(22, 15, 39, 0.96), rgba(11, 8, 24, 0.94)) !important;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+:root[data-theme="dark"] [class*="genreFilterTitle"] {
+  color: #faf7ff !important;
+}
+
+:root[data-theme="dark"] [class*="genreFilterHint"] {
+  color: rgba(236, 232, 247, 0.72) !important;
+}
+
+:root[data-theme="dark"] [class*="genreSelect"] {
+  background: linear-gradient(135deg, rgba(10, 7, 22, 0.96), rgba(18, 13, 31, 0.96)) !important;
+  color: #fbf8ff !important;
+}
+
+:root[data-theme="dark"] [class*="genreSelect"] option {
+  background: #140f22 !important;
+  color: #f8f5ff !important;
+}
