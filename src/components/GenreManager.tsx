@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { toast } from "react-toastify";
 import PrettyConfirm from "./ui/PrettyConfirm";
@@ -156,6 +157,7 @@ function buildGenreTree(data: unknown): Genre[] {
 }
 
 export default function GenreManager() {
+  const { t } = useTranslation();
   const [genres, setGenres] = useState<Genre[]>([]);
   const [form, setForm] = useState<GenreForm>({
     name: "",
@@ -170,7 +172,7 @@ export default function GenreManager() {
     open: false,
     title: "",
     message: "",
-    confirmText: "Delete",
+    confirmText: t("common.delete"),
     action: null,
   });
 
@@ -185,7 +187,7 @@ export default function GenreManager() {
       open: false,
       title: "",
       message: "",
-      confirmText: "Delete",
+      confirmText: t("common.delete"),
       action: null,
     });
   };
@@ -209,7 +211,7 @@ export default function GenreManager() {
       open: true,
       title,
       message,
-      confirmText: "Delete",
+      confirmText: t("common.delete"),
       action,
     });
   };
@@ -227,7 +229,7 @@ export default function GenreManager() {
       setGenres(buildGenreTree(response.data));
     } catch (error: unknown) {
       console.error("Error loading genres:", error);
-      toast.error(extractError(error, "Failed to load genres"));
+      toast.error(extractError(error, t("genreManager.failedLoad")));
     } finally {
       setLoading(false);
     }
@@ -251,12 +253,12 @@ export default function GenreManager() {
     const name = form.name.trim();
 
     if (!name) {
-      toast.error("Enter genre name");
+      toast.error(t("genreManager.enterName"));
       return;
     }
 
     if (form.isSub && !form.parentGenreId) {
-      toast.error("Choose parent genre");
+      toast.error(t("genreManager.chooseParentError"));
       return;
     }
 
@@ -275,7 +277,7 @@ export default function GenreManager() {
           },
         );
 
-        toast.success("Sub-genre created");
+        toast.success(t("genreManager.subCreated"));
       } else {
         await axios.post(
           `${API_URL}/api/genres/createParent`,
@@ -287,14 +289,14 @@ export default function GenreManager() {
           },
         );
 
-        toast.success("Genre created");
+        toast.success(t("genreManager.created"));
       }
 
       resetForm();
       await loadGenres();
     } catch (error: unknown) {
       console.error("Error creating genre:", error);
-      toast.error(extractError(error, "Failed to create genre"));
+      toast.error(extractError(error, t("genreManager.failedCreate")));
     } finally {
       setSaving(false);
     }
@@ -302,19 +304,19 @@ export default function GenreManager() {
 
   const deleteParentGenre = (genre: Genre) => {
     askDelete(
-      "Delete genre?",
-      `Are you sure you want to delete "${genre.name}"? If it has sub-genres, the backend may reject this action.`,
+      t("genreManager.deleteTitle"),
+      t("genreManager.deleteMessage", { name: genre.name }),
       async () => {
         try {
           await axios.delete(`${API_URL}/api/genres/delete/${genre.id}`, {
             headers: authHeaders(),
           });
 
-          toast.success("Genre deleted");
+          toast.success(t("genreManager.deleted"));
           await loadGenres();
         } catch (error: unknown) {
           console.error("Error deleting genre:", error);
-          toast.error(extractError(error, "Failed to delete genre"));
+          toast.error(extractError(error, t("genreManager.failedDelete")));
         }
       },
     );
@@ -322,8 +324,8 @@ export default function GenreManager() {
 
   const deleteSubGenre = (genre: Genre) => {
     askDelete(
-      "Delete sub-genre?",
-      `Are you sure you want to delete "${genre.name}"?`,
+      t("genreManager.deleteSubTitle"),
+      t("genreManager.deleteSubMessage", { name: genre.name }),
       async () => {
         try {
           await axios.delete(
@@ -333,11 +335,11 @@ export default function GenreManager() {
             },
           );
 
-          toast.success("Sub-genre deleted");
+          toast.success(t("genreManager.subDeleted"));
           await loadGenres();
         } catch (error: unknown) {
           console.error("Error deleting sub-genre:", error);
-          toast.error(extractError(error, "Failed to delete sub-genre"));
+          toast.error(extractError(error, t("genreManager.failedDeleteSub")));
         }
       },
     );
@@ -347,11 +349,9 @@ export default function GenreManager() {
     <div className={styles.manager}>
       <div className={styles.managerHeader}>
         <div>
-          <h2>Genres</h2>
+          <h2>{t("genreManager.title")}</h2>
 
-          <p className={styles.managerSubtitle}>
-            Create parent genres and sub-genres used in the book catalog.
-          </p>
+          <p className={styles.managerSubtitle}>{t("genreManager.subtitle")}</p>
         </div>
       </div>
 
@@ -364,7 +364,9 @@ export default function GenreManager() {
               name: event.target.value,
             }))
           }
-          placeholder={form.isSub ? "Sub-genre name" : "Genre name"}
+          placeholder={
+            form.isSub ? t("genreManager.subGenreName") : t("genreManager.genreName")
+          }
         />
 
         <label
@@ -376,9 +378,9 @@ export default function GenreManager() {
             minHeight: 38,
             padding: "8px 12px",
             borderRadius: 999,
-            border: "1px solid rgba(167, 139, 250, 0.22)",
-            background: "rgba(255, 255, 255, 0.04)",
-            color: "inherit",
+            border: "1px solid var(--border)",
+            background: "var(--card)",
+            color: "var(--text)",
             fontSize: 14,
             fontWeight: 700,
             cursor: "pointer",
@@ -403,7 +405,7 @@ export default function GenreManager() {
               cursor: "pointer",
             }}
           />
-          Create as sub-genre
+          {t("genreManager.createAsSub")}
         </label>
 
         {form.isSub && (
@@ -418,7 +420,7 @@ export default function GenreManager() {
               }))
             }
           >
-            <option value="">Choose parent genre</option>
+            <option value="">{t("genreManager.chooseParent")}</option>
 
             {parentGenres.map((genre) => (
               <option key={genre.id} value={genre.id}>
@@ -429,26 +431,30 @@ export default function GenreManager() {
         )}
 
         <button type="submit" className={styles.submitBtn} disabled={saving}>
-          {saving ? "Saving..." : form.isSub ? "Add Sub-genre" : "Add Genre"}
+          {saving
+            ? t("common.saving")
+            : form.isSub
+              ? t("genreManager.addSubGenre")
+              : t("genreManager.addGenre")}
         </button>
 
         {form.isSub && selectedParent && (
           <p className={styles.managerSubtitle}>
-            Parent genre: {selectedParent.name}
+            {t("genreManager.parentGenre", { name: selectedParent.name })}
           </p>
         )}
       </form>
 
       {loading ? (
-        <p className={styles.emptyState}>Loading genres...</p>
+        <p className={styles.emptyState}>{t("genreManager.loading")}</p>
       ) : (
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Genre</th>
-                <th>Sub-genres</th>
-                <th>Actions</th>
+                <th>{t("genreManager.genre")}</th>
+                <th>{t("genreManager.subGenres")}</th>
+                <th>{t("common.actions")}</th>
               </tr>
             </thead>
 
@@ -476,7 +482,7 @@ export default function GenreManager() {
                                 gap: 6,
                                 padding: "6px 10px",
                                 borderRadius: 999,
-                                background: "rgba(167, 139, 250, 0.16)",
+                                background: "var(--accent-bg)",
                               }}
                             >
                               {subGenre.name}
@@ -487,7 +493,7 @@ export default function GenreManager() {
                                 style={{
                                   border: "none",
                                   background: "transparent",
-                                  color: "#f87171",
+                                  color: "var(--danger)",
                                   cursor: "pointer",
                                   fontWeight: 800,
                                   lineHeight: 1,
@@ -509,7 +515,7 @@ export default function GenreManager() {
                         className={styles.deleteBtn}
                         onClick={() => deleteParentGenre(genre)}
                       >
-                        Delete
+                        {t("common.delete")}
                       </button>
                     </td>
                   </tr>
@@ -517,7 +523,7 @@ export default function GenreManager() {
               ) : (
                 <tr>
                   <td colSpan={3} className={styles.emptyState}>
-                    No genres found
+                    {t("genreManager.noGenres")}
                   </td>
                 </tr>
               )}
@@ -532,7 +538,7 @@ export default function GenreManager() {
         message={confirm.message}
         type="danger"
         confirmText={confirm.confirmText}
-        cancelText="Cancel"
+        cancelText={t("common.cancel")}
         onCancel={closeConfirm}
         onConfirm={runConfirm}
       />
