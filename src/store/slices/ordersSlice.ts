@@ -52,6 +52,7 @@ interface OrdersState {
   items: Order[];
   loading: boolean;
   error: string | null;
+  lastPlacedOrderAt: number | null;
 }
 
 const API_BASE_URL =
@@ -62,6 +63,7 @@ const initialState: OrdersState = {
   items: [],
   loading: false,
   error: null,
+  lastPlacedOrderAt: null,
 };
 
 const unwrapArray = <T>(data: unknown): T[] => {
@@ -199,6 +201,7 @@ const ordersSlice = createSlice({
   reducers: {
     addOrder(state, action) {
       state.items.push(action.payload);
+      state.lastPlacedOrderAt = Date.now();
     },
   },
   extraReducers: (builder) => {
