@@ -54,12 +54,12 @@ const AdminPanel = () => {
     },
     {
       id: "genres" as const,
-      label: "Genres",
+      label: t("admin.genres"),
       icon: <FiBookmark />,
     },
     {
       id: "publishers" as const,
-      label: "Publishers",
+      label: t("admin.publishers"),
       icon: <FiBriefcase />,
     },
     {
@@ -95,10 +95,7 @@ const AdminPanel = () => {
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <h3>{t("admin.title")}</h3>
-          <p className={styles.sidebarSubtitle}>
-            Manage books, users, orders, publishers, genres and support in one
-            place.
-          </p>
+          <p className={styles.sidebarSubtitle}>{t("admin.sidebarSubtitle")}</p>
         </div>
 
         {tabs.map((tab) => (
