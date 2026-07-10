@@ -18,6 +18,7 @@ import ResetPasswordModal from "./components/ResetPasswordModal";
 import CartPage from "./pages/CartPage";
 import SupportChatWidget from "./components/SupportChatWidget";
 import SupportChatsPage from "./pages/SupportChatsPage";
+import OrderCelebration from "./components/OrderCelebration";
 import { ThemeProvider } from "./context/ThemeContext";
 import { ToastContainer } from "react-toastify";
 
@@ -45,6 +46,7 @@ function App() {
         <Router>
           <Navbar openAuthModal={openAuthModal} />
           <RegisterPopup />
+          <OrderCelebration />
 
           <Routes>
             <Route path="/" element={<Home />} />
