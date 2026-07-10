@@ -24,7 +24,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
   "http://cheshireshelfapp-env.eba-pzcyg6yq.eu-north-1.elasticbeanstalk.com";
 
-const BOOKS_PER_PAGE = 8;
+const BOOKS_PER_PAGE = 10;
 
 const paginationStyles: PaginationStyles = {
   wrapper: {
@@ -47,7 +47,8 @@ const paginationStyles: PaginationStyles = {
     cursor: "pointer",
     fontWeight: 900,
     boxShadow: "var(--shadow)",
-    transition: "transform 0.2s ease, border-color 0.2s ease, background 0.2s ease",
+    transition:
+      "transform 0.2s ease, border-color 0.2s ease, background 0.2s ease",
   },
   activeButton: {
     minWidth: "44px",
@@ -640,7 +641,8 @@ const BooksPage: React.FC = () => {
           </button>
 
           <div style={paginationStyles.info}>
-            Showing {firstVisibleBook}-{lastVisibleBook} of {filtered.length} books
+            Showing {firstVisibleBook}-{lastVisibleBook} of {filtered.length}{" "}
+            books
           </div>
         </nav>
       )}
